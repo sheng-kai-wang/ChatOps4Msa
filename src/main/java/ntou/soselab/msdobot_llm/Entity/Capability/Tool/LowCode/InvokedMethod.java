@@ -1,4 +1,4 @@
-package ntou.soselab.msdobot_llm.Entity.ChatOpsQueryLanguage.Tool.LowCode;
+package ntou.soselab.msdobot_llm.Entity.Capability.Tool.LowCode;
 
 import java.util.Map;
 

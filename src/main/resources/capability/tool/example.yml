@@ -1,0 +1,20 @@
+# 簡單範例
+
+
+info:
+  version: 1.0.0
+  title: example
+  description: |
+    Just echo a message
+
+low_code:
+  method:
+    - name: echo-null-text_message
+      parameter:
+        message: text message
+      description: |
+        Just echo a message
+      access: public
+      body:
+        - toolkit-message-text:
+            text: message

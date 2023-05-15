@@ -1,0 +1,76 @@
+# 原先的設計是希望放 devops 工具會用到的共同資訊，以及該微服務系統可以使用的功能
+# 共同資訊這一塊目前感覺用不太到
+# 找不到適合用於描述整個微服務系統的 api 文件
+
+
+info:
+  version: 1.0.0
+  title: Cinema Microservices System
+  description: |
+    It's a Cinema Microservices System, which consists of the Ordering, Payment and Notification services.
+
+service:
+  - name: Ordering
+    url: http://localhost:3000
+    repository: https://github.com/sheng-kai-wang/MsdoBot-Service-Ordering
+    description: |
+      It's responsible for handling orders for movie tickets.
+    swagger:
+      $ref: ../swagger/ordering.yaml
+    paths:
+      /orders:
+        - method: POST
+          description: create a new order
+      /orders/{orderId}:
+        - method: GET
+          description: retrieve an order by ID
+        - method: DELETE
+          description: cancel an order by ID
+
+  - name: Payment
+    url: http://localhost:3001
+    repository: https://github.com/sheng-kai-wang/MsdoBot-Service-Payment
+    description: |
+      It's responsible for processing payment transactions for movie ticket purchases. This service handles payment processing for multiple payment methods, such as credit card and digital wallets.
+    swagger:
+      $ref: ../swagger/payment.yaml
+    paths:
+      /payments:
+        - method: POST
+          description: create a new payment
+      /payments/{paymentId}:
+        - method: GET
+          description: retrieve a payment by ID
+      /payments/{paymentId}/refund:
+        - method: POST
+          description: refund a payment by ID
+
+  - name: Notification
+    url: http://localhost:3002
+    repository: https://github.com/sheng-kai-wang/MsdoBot-Service-Notification
+    description: |
+      It allows our system to send notifications through different channels, including email, SMS, and push notifications. This service is responsible for receiving requests from other services, such as the Ordering service, to send notifications to users.
+    swagger:
+      $ref: ../swagger/notification.yaml
+    paths:
+      /notifications:
+        - method: POST
+          description: create a new notification
+
+chatops_query_language:
+  - echo-null-text_message
+  - get-github-service_recent_activity
+  - get-github-service_latest_commit_report
+  - get-github-service_past_week_team_activity
+  - get-github-all_service_dependency_risk_past_week
+  - subscribe-github-all_service_dependency_risk_past_week
+  - update-github-service_dependency_risk_issue
+  - test-k6-smoke_testing
+  - test-k6-stress_testing_all_service
+  - monitor-prometheus-health
+  - monitor-prometheus-overview
+  - set-prometheus-edit_alert_rules
+  - monitor-prometheus-all_service_alert
+  - monitor-prometheus-all_service_yesterday_report
+  - monitor-prometheus-service_dependency
+  - test-compose-stress_testing_smoke_testing_and_repository_report

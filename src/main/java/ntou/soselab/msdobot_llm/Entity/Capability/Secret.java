@@ -1,4 +1,4 @@
-package ntou.soselab.msdobot_llm.Entity.ChatOpsQueryLanguage;
+package ntou.soselab.msdobot_llm.Entity.Capability;
 
 import java.util.Map;
 

@@ -1,0 +1,388 @@
+# 跑在雲端
+# rest api 指令
+# GraphQL
+# assign, return, if, foreach
+
+
+info:
+  version: 1.0.0
+  title: GitHub
+  description: |
+    Using GraphQL to access GitHub's services to assist with DevOps.
+
+
+low_code:
+  property:
+    system_name: Cinema
+    github_graphql_url: https://api.github.com/graphql
+    github_authorization_bearer: ${secret.github_authorization_bearer}
+    get_github_service_recent_activity_graphql: |
+      {
+        repository(owner: $owner, name: $name) {
+          defaultBranchRef {
+            name
+          }
+          ref(qualifiedName: "refs/heads/master") {
+            target {
+              ... on Commit {
+                history(first: $first) {
+                  nodes {
+                    oid
+                    messageHeadline
+                    messageBody
+                    author {
+                      name
+                      email
+                      date
+                    }
+                    committedDate
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    get_github_service_latest_commit_report_graphql: |
+      {
+        repository(owner: $owner, name: $name) {
+          defaultBranchRef {
+            name
+          }
+          ref(qualifiedName: "refs/heads/master") {
+            target {
+              ... on Commit {
+                history(first: 1) {
+                  nodes {
+                    id
+                    oid
+                    messageHeadline
+                    checkSuites(last: 1) {
+                      nodes {
+                        id
+                        status
+                        conclusion
+                        checkRuns(last: 1) {
+                          nodes {
+                            id
+                            status
+                            conclusion
+                            detailsUrl
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    get_github_service_team_activity_past_week_graphql: |
+      {
+        repository(owner: $owner, name: $name) {
+          createdAt
+          stargazerCount
+          watchers {
+            totalCount
+          }
+          defaultBranchRef {
+            name
+          }
+          ref(qualifiedName: "refs/heads/master") {
+            target {
+              ... on Commit {
+                history(since: $weekAgo) {
+                  totalCount
+                  edges {
+                    node {
+                      author {
+                        user {
+                          login
+                        }
+                      }
+                      committedDate
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    get_github_all_service_dependency_risk_past_week_graphql: |
+      {
+        repository(owner: $owner, name: $name) {
+          vulnerabilityAlerts(last: 100) {
+            nodes {
+              createdAt
+              securityVulnerability {
+                package {
+                  name
+                }
+                advisory {
+                  description
+                  severity
+                  references {
+                    url
+                  }
+                }
+                updatedAt
+              }
+            }
+          }
+        }
+      }
+    update_github_service_dependency_risk_issue_graphql: |
+      {
+        createIssue(input: {repositoryName: $name, repositoryOwner: $owner, title: $title, body: $body}) {
+          issue {
+            title
+            body
+            url
+          }
+        }
+      }
+  
+  method:
+    - name: get-github-service_recent_activity
+      parameter:
+        service_name: service name
+        number_of_activity: 1 <= n <= 10
+      description: |
+        Retrieve recent activities of a service's repo.
+      access: public
+      body:
+        - toolkit-string-pattern:
+            string: number_of_activity
+            regex: ^(?!(?:[1-9]|10)$)\d+$
+            assign: is_out_of_range
+        - toolkit-flow-if:
+            condition: ${is_out_of_range}
+            todo: 
+              - toolkit-message-properties:
+                  text: sorry, the number of activities must be between 1 and 10.
+            end: true
+        - toolkit-config-get:
+            system: cinema
+            jsonpath: $.service[?(@.name=='${service_name}')].repository
+        - toolkit-string-split:
+            string: ${toolkit-config-get}
+            separator: /
+        - toolkit-array-index:
+            array: ${toolkit-string-split}
+            index: 3
+            assign: github_username
+        - toolkit-array-index:
+            array: ${toolkit-string-split}
+            index: 4
+            assign: github_repository
+        - toolkit-string-replace:
+            string: ${get_github_service_recent_activity_graphql}
+            original: $owner
+            replace: ${github_username}
+        - toolkit-string-replace:
+            string: ${toolkit-string-replace}
+            original: $name
+            replace: ${github_repository}
+        - toolkit-string-replace:
+            string: ${toolkit-string-replace}
+            original: $first
+            replace: ${number_of_activity}
+        - toolkit-graphql-query:
+            url: ${github_graphql_url}
+            graphql: ${toolkit-string-replace}
+            accept: application/json
+            content_type: application/json
+            authorization: ${github_authorization_bearer}
+        - toolkit-parse-json:
+            jsonpath: .......${toolkit-graphql-query}
+        - toolkit-render-embed:
+            title: The recent activity of ${service_name}
+            color: yellow
+            field_json: ${toolkit-parse-json}
+
+    - name: get-github-service_latest_commit_report
+      parameter:
+        service_name: service name
+      description: |
+        Get the check report of the newest commit in the service's repo.
+      access: protected
+      protected:
+        - supervisor
+        - team_member
+      body:
+        - set-repo-info_of_service_into_graphql:
+            service_name: ${service_name}
+            graphql: ${get_github_service_latest_commit_report_graphql}
+        - toolkit-graphql-query:
+            url: ${github_graphql_url}
+            graphql: ${set-repo-info_of_service_into_graphql}
+            accept: application/json
+            content_type: application/json
+            authorization: ${github_authorization_bearer}
+        - toolkit-parse-json:
+            jsonpath: .......${toolkit-graphql-query}
+        - toolkit-render-embed:
+            title: The newest check report of ${service_name}
+            color: yellow
+            field_json: ${toolkit-parse-json}
+
+    - name: get-github-service_past_week_team_activity
+      parameter:
+        service_name: service name
+      description: |
+        Get the activity level of the service's repo and the activity status of each team member within the past week.
+      access: public
+      body:
+        - set-repo-info_of_service_into_graphql:
+            service_name: ${service_name}
+            graphql: ${get_github_service_team_activity_past_week_graphql}
+        - toolkit-time-one_week_ago: null
+        - toolkit-string-replace:
+            string: ${set-repo-info_of_service_into_graphql}
+            original: $weekAgo
+            replace: ${toolkit-time-one_week_ago}
+        - toolkit-graphql-query:
+            url: ${github_graphql_url}
+            graphql: ${toolkit-string-replace}
+            accept: application/json
+            content_type: application/json
+            authorization: ${github_authorization_bearer}
+        - toolkit-parse-json:
+            jsonpath: .......${toolkit-graphql-query}
+        - toolkit-render-embed:
+            title: The activity status of each team member within the past week of ${service_name}
+            color: yellow
+            field_json: ${toolkit-parse-json}
+
+    - name: get-github-all_service_dependency_risk_past_week
+      parameter: null
+      description: |
+        Get the dependency risks of all services' repositories in the past week.
+      access: protected
+      protected:
+        - supervisor
+        - team_member
+      body:
+        - toolkit-config-get:
+            system: cinema
+            jsonpath: $.service[*].name
+        - toolkit-flow-foreach:
+            array: ${toolkit-config-get}
+            element_name: service_name
+            method: get-github-service_dependency_risk_past_week
+            method_parameter_json: {"service_name": "${service_name}"}
+
+    - name: subscribe-github-all_service_dependency_risk_past_week
+      parameter:
+        cron: e.g. 0 9 * * 5
+      description: |
+        Subscribe to the dependency risk of all service's repo in the past week and execute it every Friday.
+      access: protected
+      protected:
+        - supervisor
+        - team_member
+      body:
+        - toolkit-flow-subscribe:
+            method: get-github-all_service_dependency_risk_past_week
+            method_parameter_json: null
+            cron: ${cron}
+
+    - name: update-github-service_dependency_risk_issue
+      parameter: 
+        service_name: service name
+        issue_title: issue title
+        issue_message: issue message
+      description: |
+        Create issues in the repo of services with dependency risks.
+      access: protected
+      protected:
+        - supervisor
+        - team_member
+      body:
+        - set-repo-info_of_service_into_graphql:
+            service_name: ${service_name}
+            graphql: ${update_github_service_dependency_risk_issue_graphql}
+        - toolkit-string-replace:
+            string: ${set-repo-info_of_service_into_graphql}
+            original: $title
+            replace: ${issue_title}
+        - toolkit-string-replace:
+            string: ${toolkit-string-replace}
+            original: $body
+            replace: ${issue_message}
+        - toolkit-graphql-query:
+            url: ${github_graphql_url}
+            graphql: ${toolkit-string-replace}
+            accept: application/json
+            content_type: application/json
+            authorization: ${github_authorization_bearer}
+        - toolkit-parse-json:
+            jsonpath: .......${toolkit-graphql-query}
+        - toolkit-render-embed:
+            title: Create a new issue of ${service_name}
+            color: yellow
+            field_json: ${toolkit-parse-json}
+
+    - name: set-repo-info_of_service_into_graphql
+      parameter:
+        service_name: null
+        graphql: null
+      description: |
+        Put the repository information of a certain service into GraphQL string.
+      access: private
+      body:
+        - toolkit-config-get:
+            system: cinema
+            jsonpath: $.service[?(@.name=='${service_name}')].repository
+        - toolkit-string-split:
+            string: ${toolkit-config-get}
+            separator: /
+        - toolkit-array-index:
+            array: ${toolkit-string-split}
+            index: 3
+            assign: github_username
+        - toolkit-array-index:
+            array: ${toolkit-string-split}
+            index: 4
+            assign: github_repository
+        - toolkit-string-replace:
+            string: ${graphql}
+            original: $owner
+            replace: ${github_username}
+        - toolkit-string-replace:
+            string: ${toolkit-string-replace}
+            original: $name
+            replace: ${github_repository}
+        - toolkit-flow-return:
+            return: ${toolkit-string-replace}
+
+    - name: get-github-service_dependency_risk_past_week
+      parameter: 
+        service_name: null
+      description: |
+        Get the dependency risks of the services' repositories in the past week.
+      access: private
+      body:
+        - set-repo-info_of_service_into_graphql:
+            service_name: ${service_name}
+            graphql: ${get_github_all_service_dependency_risk_past_week_graphql}
+        - toolkit-time-one_week_ago: null
+        - toolkit-string-replace:
+            string: ${set-repo-info_of_service_into_graphql}
+            original: $weekAgo
+            replace: ${toolkit-time-one_week_ago}
+        - toolkit-graphql-query:
+            url: ${github_graphql_url}
+            graphql: ${toolkit-string-replace}
+            accept: application/json
+            content_type: application/json
+            authorization: ${github_authorization_bearer}
+        - toolkit-parse-json:
+            jsonpath: .......${toolkit-graphql-query}
+        - toolkit-render-embed:
+            title: The activity status of each team member within the past week of ${service_name}
+            color: yellow
+            field_json: ${toolkit-parse-json}

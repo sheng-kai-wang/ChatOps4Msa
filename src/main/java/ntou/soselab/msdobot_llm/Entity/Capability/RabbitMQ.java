@@ -1,7 +1,7 @@
-package ntou.soselab.msdobot_llm.Entity.ChatOpsQueryLanguage;
+package ntou.soselab.msdobot_llm.Entity.Capability;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import ntou.soselab.msdobot_llm.Entity.ChatOpsQueryLanguage.Tool.Tool.LowCode.LowCode;
+import ntou.soselab.msdobot_llm.Entity.Capability.Tool.LowCode.LowCode;
 
 public class RabbitMQ {
 
