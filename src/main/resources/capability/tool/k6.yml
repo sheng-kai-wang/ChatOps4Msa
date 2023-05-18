@@ -17,7 +17,7 @@ low_code:
     grafana_prometheus_k6_smoke_testing_url: ........
     grafana_prometheus_k6_stress_testing_url: ........
 
-  method:
+  operation:
     - name: test-k6-smoke_testing
       parameter:
         service_name: service name

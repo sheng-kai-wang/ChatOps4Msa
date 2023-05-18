@@ -144,8 +144,8 @@ low_code:
           }
         }
       }
-  
-  method:
+
+  operation:
     - name: get-github-service_recent_activity
       parameter:
         service_name: service name
@@ -272,8 +272,8 @@ low_code:
         - toolkit-flow-foreach:
             array: ${toolkit-config-get}
             element_name: service_name
-            method: get-github-service_dependency_risk_past_week
-            method_parameter_json: {"service_name": "${service_name}"}
+            operation: get-github-service_dependency_risk_past_week
+            operation_parameter_json: {"service_name": "${service_name}"}
 
     - name: subscribe-github-all_service_dependency_risk_past_week
       parameter:
@@ -286,8 +286,8 @@ low_code:
           - team_member
       body:
         - toolkit-flow-subscribe:
-            method: get-github-all_service_dependency_risk_past_week
-            method_parameter_json: null
+            operation: get-github-all_service_dependency_risk_past_week
+            operation_parameter_json: null
             cron: ${cron}
 
     - name: update-github-service_dependency_risk_issue

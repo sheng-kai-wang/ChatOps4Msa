@@ -8,7 +8,7 @@ info:
     Just echo a message
 
 low_code:
-  method:
+  operation:
     - name: echo-null-text_message
       parameter:
         message: text message

@@ -52,7 +52,7 @@ low_code:
             content_type: application/json
             authorization: ${grafana_authorization_bearer}
 
-  method:
+  operation:
     - name: monitor-prometheus-health
       parameter:
         service_name: service name

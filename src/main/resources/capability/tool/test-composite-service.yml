@@ -8,7 +8,7 @@ low_code:
   property:
     system_name: Cinema
 
-  method:
+  operation:
     - name: test-compose-stress_testing_smoke_testing_and_repository_report
       parameter:
         service_name: service name
@@ -27,5 +27,5 @@ low_code:
         - toolkit-flow-foreach:
             array: ${toolkit-parse-json}
             element_name: service_name
-            method: github.get-github-service_past_week_team_activity
-            method_parameter_json: {"service_name": "${service_name}"}
+            operation: github.get-github-service_past_week_team_activity
+            operation_parameter_json: {"service_name": "${service_name}"}
