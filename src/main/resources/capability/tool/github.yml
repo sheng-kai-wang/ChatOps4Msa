@@ -208,10 +208,10 @@ low_code:
         service_name: service name
       description: |
         Get the check report of the newest commit in the service's repo.
-      access: protected
-      protected:
-        - supervisor
-        - team_member
+      access:
+        protected:
+          - supervisor
+          - team_member
       body:
         - set-repo-info_of_service_into_graphql:
             service_name: ${service_name}
@@ -261,10 +261,10 @@ low_code:
       parameter: null
       description: |
         Get the dependency risks of all services' repositories in the past week.
-      access: protected
-      protected:
-        - supervisor
-        - team_member
+      access:
+        protected:
+          - supervisor
+          - team_member
       body:
         - toolkit-config-get:
             system: cinema
@@ -280,10 +280,10 @@ low_code:
         cron: e.g. 0 9 * * 5
       description: |
         Subscribe to the dependency risk of all service's repo in the past week and execute it every Friday.
-      access: protected
-      protected:
-        - supervisor
-        - team_member
+      access:
+        protected:
+          - supervisor
+          - team_member
       body:
         - toolkit-flow-subscribe:
             method: get-github-all_service_dependency_risk_past_week
@@ -297,10 +297,10 @@ low_code:
         issue_message: issue message
       description: |
         Create issues in the repo of services with dependency risks.
-      access: protected
-      protected:
-        - supervisor
-        - team_member
+      access:
+        protected:
+          - supervisor
+          - team_member
       body:
         - set-repo-info_of_service_into_graphql:
             service_name: ${service_name}

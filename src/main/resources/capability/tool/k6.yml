@@ -24,10 +24,10 @@ low_code:
         number_of_virtual_user: 1 <= n <= 5
       description: |
         Perform smoke testing on a specific service.
-      access: protected
-      protected:
-        - supervisor
-        - team_member
+      access:
+        protected:
+          - supervisor
+          - team_member
       body:
         - toolkit-string-pattern:
             string: number_of_activity
@@ -54,10 +54,10 @@ low_code:
       parameter: null
       description: |
         Perform smoke testing on all service.
-      access: protected
-      protected:
-        - supervisor
-        - team_member
+      access:
+        protected:
+          - supervisor
+          - team_member
       body:
         - toolkit-script-bash:
             hostname: ${k6_host_ip}

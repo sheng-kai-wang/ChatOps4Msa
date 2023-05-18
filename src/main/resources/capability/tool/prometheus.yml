@@ -84,10 +84,10 @@ low_code:
       parameter: null
       description: |
         Edit alert rules through the Prometheus UI, allowing for subscription to monitoring alerts.
-      access: protected
-      protected:
-        - supervisor
-        - team_member
+      access:
+        protected:
+          - supervisor
+          - team_member
       body:
         - toolkit-render-embed:
             title: Edit alert rules
@@ -126,10 +126,10 @@ low_code:
       parameter: null
       description: |
         Monitor the dependency relationships between microservices and return the link to the Grafana web interface.
-      access: protected
-      protected:
-        - supervisor
-        - team_member
+      access:
+        protected:
+          - supervisor
+          - team_member
       body:
         - toolkit-render-embed:
             title: The dependency relationships between all service

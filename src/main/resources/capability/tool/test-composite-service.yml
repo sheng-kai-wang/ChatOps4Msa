@@ -15,8 +15,8 @@ low_code:
         number_of_virtual_user: 1 <= n <= 5
       description: |
         Perform stress testing and smoke testing on microservices simultaneously while monitoring the testing status. Then, for the microservices that did not pass the tests, retrieve their recent activity within the past week, including the activity of each team member in their respective repositories. Finally, aggregate and present the results.  
-      access: protected
-      protected:
+      access:
+        protected:
           - supervisor
       body:
         - prometheus.set-prometheus-edit_alert_rules: null
