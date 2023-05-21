@@ -39,7 +39,7 @@ low_code:
               - toolkit-message-properties:
                   text: sorry, the number of activities must be between 1 and 5.
             end: true
-        - toolkit-script-bash:
+        - toolkit-command-bash:
             hostname: ${k6_host_ip}
             username: ${k6_host_username}
             password: ${k6_host_password}
@@ -59,7 +59,7 @@ low_code:
           - supervisor
           - team_member
       body:
-        - toolkit-script-bash:
+        - toolkit-command-bash:
             hostname: ${k6_host_ip}
             username: ${k6_host_username}
             password: ${k6_host_password}

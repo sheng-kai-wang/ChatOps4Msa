@@ -33,7 +33,7 @@ low_code:
         Automatically execute on startup and register all services to Prometheus.
       access: private
       body:
-        - toolkit-script-bash:
+        - toolkit-command-bash:
             hostname: ${prometheus_host_ip}
             username: ${prometheus_host_username}
             password: ${prometheus_host_password}
