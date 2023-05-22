@@ -14,44 +14,34 @@ low_code:
     k6_host_ip: ${secret.k6_host_ip}
     k6_host_username: ${secret.k6_host_username}
     k6_host_password: ${secret.k6_host_password}
-    grafana_prometheus_k6_smoke_testing_url: ........
     grafana_prometheus_k6_stress_testing_url: ........
+    grafana_prometheus_k6_smoke_testing_url: ........
 
   operation:
-    - name: test-k6-smoke_testing
+    - name: test-k6-stress_testing
       parameter:
         service_name: service name
-        number_of_virtual_user: 1 <= n <= 5
       description: |
-        Perform smoke testing on a specific service.
+        Perform stress testing on a specific service.
       access:
         protected:
           - supervisor
           - team_member
       body:
-        - toolkit-string-pattern:
-            string: number_of_activity
-            regex: ^(?!(?:[1-5])$).*
-            assign: is_out_of_range
-        - toolkit-flow-if:
-            condition: ${is_out_of_range}
-            todo:
-              - toolkit-message-properties:
-                  text: sorry, the number of activities must be between 1 and 5.
-            end: true
         - toolkit-command-bash:
             hostname: ${k6_host_ip}
             username: ${k6_host_username}
             password: ${k6_host_password}
-            bash: docker run --rm -i grafana/k6 run --vus ${number_of_virtual_user} --duration 30s - <smokeTesting-${service_name}.js -e TEST_URL=https://test-api.k6.io
+            bash: docker run --rm -i grafana/k6 run <stressTesting-${service_name}.js -e TEST_URL=https://test-api.k6.io
         - toolkit-render-embed:
-            title: The smoke testing of ${service_name}
+            title: The stress testing of ${service_name}
             color: yellow
-            field_json: {"grafana link": "${grafana_prometheus_k6_smoke_testing_url}"}
+            field_json: {"grafana link": "${grafana_prometheus_k6_stress_testing_url}"}
             thumbnail: .....
     
-    - name: test-k6-stress_testing_all_service
-      parameter: null
+    - name: test-k6-smoke_testing_all_service
+      parameter:
+        number_of_virtual_user: 1 <= n <= 5
       description: |
         Perform smoke testing on all service.
       access:
@@ -59,13 +49,23 @@ low_code:
           - supervisor
           - team_member
       body:
+        - toolkit-string-pattern:
+            string: number_of_virtual_user
+            regex: ^(?!(?:[1-5])$).*
+            assign: is_out_of_range
+        - toolkit-flow-if:
+            condition: ${is_out_of_range}
+            todo:
+              - toolkit-message-properties:
+                  text: sorry, the number of virtual user must be between 1 and 5.
+            end: true
         - toolkit-command-bash:
             hostname: ${k6_host_ip}
             username: ${k6_host_username}
             password: ${k6_host_password}
-            bash: docker run --rm -i grafana/k6 run <stressTesting-All.js
+            bash: docker run --rm -i grafana/k6 run --vus ${number_of_virtual_user} --duration 30s - <smokeTesting-All.js
         - toolkit-render-embed:
-            title: The stress testing of ${service_name}
+            title: The smoke testing of all service
             color: yellow
-            field_json: {"grafana link": "${grafana_prometheus_k6_stress_testing_url}"}
+            field_json: {"grafana link": "${grafana_prometheus_k6_smoke_testing_url}"}
             thumbnail: .....

@@ -9,19 +9,19 @@ low_code:
     system_name: Cinema
 
   operation:
-    - name: test-compose-stress_testing_smoke_testing_and_repository_report
+    - name: test-compose-smoke_testing_all_service_and_repository_report
       parameter:
-        service_name: service name
         number_of_virtual_user: 1 <= n <= 5
       description: |
-        Perform stress testing and smoke testing on microservices simultaneously while monitoring the testing status. Then, for the microservices that did not pass the tests, retrieve their recent activity within the past week, including the activity of each team member in their respective repositories. Finally, aggregate and present the results.  
+        Perform smoke testing on all services simultaneously while monitoring the testing status. Then, for the microservices that did not pass the tests, retrieve their recent activity within the past week, including the activity of each team member in their respective repositories. Finally, aggregate and present the results.
       access:
         protected:
           - supervisor
       body:
-        - prometheus.set-prometheus-edit_alert_rules: null
-        - k6.test-k6-stress_testing_all_service: null
-        - prometheus.monitor-prometheus-all_service_alert: null
+        - set-prometheus-edit_alert_rules: null
+        - test-k6-smoke_testing_all_service:
+            number_of_virtual_user: ${number_of_virtual_user}
+        - monitor-prometheus-all_service_alert: null
         - toolkit-parse-json:
             jsonpath: .....${prometheus.monitor-prometheus-all_service_alert}
         - toolkit-flow-foreach:
