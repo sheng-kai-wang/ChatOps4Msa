@@ -1,6 +1,6 @@
 info:
   version: 1.0.0
-  title: tool-compose
+  title: test-composite-service
   description: |
     Integration of k6, Prometheus, and GitHub for comprehensive capability.
 
