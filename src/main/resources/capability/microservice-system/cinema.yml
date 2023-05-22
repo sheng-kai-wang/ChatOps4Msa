@@ -57,7 +57,7 @@ service:
         - method: POST
           description: create a new notification
 
-chatops_query_language:
+capability:
   - echo-null-text_message
   - get-github-service_recent_activity
   - get-github-service_latest_commit_report

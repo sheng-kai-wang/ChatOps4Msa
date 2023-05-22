@@ -11,8 +11,8 @@ public class MicroserviceSystem {
     private Info info;
     @JsonProperty("service")
     private List<Service> serviceList;
-    @JsonProperty("chatops_query_language")
-    private List<String> chatopsQueryLanguageList;
+    @JsonProperty("capability")
+    private List<String> capabilityList;
 
     public String verify() {
         StringBuilder systemSb = new StringBuilder();
@@ -41,10 +41,10 @@ public class MicroserviceSystem {
             systemSb.append("service error:").append("\n").append(allServiceErrorMessage).append("\n");
         }
 
-        // chatops_query_language error
-        if (chatopsQueryLanguageList.size() == 0) {
-            systemSb.append("chatops_query_language error:").append("\n")
-                    .append("  the chatops_query_language has no content").append("\n");
+        // capability error
+        if (capabilityList.size() == 0) {
+            systemSb.append("capability error:").append("\n")
+                    .append("  the capability has no content").append("\n");
         }
 
         return systemSb.toString();
