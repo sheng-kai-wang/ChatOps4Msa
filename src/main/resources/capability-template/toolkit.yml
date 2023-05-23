@@ -1,0 +1,73 @@
+toolkit-time-today: null
+toolkit-time-one_week_ago: null
+toolkit-string-replace:
+  - string
+  - original
+  - replace
+toolkit-string-split:
+  - string
+  - separator
+toolkit-string-pattern:
+  - string
+  - regex
+toolkit-array-index:
+  - array
+  - index
+toolkit-array-slice:
+  - start
+  - end
+toolkit-json-parse:
+  - jsonpath
+# 取得 microservice system 設定檔內的資訊
+toolkit-config-get:
+  - system
+  - jsonpath
+toolkit-flow-if:
+  - condition
+  - todo
+# 將結果回傳給其他 operation
+toolkit-flow-return:
+  - return
+toolkit-flow-foreach:
+  - array
+  - element_name
+  - operation
+  - operation_parameter_json
+# 定期執行某 operation
+toolkit-flow-subscribe:
+  - operation
+  - operation_parameter_json
+  - cron
+toolkit-restapi-get:
+  - url
+toolkit-restapi-post:
+  - url
+  - body
+  - accept
+  - content_type
+  - authorization
+toolkit-graphql-query:
+  - url
+  - graphql
+  - accept
+  - content_type
+  - authorization
+# 用 bash 執行終端機命令
+toolkit-command-bash:
+  - hostname
+  - username
+  - password
+  - bash
+# grafana 將 json 資料視覺化
+toolkit-render-grafana:
+  - json
+toolkit-discord-text:
+  - text
+toolkit-discord-properties:
+  - text
+# discord embed 元件
+toolkit-discord-embed:
+  - title
+  - color
+  - field_json
+  - thumbnail

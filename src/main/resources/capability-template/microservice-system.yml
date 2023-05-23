@@ -13,5 +13,5 @@ service:
     swagger:
       $ref: ../path/to/swagger.yaml
 
-chatops_query_language:
-  - <<available_chatops_query_language>>
+capability:
+  - <<available_capability>>

@@ -1,0 +1,20 @@
+info:
+  version: <<version_number>>
+  title: <<tool_name>>
+  description: |
+    <<tool_description>>
+
+low_code:
+  property:
+    <<property_name>>: <<property_value>>
+
+  <<constructor_or_operation>>:
+    - name: <<operation_name>>
+      parameter:
+        <<parameter_name>>: <<parameter_value>>
+      description: |
+        <<operation_description>>
+      access: <<private_or_protected_or_public>>
+      body:
+        - <<operation_name>>:
+            <<parameter_name>>: <<parameter_value>>
