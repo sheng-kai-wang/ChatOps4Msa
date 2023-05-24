@@ -6,15 +6,15 @@ info:
 
 low_code:
   property:
-    <<property_name>>: <<property_value>>
+    <<property_name_1>>: <<property_value_1>>
 
   <<constructor_or_operation>>:
-    - name: <<operation_name>>
+    - name: <<operation_name_1>>
       parameter:
-        <<parameter_name>>: <<parameter_value>>
+        <<parameter_name_1>>: <<parameter_description_1>>
       description: |
         <<operation_description>>
       access: <<private_or_protected_or_public>>
       body:
-        - <<operation_name>>:
-            <<parameter_name>>: <<parameter_value>>
+        - <<operation_name_1>>:
+            <<parameter_name_1>>: <<parameter_value_1>>

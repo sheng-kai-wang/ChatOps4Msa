@@ -1,3 +1,6 @@
+# 所有 operation 皆有 assign 參數，可將操作執行結果存到一個區域變數中
+# toolkit-operation 與 custom-operation 都有
+
 toolkit-time-today: null
 toolkit-time-one_week_ago: null
 toolkit-string-replace:
@@ -17,6 +20,7 @@ toolkit-array-slice:
   - start
   - end
 toolkit-json-parse:
+  - json
   - jsonpath
 # 取得 microservice system 設定檔內的資訊
 toolkit-config-get:
@@ -25,6 +29,7 @@ toolkit-config-get:
 toolkit-flow-if:
   - condition
   - todo
+  - end
 # 將結果回傳給其他 operation
 toolkit-flow-return:
   - return
@@ -34,10 +39,10 @@ toolkit-flow-foreach:
   - operation
   - operation_parameter_json
 # 定期執行某 operation
-toolkit-flow-subscribe:
-  - operation
-  - operation_parameter_json
-  - cron
+#toolkit-flow-subscribe:
+#  - operation
+#  - operation_parameter_json
+#  - cron
 toolkit-restapi-get:
   - url
 toolkit-restapi-post:
@@ -57,7 +62,7 @@ toolkit-command-bash:
   - hostname
   - username
   - password
-  - bash
+  - command
 # grafana 將 json 資料視覺化
 toolkit-render-grafana:
   - json

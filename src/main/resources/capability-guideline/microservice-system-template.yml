@@ -5,7 +5,7 @@ info:
     <<system_description>>
 
 service:
-  - name: <<service_name>>
+  - name: <<service_name_1>>
     url: <<service_url>>
     repository: <<service_repository_url>>
     description: |
@@ -14,4 +14,4 @@ service:
       $ref: ../path/to/swagger.yaml
 
 capability:
-  - <<available_capability>>
+  - <<available_capability_1>>

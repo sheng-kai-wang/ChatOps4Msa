@@ -37,7 +37,7 @@ low_code:
             hostname: ${prometheus_host_ip}
             username: ${prometheus_host_username}
             password: ${prometheus_host_password}
-            bash: prometheus --config.file=/etc/prometheus/prometheus-file-sd.yml --storage.tsdb.path=/data/prometheus
+            command: prometheus --config.file=/etc/prometheus/prometheus-file-sd.yml --storage.tsdb.path=/data/prometheus
 
     - name: set-prometheus-link_grafana
       parameter: null
@@ -62,12 +62,14 @@ low_code:
       body:
         - toolkit-restapi-get:
             url: ${prometheus_host_ip}:${prometheus_host_port}${prometheus_monitor_health_path}?query=up{instance="${service_name}"}
-        - toolkit-parse-json:
-            jsonpath: .....${toolkit-restapi-get}
-        - toolkit-render-embed:
+        - toolkit-json-parse:
+            json: ${toolkit-restapi-get}
+            jsonpath: .....
+        - toolkit-discord-embed:
             title: The health status of ${service_name}
             color: yellow
-            field_json: ${toolkit-parse-json}
+            field_json: ${toolkit-json-parse}
+            thumbnail: null
 
     - name: monitor-prometheus-overview
       parameter: null
@@ -75,10 +77,11 @@ low_code:
         Monitor the overview of all service by GUI.
       access: public
       body:
-        - toolkit-render-embed:
+        - toolkit-discord-embed:
             title: The overview of all service
             color: yellow
             field_json: {"Grafana Link": "${grafana_host_ip}:${grafana_host_port}${grafana_monitor_datasource_path}/${system_name}"}
+            thumbnail: null
 
     - name: set-prometheus-edit_alert_rules
       parameter: null
@@ -89,10 +92,11 @@ low_code:
           - supervisor
           - team_member
       body:
-        - toolkit-render-embed:
+        - toolkit-discord-embed:
             title: Edit alert rules
             color: yellow
             field_json: {"Prometheus Link": "${prometheus_host_ip}:${prometheus_host_port}${prometheus_edit_alert_rules_path}"}
+            thumbnail: null
 
     - name: monitor-prometheus-all_service_alert
       parameter: null
@@ -102,12 +106,14 @@ low_code:
       body:
         - toolkit-restapi-get:
             url: ${prometheus_host_ip}:${prometheus_host_port}${prometheus_get_alert_status_path}
-        - toolkit-parse-json:
-            jsonpath: .....${toolkit-restapi-get}
-        - toolkit-render-embed:
+        - toolkit-json-parse:
+            json: ${toolkit-restapi-get}
+            jsonpath: .....
+        - toolkit-discord-embed:
             title: The health status of ${service_name}
             color: yellow
-            field_json: ${toolkit-parse-json}
+            field_json: ${toolkit-json-parse}
+            thumbnail: null
         - toolkit-flow-return:
             return: ${toolkit-restapi-get}
 
@@ -117,10 +123,11 @@ low_code:
         Retrieve yesterday's microservice operational report and return the Grafana web interface link.
       access: public
       body:
-        - toolkit-render-embed:
+        - toolkit-discord-embed:
             title: Reports of the operational status of all microservices yesterday
             color: yellow
             field_json: {"Grafana Link": .....}
+            thumbnail: null
 
     - name: monitor-prometheus-service_dependency
       parameter: null
@@ -131,7 +138,8 @@ low_code:
           - supervisor
           - team_member
       body:
-        - toolkit-render-embed:
+        - toolkit-discord-embed:
             title: The dependency relationships between all service
             color: yellow
             field_json: {"Grafana Link": .....}
+            thumbnail: null

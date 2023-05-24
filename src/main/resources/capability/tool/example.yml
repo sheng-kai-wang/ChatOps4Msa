@@ -13,8 +13,24 @@ low_code:
       parameter:
         message: text message
       description: |
-        Just echo a message
+        Just echo a message to Discord
       access: public
       body:
-        - toolkit-message-text:
-            text: message
+        - toolkit-discord-text:
+            text: ${message}
+
+    - name: get-null-cube_of_given_number
+      parameter:
+        given_number: a given number
+      description: |
+        Get the cube of the given number.
+      access: public
+      body:
+        - toolkit-math-multiply:
+            multiplicand: ${given_number} # 4
+            multiplier: ${given_number} # 4
+        - toolkit-math-multiply:
+            multiplicand: ${toolkit-math-multiply} # 16
+            multiplier: ${given_number} # 4
+        - toolkit-discord-text:
+            text: the cube is ${toolkit-math-multiply} # 64

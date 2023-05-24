@@ -1,6 +1,6 @@
 info:
   version: 1.0.0
-  title: test-composite-service
+  title: custom_test
   description: |
     Integration of k6, Prometheus, and GitHub for comprehensive capability.
 
@@ -9,7 +9,7 @@ low_code:
     system_name: Cinema
 
   operation:
-    - name: test-compose-smoke_testing_all_service_and_repository_report
+    - name: test-custom_test-smoke_testing_all_service_and_repository_report
       parameter:
         number_of_virtual_user: 1 <= n <= 5
       description: |
@@ -22,10 +22,11 @@ low_code:
         - test-k6-smoke_testing_all_service:
             number_of_virtual_user: ${number_of_virtual_user}
         - monitor-prometheus-all_service_alert: null
-        - toolkit-parse-json:
-            jsonpath: .....${prometheus.monitor-prometheus-all_service_alert}
+        - toolkit-json-parse:
+            json: ${prometheus.monitor-prometheus-all_service_alert}
+            jsonpath: .....
         - toolkit-flow-foreach:
-            array: ${toolkit-parse-json}
+            array: ${toolkit-json-parse}
             element_name: service_name
-            operation: github.get-github-service_past_week_team_activity
+            operation: get-github-service_past_week_team_activity
             operation_parameter_json: {"service_name": "${service_name}"}

@@ -1,11 +1,8 @@
-# 被動接收訊息
-
-
 info:
   version: 1.0.0
   title: RabbitMQ
   description: |
-    RabbitMQ is a messaging broker that implements the Advanced Message Queuing Protocol (AMQP) and other messaging protocols.
+    Message Queue
 
 low_code:
   on_message:
@@ -13,14 +10,14 @@ low_code:
       parameter:
         event: null
       description: |
-        Trigger when receiving alerts from Prometheus.
+        Trigger when receiving alerts from Prometheus
       access: private
       body:
         - toolkit-json-parse:
             json: ${event}
-            jsonpath: .....
+            jsonpath: "$.data.alerts[*].labels.alertname"
         - toolkit-discord-embed:
             title: Prometheus Alert
             color: red
             fieldJson: ${toolkit-json-parse}
-            thumbnail: null
+            thumbnail: http://grafana.server/thumbnail.png

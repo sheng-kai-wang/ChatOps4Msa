@@ -161,7 +161,7 @@ low_code:
         - toolkit-flow-if:
             condition: ${is_out_of_range}
             todo: 
-              - toolkit-message-properties:
+              - toolkit-discord-properties:
                   text: sorry, the number of activities must be between 1 and 10.
             end: true
         - toolkit-config-get:
@@ -196,12 +196,14 @@ low_code:
             accept: application/json
             content_type: application/json
             authorization: ${github_authorization_bearer}
-        - toolkit-parse-json:
-            jsonpath: .......${toolkit-graphql-query}
-        - toolkit-render-embed:
+        - toolkit-json-parse:
+            json: ${toolkit-graphql-query}
+            jsonpath: .......
+        - toolkit-discord-embed:
             title: The recent activity of ${service_name}
             color: yellow
-            field_json: ${toolkit-parse-json}
+            field_json: ${toolkit-json-parse}
+            thumbnail: null
 
     - name: get-github-service_latest_commit_report
       parameter:
@@ -222,12 +224,14 @@ low_code:
             accept: application/json
             content_type: application/json
             authorization: ${github_authorization_bearer}
-        - toolkit-parse-json:
-            jsonpath: .......${toolkit-graphql-query}
-        - toolkit-render-embed:
+        - toolkit-json-parse:
+            json: ${toolkit-graphql-query}
+            jsonpath: .......
+        - toolkit-discord-embed:
             title: The newest check report of ${service_name}
             color: yellow
-            field_json: ${toolkit-parse-json}
+            field_json: ${toolkit-json-parse}
+            thumbnail: null
 
     - name: get-github-service_past_week_team_activity
       parameter:
@@ -250,12 +254,14 @@ low_code:
             accept: application/json
             content_type: application/json
             authorization: ${github_authorization_bearer}
-        - toolkit-parse-json:
-            jsonpath: .......${toolkit-graphql-query}
-        - toolkit-render-embed:
+        - toolkit-json-parse:
+            json: ${toolkit-graphql-query}
+            jsonpath: .......
+        - toolkit-discord-embed:
             title: The activity status of each team member within the past week of ${service_name}
             color: yellow
-            field_json: ${toolkit-parse-json}
+            field_json: ${toolkit-json-parse}
+            thumbnail: null
 
     - name: get-github-all_service_dependency_risk_past_week
       parameter: null
@@ -275,22 +281,22 @@ low_code:
             operation: get-github-service_dependency_risk_past_week
             operation_parameter_json: {"service_name": "${service_name}"}
 
-    - name: subscribe-github-all_service_dependency_risk_past_week
-      parameter:
-        cron: e.g. 0 9 * * 5
-      description: |
-        Subscribe to the dependency risk of all service's repo in the past week and execute it every Friday.
-      access:
-        protected:
-          - supervisor
-          - team_member
-      body:
-        - toolkit-flow-subscribe:
-            operation: get-github-all_service_dependency_risk_past_week
-            operation_parameter_json: null
-            cron: ${cron}
+#    - name: subscribe-github-all_service_dependency_risk_past_week
+#      parameter:
+#        cron: e.g. 0 9 * * 5
+#      description: |
+#        Subscribe to the dependency risk of all service's repo in the past week and execute it every Friday.
+#      access:
+#        protected:
+#          - supervisor
+#          - team_member
+#      body:
+#        - toolkit-flow-subscribe:
+#            operation: get-github-all_service_dependency_risk_past_week
+#            operation_parameter_json: null
+#            cron: ${cron}
 
-    - name: update-github-service_dependency_risk_issue
+    - name: create-github-service_dependency_risk_issue
       parameter: 
         service_name: service name
         issue_title: issue title
@@ -319,12 +325,14 @@ low_code:
             accept: application/json
             content_type: application/json
             authorization: ${github_authorization_bearer}
-        - toolkit-parse-json:
-            jsonpath: .......${toolkit-graphql-query}
-        - toolkit-render-embed:
+        - toolkit-json-parse:
+            json: ${toolkit-graphql-query}
+            jsonpath: .......
+        - toolkit-discord-embed:
             title: Create a new issue of ${service_name}
             color: yellow
-            field_json: ${toolkit-parse-json}
+            field_json: ${toolkit-json-parse}
+            thumbnail: null
 
     - name: set-repo-info_of_service_into_graphql
       parameter:
@@ -380,9 +388,11 @@ low_code:
             accept: application/json
             content_type: application/json
             authorization: ${github_authorization_bearer}
-        - toolkit-parse-json:
-            jsonpath: .......${toolkit-graphql-query}
-        - toolkit-render-embed:
+        - toolkit-json-parse:
+            json: ${toolkit-graphql-query}
+            jsonpath: .......
+        - toolkit-discord-embed:
             title: The activity status of each team member within the past week of ${service_name}
             color: yellow
-            field_json: ${toolkit-parse-json}
+            field_json: ${toolkit-json-parse}
+            thumbnail: null
