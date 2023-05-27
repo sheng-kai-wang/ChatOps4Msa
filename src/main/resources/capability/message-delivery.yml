@@ -3,13 +3,13 @@
 
 info:
   version: 1.0.0
-  title: RabbitMQ
+  title: Message Delivery
   description: |
-    RabbitMQ is a messaging broker that implements the Advanced Message Queuing Protocol (AMQP) and other messaging protocols.
+    Using RabbitMQ to receive message
 
 low_code:
   on_message:
-    - name: subscribe-rabbitmq-on_prometheus_alert
+    - name: receive-rabbitmq-on_prometheus_alert
       parameter:
         event: null
       description: |

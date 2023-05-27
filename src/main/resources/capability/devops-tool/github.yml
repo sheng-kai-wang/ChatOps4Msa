@@ -161,11 +161,11 @@ low_code:
         - toolkit-flow-if:
             condition: ${is_out_of_range}
             todo: 
-              - toolkit-discord-properties:
-                  text: sorry, the number of activities must be between 1 and 10.
-            end: true
+              - toolkit-discord-notify:
+                  text: [WARNING] sorry, the number of activities must be between 1 and 10.
+            is_end: true
         - toolkit-config-get:
-            system: cinema
+            configs: cinema
             jsonpath: $.service[?(@.name=='${service_name}')].repository
         - toolkit-string-split:
             string: ${toolkit-config-get}
@@ -273,7 +273,7 @@ low_code:
           - team_member
       body:
         - toolkit-config-get:
-            system: cinema
+            configs: cinema
             jsonpath: $.service[*].name
         - toolkit-flow-foreach:
             array: ${toolkit-config-get}
@@ -343,7 +343,7 @@ low_code:
       access: private
       body:
         - toolkit-config-get:
-            system: cinema
+            configs: cinema
             jsonpath: $.service[?(@.name=='${service_name}')].repository
         - toolkit-string-split:
             string: ${toolkit-config-get}

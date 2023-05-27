@@ -11,17 +11,18 @@ low_code:
   operation:
     - name: echo-null-text_message
       parameter:
-        message: text message
+        message: text message # get from Discord
       description: |
         Just echo a message to Discord
-      access: public
+      access: public # all users can execute the operation
       body:
-        - toolkit-discord-text:
+        - toolkit-discord-text: # return to Discord
             text: ${message}
+            assign: custom_variable # Declare a new variable
 
     - name: get-null-cube_of_given_number
       parameter:
-        given_number: a given number
+        given_number: a given number # 4
       description: |
         Get the cube of the given number.
       access: public
