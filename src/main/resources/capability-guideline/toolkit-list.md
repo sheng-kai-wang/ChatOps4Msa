@@ -1,7 +1,9 @@
 # toolkit-list
 
 > here are the currently available toolkit-operations
+>
 > all input values and return values are string type
+>
 > all operations (including custom-operations) can use the "assign" parameter to store the return value in a local
 > variable
 
