@@ -278,8 +278,9 @@ low_code:
         - toolkit-flow-foreach:
             array: ${toolkit-config-get}
             element_name: service_name
-            operation: get-github-service_dependency_risk_past_week
-            operation_parameter_json: {"service_name": "${service_name}"}
+            todo:
+              - get-github-service_dependency_risk_past_week:
+                  service_name: ${service_name}
 
 #    - name: subscribe-github-all_service_dependency_risk_past_week
 #      parameter:

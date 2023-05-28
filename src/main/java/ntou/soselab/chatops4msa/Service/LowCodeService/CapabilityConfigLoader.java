@@ -1,12 +1,12 @@
-package ntou.soselab.msdobot_llm.Service.LowCodeService;
+package ntou.soselab.chatops4msa.Service.LowCodeService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import ntou.soselab.msdobot_llm.Entity.Capability.MicroserviceSystem.MicroserviceSystem;
-import ntou.soselab.msdobot_llm.Exception.IllegalCapabilityConfigException;
-import ntou.soselab.msdobot_llm.Service.DiscordService.JDAService;
+import ntou.soselab.chatops4msa.Entity.Capability.MicroserviceSystem.MicroserviceSystem;
+import ntou.soselab.chatops4msa.Exception.IllegalCapabilityConfigException;
+import ntou.soselab.chatops4msa.Service.DiscordService.JDAService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;

@@ -8,16 +8,19 @@ low_code:
   on_message:
     - name: receive-rabbitmq-on_prometheus_alert
       parameter:
-        event: null # message event
+        event: message event
       description: |
         Trigger when receiving alerts from Prometheus
-      access: private # users cannot execute actively
+      # users cannot execute actively
+      access: private
       body:
-        - toolkit-json-parse: # parse the content of the event
+        # parse the content of the event
+        - toolkit-json-parse:
             json: ${event}
             jsonpath: "$.data.alerts[*].labels.alertname"
-        - toolkit-discord-embed: # send an embed component of Discord to the user
+        # send an embed component of Discord to the user
+        - toolkit-discord-embed:
             title: Prometheus Alert
             color: red
-            fieldJson: ${toolkit-json-parse}
-            thumbnail: http://grafana.server/thumbnail.png
+            field_json: ${toolkit-json-parse}
+            thumbnail: http://grafana.server/thumbnail_id.png

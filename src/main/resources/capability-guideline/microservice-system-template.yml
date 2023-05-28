@@ -5,7 +5,7 @@ info:
     <<system_description>>
 
 service:
-  - name: <<service_name_1>>
+  - name: <<service_name>>
     url: <<service_url>>
     repository: <<service_repository_url>>
     description: |

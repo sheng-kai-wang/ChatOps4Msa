@@ -1,4 +1,4 @@
-package ntou.soselab.msdobot_llm.Entity.Capability.MicroserviceSystem;
+package ntou.soselab.chatops4msa.Entity.Capability.MicroserviceSystem;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

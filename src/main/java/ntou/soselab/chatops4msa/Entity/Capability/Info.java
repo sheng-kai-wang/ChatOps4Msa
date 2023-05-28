@@ -1,4 +1,4 @@
-package ntou.soselab.msdobot_llm.Entity.Capability;
+package ntou.soselab.chatops4msa.Entity.Capability;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

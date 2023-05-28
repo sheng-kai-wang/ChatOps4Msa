@@ -1,10 +1,10 @@
-package ntou.soselab.msdobot_llm;
+package ntou.soselab.chatops4msa;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MsdoBotLlmApplicationTests {
+class ChatOps4MsaApplicationTests {
 
     @Test
     void contextLoads() {

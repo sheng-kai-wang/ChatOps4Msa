@@ -1,4 +1,4 @@
-package ntou.soselab.msdobot_llm.Exception;
+package ntou.soselab.chatops4msa.Exception;
 
 public class DiscordIdException extends Exception {
 

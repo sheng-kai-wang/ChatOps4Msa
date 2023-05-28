@@ -106,8 +106,7 @@ toolkit-flow-return:
 toolkit-flow-foreach:
   - array
   - element_name
-  - operation
-  - operation_parameter_json
+  - todo
 ```
 
 ### execute a specific operation periodically

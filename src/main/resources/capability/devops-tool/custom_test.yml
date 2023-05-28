@@ -9,24 +9,36 @@ low_code:
     system_name: Cinema
 
   operation:
+    # this function combines the functions of prometheus, k6, and GitHub.
     - name: test-custom_test-smoke_testing_all_service_and_repository_report
       parameter:
         number_of_virtual_user: 1 <= n <= 5
       description: |
         Perform smoke testing on all services simultaneously while monitoring the testing status. Then, for the microservices that did not pass the tests, retrieve their recent activity within the past week, including the activity of each team member in their respective repositories. Finally, aggregate and present the results.
+      # only supervisor can execute
       access:
         protected:
           - supervisor
+      # the following functions are declared in other configs
       body:
+        # declared in prometheus.yml
         - set-prometheus-edit_alert_rules: null
+        # declared in k6.yml
         - test-k6-smoke_testing_all_service:
             number_of_virtual_user: ${number_of_virtual_user}
+        # declared in prometheus.yml
         - monitor-prometheus-all_service_alert: null
+        # provided by ChatOps4Msa (parse the content of JSON)
         - toolkit-json-parse:
-            json: ${prometheus.monitor-prometheus-all_service_alert}
-            jsonpath: .....
+            json: ${monitor-prometheus-all_service_alert}
+            jsonpath: "$.data.alerts[*].labels.alertService"
+            assign: alerted_service_list
+        # provided by ChatOps4Msa (process the elements in an array in batch)
         - toolkit-flow-foreach:
-            array: ${toolkit-json-parse}
+            array: ${alerted_service_list}
+            # iterated elements
             element_name: service_name
-            operation: get-github-service_past_week_team_activity
-            operation_parameter_json: {"service_name": "${service_name}"}
+            todo:
+              # declared in github.yml
+              - get-github-service_past_week_team_activity:
+                  service_name: ${service_name}

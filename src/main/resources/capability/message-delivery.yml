@@ -22,5 +22,5 @@ low_code:
         - toolkit-discord-embed:
             title: Prometheus Alert
             color: red
-            fieldJson: ${toolkit-json-parse}
+            field_json: ${toolkit-json-parse}
             thumbnail: null

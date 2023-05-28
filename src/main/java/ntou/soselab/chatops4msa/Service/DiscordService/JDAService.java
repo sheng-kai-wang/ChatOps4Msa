@@ -1,11 +1,11 @@
-package ntou.soselab.msdobot_llm.Service.DiscordService;
+package ntou.soselab.chatops4msa.Service.DiscordService;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import ntou.soselab.msdobot_llm.Exception.DiscordIdException;
+import ntou.soselab.chatops4msa.Exception.DiscordIdException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
