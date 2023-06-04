@@ -65,12 +65,12 @@ capability:
   - get-github-all_service_dependency_risk_past_week
 #  - subscribe-github-all_service_dependency_risk_past_week
   - create-github-service_dependency_risk_issue
-  - test-k6-stress_testing
-  - test-k6-smoke_testing_all_service
+  - set-prometheus-edit_alert_rules
   - monitor-prometheus-health
   - monitor-prometheus-overview
-  - set-prometheus-edit_alert_rules
   - monitor-prometheus-all_service_alert
   - monitor-prometheus-all_service_yesterday_report
   - monitor-prometheus-service_dependency
+  - test-k6-stress_testing
+  - test-k6-smoke_testing_all_service
   - test-custom_test-smoke_testing_all_service_and_repository_report
