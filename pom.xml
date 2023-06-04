@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>ntou.soselab</groupId>
-    <artifactId>MsdoBot-LLM</artifactId>
+    <artifactId>ChatOps4Msa</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>MsdoBot-LLM</name>
-    <description>MsdoBot-LLM</description>
+    <name>ChatOps4Msa</name>
+    <description>ChatOps4Msa</description>
     <properties>
         <java.version>17</java.version>
     </properties>
