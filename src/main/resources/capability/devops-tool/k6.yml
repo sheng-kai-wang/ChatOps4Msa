@@ -55,10 +55,12 @@ low_code:
             assign: is_out_of_range
         - toolkit-flow-if:
             condition: ${is_out_of_range}
-            todo:
+            true:
               - toolkit-discord-notify:
-                  text: [WARNING] sorry, the number of virtual user must be between 1 and 5.
-            is_end: true
+                  text: "[WARNING] sorry, the number of virtual user must be between 1 and 5."
+            false:
+              - toolkit-flow-return:
+                  return: null
         - toolkit-command-bash:
             hostname: ${k6_host_ip}
             username: ${k6_host_username}

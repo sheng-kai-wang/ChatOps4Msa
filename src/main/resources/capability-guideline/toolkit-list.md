@@ -1,16 +1,16 @@
 # toolkit-list
 
-> here are the currently available toolkit-operations
+> here are the currently available toolkit-functions
 >
 > all input values and return values are string type
 >
-> all operations (including custom-operations) can use the "assign" parameter to store the return value in a local
+> all functions (including custom-functions) can use the "assign" parameter to store the return value in a local
 > variable
 
 ### invoke formatting (there are required parameters)
 
 ```yml
-<<toolkit-operation_name>>:
+<<toolkit-function_name>>:
   - <<parameter_1>>
   - <<parameter_2>>
   - assign: <<custom_variable>>
@@ -19,7 +19,7 @@
 ### invoke formatting (no required parameter)
 
 ```yml
-<<toolkit-operation_name>>: null
+<<toolkit-function_name>>: null
 ```
 
 ### get the time from one week ago
@@ -89,11 +89,11 @@ toolkit-config-get:
 ```yml
 toolkit-flow-if:
   - condition
-  - todo
-  - is_end
+  - true
+  - false
 ```
 
-### return the local variable to the outside of this custom-operation
+### return the local variable to the outside of this custom-function, and stop this custom-function
 
 ```yml
 toolkit-flow-return:
@@ -109,12 +109,12 @@ toolkit-flow-foreach:
   - todo
 ```
 
-### execute a specific operation periodically
+### execute a specific function periodically
 
 ```yml
 toolkit-flow-subscribe:
-  - operation
-  - operation_parameter_json
+  - function
+  - function_parameter_json
   - cron
 ```
 

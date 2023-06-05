@@ -160,10 +160,12 @@ low_code:
             assign: is_out_of_range
         - toolkit-flow-if:
             condition: ${is_out_of_range}
-            todo: 
+            true:
               - toolkit-discord-notify:
-                  text: [WARNING] sorry, the number of activities must be between 1 and 10.
-            is_end: true
+                  text: "[WARNING] sorry, the number of activities must be between 1 and 10."
+            false:
+              - toolkit-flow-return:
+                  return: null
         - toolkit-config-get:
             configs: cinema
             jsonpath: $.service[?(@.name=='${service_name}')].repository
