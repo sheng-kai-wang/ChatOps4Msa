@@ -7,7 +7,7 @@
 > all functions (including custom-functions) can use the "assign" parameter to store the return value in a local
 > variable
 
-### invoke formatting (there are required parameters)
+### invoke format (there are required parameters)
 
 ```yml
 <<toolkit-function_name>>:
@@ -16,11 +16,13 @@
   - assign: <<custom_variable>>
 ```
 
-### invoke formatting (no required parameter)
+### invoke format (no required parameter)
 
 ```yml
 <<toolkit-function_name>>: null
 ```
+
+---
 
 ### get the time from one week ago
 
@@ -44,7 +46,7 @@ toolkit-string-replace:
   - replace
 ```
 
-### split the string into an array using a separator
+### split the string into a list using a separator
 
 ```yml
 toolkit-string-split:
@@ -60,12 +62,30 @@ toolkit-string-pattern:
   - regex
 ```
 
-### retrieve a specific element from an array
+### get a specific element from a list
 
 ```yml
-toolkit-array-index:
-  - array
+toolkit-list-get:
+  - list
   - index
+```
+
+### process the elements in a list in batch
+
+```yml
+toolkit-list-foreach:
+  - list
+  - element_name
+  - todo
+```
+
+### asynchronously process all elements in a list
+
+```yml
+toolkit-list-async:
+  - list
+  - element_name
+  - todo
 ```
 
 ### parse the content of JSON using JSONPath
@@ -76,7 +96,7 @@ toolkit-json-parse:
   - jsonpath
 ```
 
-### retrieve information from the microservice-system configs
+### get information from the microservice-system configs
 
 ```yml
 toolkit-config-get:
@@ -98,15 +118,6 @@ toolkit-flow-if:
 ```yml
 toolkit-flow-return:
   - return
-```
-
-### process the elements in an array in batch
-
-```yml
-toolkit-flow-foreach:
-  - array
-  - element_name
-  - todo
 ```
 
 ### execute a specific function periodically

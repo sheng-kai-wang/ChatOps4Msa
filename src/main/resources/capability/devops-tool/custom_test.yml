@@ -33,9 +33,9 @@ low_code:
             json: ${monitor-prometheus-all_service_alert}
             jsonpath: "$.data.alerts[*].labels.alertService"
             assign: alerted_service_list
-        # provided by ChatOps4Msa (process the elements in an array in batch)
-        - toolkit-flow-foreach:
-            array: ${alerted_service_list}
+        # provided by ChatOps4Msa (process the elements in a list in batch)
+        - toolkit-list-foreach:
+            list: ${alerted_service_list}
             # iterated elements
             element_name: service_name
             todo:

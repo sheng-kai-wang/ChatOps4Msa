@@ -172,12 +172,12 @@ low_code:
         - toolkit-string-split:
             string: ${toolkit-config-get}
             separator: /
-        - toolkit-array-index:
-            array: ${toolkit-string-split}
+        - toolkit-list-get:
+            list: ${toolkit-string-split}
             index: 3
             assign: github_username
-        - toolkit-array-index:
-            array: ${toolkit-string-split}
+        - toolkit-list-get:
+            list: ${toolkit-string-split}
             index: 4
             assign: github_repository
         - toolkit-string-replace:
@@ -277,8 +277,8 @@ low_code:
         - toolkit-config-get:
             configs: cinema
             jsonpath: $.service[*].name
-        - toolkit-flow-foreach:
-            array: ${toolkit-config-get}
+        - toolkit-list-foreach:
+            list: ${toolkit-config-get}
             element_name: service_name
             todo:
               - get-github-service_dependency_risk_past_week:
@@ -351,12 +351,12 @@ low_code:
         - toolkit-string-split:
             string: ${toolkit-config-get}
             separator: /
-        - toolkit-array-index:
-            array: ${toolkit-string-split}
+        - toolkit-list-get:
+            list: ${toolkit-string-split}
             index: 3
             assign: github_username
-        - toolkit-array-index:
-            array: ${toolkit-string-split}
+        - toolkit-list-get:
+            list: ${toolkit-string-split}
             index: 4
             assign: github_repository
         - toolkit-string-replace:
