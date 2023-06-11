@@ -1,0 +1,17 @@
+info:
+  version: <<version_number>>
+  title: <<system_name>>
+  description: |
+    <<system_description>>
+
+service:
+  - name: <<service_name>>
+    url: <<service_url>>
+    repository: <<service_repository_url>>
+    description: |
+      <<service_description>>
+    swagger:
+      $ref: ../path/to/swagger.yaml
+
+capability:
+  - <<available_capability_1>>

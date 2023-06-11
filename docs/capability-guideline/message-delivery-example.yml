@@ -1,0 +1,26 @@
+info:
+  version: 1.0.0
+  title: Message Delivery
+  description: |
+    Using RabbitMQ to receive message
+
+low_code:
+  on_message:
+    - name: receive-rabbitmq-on_prometheus_alert
+      parameter:
+        event: message event
+      description: |
+        Trigger when receiving alerts from Prometheus
+      # users cannot execute actively
+      access: private
+      body:
+        # parse the content of the event
+        - toolkit-json-parse:
+            json: ${event}
+            jsonpath: "$.data.alerts[*].labels.alertname"
+        # send an embed component of Discord to the user
+        - toolkit-discord-embed:
+            title: Prometheus Alert
+            color: red
+            field_json: ${toolkit-json-parse}
+            thumbnail: http://grafana.server/thumbnail_id.png

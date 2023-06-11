@@ -1,0 +1,26 @@
+info:
+  version: <<version_number>>
+  title: <<tool_name>>
+  description: |
+    <<tool_description>>
+
+low_code:
+  property:
+    <<property_name_1>>: <<property_value_1>>
+
+  <<constructor_or_operation>>:
+    # declare a custom-function
+    - name: <<function_name>>
+      # required parameters
+      parameter:
+        <<parameter_name_1>>: <<parameter_description_1>>
+      # it will be displayed in the interface of Discord
+      description: |
+        <<function_description>>
+      access: <<private_or_protected_or_public>>
+      # this declared function is composed of the following functions in body
+      # when the declared function executed,
+      # the system actually executes the following functions
+      body:
+        - <<function_name_1>>:
+            <<parameter_name_1>>: <<parameter_value_1>>

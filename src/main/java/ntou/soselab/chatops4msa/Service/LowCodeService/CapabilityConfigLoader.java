@@ -107,6 +107,7 @@ public class CapabilityConfigLoader {
         else {
             String passedMessage = "[INFO] Capability Configs Verification Passed";
             System.out.println(passedMessage);
+            System.out.println();
             jdaService.sendChatOpsChannelPropertiesMessage(passedMessage);
         }
     }
