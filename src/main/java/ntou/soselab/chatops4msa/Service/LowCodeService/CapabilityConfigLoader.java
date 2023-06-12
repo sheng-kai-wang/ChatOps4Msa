@@ -1,10 +1,15 @@
 package ntou.soselab.chatops4msa.Service.LowCodeService;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import ntou.soselab.chatops4msa.Entity.Capability.Configs;
+import ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.DevOpsTool;
+import ntou.soselab.chatops4msa.Entity.Capability.MessageDelivery;
 import ntou.soselab.chatops4msa.Entity.Capability.MicroserviceSystem.MicroserviceSystem;
+import ntou.soselab.chatops4msa.Entity.Capability.Secret;
 import ntou.soselab.chatops4msa.Exception.IllegalCapabilityConfigException;
 import ntou.soselab.chatops4msa.Service.DiscordService.JDAService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,44 +19,39 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class CapabilityConfigLoader {
-
-    private final ObjectMapper objectMapper;
-    private final Gson gson;
-    private final StringBuilder errorMessageSb;
-
-    private final String capabilityMicroserviceSystemClasspath;
-    private final String capabilityToolClasspath;
-    private final String capabilityRabbitmqFile;
-    private final String capabilitySecretFile;
-
-    private Map<String, MicroserviceSystem> microserviceSystemMap;
+    public Map<String, MicroserviceSystem> microserviceSystemMap;
+    public Map<String, DevOpsTool> devOpsToolMap;
+    public Map<String, MessageDelivery> messageDeliveryMap;
+    public Map<String, Secret> secretMap;
 
     private final JDAService jdaService;
+    private final StringBuilder errorMessageSb;
 
     @Autowired
     public CapabilityConfigLoader(Environment env, JDAService jdaService) {
-        this.objectMapper = new ObjectMapper(new YAMLFactory());
-        this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+        this.jdaService = jdaService;
         this.errorMessageSb = new StringBuilder();
 
-        this.capabilityMicroserviceSystemClasspath = env.getProperty("capability.microservice-system.classpath");
-        this.capabilityToolClasspath = env.getProperty("capability.tool.classpath");
-        this.capabilityRabbitmqFile = env.getProperty("capability.rabbitmq.file");
-        this.capabilitySecretFile = env.getProperty("capability.secret.file");
+        String microserviceSystemClasspath = env.getProperty("capability.microservice-system.classpath");
+        String devOpsToolClasspath = env.getProperty("capability.devops-tool.classpath");
+        String messageDeliveryClasspath = env.getProperty("capability.message-delivery.classpath");
+        String secretClasspath = env.getProperty("capability.secret.classpath");
 
-        this.jdaService = jdaService;
+        this.microserviceSystemMap = loadConfig("microservice-system", MicroserviceSystem.class, microserviceSystemClasspath);
+        this.devOpsToolMap = loadConfig("devops-tool", DevOpsTool.class, devOpsToolClasspath);
+        this.messageDeliveryMap = loadConfig("message-delivery", MessageDelivery.class, messageDeliveryClasspath);
+        this.secretMap = loadConfig("secret", Secret.class, secretClasspath);
 
         try {
-            this.microserviceSystemMap = loadMicroserviceSystemConfig();
             checkVerifyMessage();
-
         } catch (IllegalCapabilityConfigException e) {
-            String failedMessage = "[ERROR] Capability Configs Verification Failed:";
+            String failedMessage = "[ERROR] Capability Configs Verification Failed";
             System.out.println(failedMessage);
             System.out.println(e.getMessage());
             jdaService.sendChatOpsChannelPropertiesMessage(failedMessage);
@@ -60,38 +60,41 @@ public class CapabilityConfigLoader {
         }
     }
 
-    private Map<String, MicroserviceSystem> loadMicroserviceSystemConfig() {
-        System.out.println("[DEBUG] start to load microservice system configs");
-        HashMap<String, MicroserviceSystem> microserviceSystemObjMap = new HashMap<>();
+    private <T extends Configs> Map<String, T> loadConfig(String configType, Class<T> configClass, String classpath) {
+        System.out.println("[DEBUG] start to load " + configType + " configs");
+        HashMap<String, T> configObjMap = new HashMap<>();
+        ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         Resource[] resources;
         try {
-            resources = new PathMatchingResourcePatternResolver(classLoader).getResources(capabilityMicroserviceSystemClasspath);
+            resources = new PathMatchingResourcePatternResolver(classLoader).getResources(classpath);
             if (resources.length == 0) {
-                System.out.println("[ERROR] there is NO microservice system configs");
-                errorMessageSb.append("there is NO microservice system configs").append("\n");
+                System.out.println("[ERROR] there is NO " + configType + " configs");
+                errorMessageSb.append("there is NO ").append(configType).append(" configs").append("\n");
             }
 
             for (Resource resource : resources) {
                 String fileName = resource.getFilename();
                 System.out.println("[DEBUG] try to load " + fileName);
                 String nameWithoutExtension = getFileNameWithoutExtension(fileName);
-                MicroserviceSystem microserviceSystemObj = objectMapper.readValue(resource.getInputStream(), MicroserviceSystem.class);
+                T configObj = objectMapper.readValue(resource.getInputStream(), configClass);
 
                 System.out.println("[DEBUG] the content of " + nameWithoutExtension + ": ");
-                System.out.println(gson.toJson(microserviceSystemObj));
+                System.out.println(gson.toJson(configObj));
 
-                String systemErrorMessage = microserviceSystemObj.verify();
+                String systemErrorMessage = configObj.verify();
                 if (!"".equals(systemErrorMessage)) errorMessageSb.append(systemErrorMessage).append("\n");
 
-                microserviceSystemObjMap.put(nameWithoutExtension, microserviceSystemObj);
+                configObjMap.put(nameWithoutExtension, configObj);
             }
 
         } catch (IOException e) {
             e.printStackTrace();
-
         }
-        return microserviceSystemObjMap;
+
+        return Collections.unmodifiableMap(configObjMap);
     }
 
     private String getFileNameWithoutExtension(String fileName) {
