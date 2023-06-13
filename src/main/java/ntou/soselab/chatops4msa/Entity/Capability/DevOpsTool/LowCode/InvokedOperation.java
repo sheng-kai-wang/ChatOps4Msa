@@ -15,8 +15,9 @@ public class InvokedOperation {
         this.name = name;
     }
 
-    public void verify() {
+    public String verify() {
         StringBuilder sb = new StringBuilder();
-        if (name == null) sb.append("  ...").append("\n");
+        if (name == null) sb.append("        name is null").append("\n");
+        return sb.toString();
     }
 }

@@ -15,8 +15,6 @@ low_code:
     system_name: Cinema
     prometheus_host_ip: ${secret.prometheus_host_ip}
     prometheus_host_port: ${secret.prometheus_host_port}
-    prometheus_host_username: ${secret.prometheus_host_username}
-    prometheus_host_password: ${secret.prometheus_host_password}
     prometheus_monitor_health_path: /api/v1/query
     prometheus_edit_alert_rules_path: /alerting/rules
     prometheus_get_alert_status_path: /api/v1/alerts
@@ -34,9 +32,6 @@ low_code:
       access: private
       body:
         - toolkit-command-bash:
-            hostname: ${prometheus_host_ip}
-            username: ${prometheus_host_username}
-            password: ${prometheus_host_password}
             command: prometheus --config.file=/etc/prometheus/prometheus-file-sd.yml --storage.tsdb.path=/data/prometheus
 
     - name: set-prometheus-link_grafana

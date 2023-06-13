@@ -1,200 +1,240 @@
 # toolkit-list
 
-> here are the currently available toolkit-functions
->
-> all input values and return values are string type
->
-> all functions (including custom-functions) can use the "assign" parameter to store the return value in a local
-> variable
+> Here are the currently available toolkit-functions
+
+1. All input values and return values are string type.
+2. all functions (including custom-functions) can use the "assign" parameter to store the return value in a local variable.
+3. ${custom_variable_name} can get the value of the local variable named custom_variable_name.
 
 ### invoke format
 
-##### there are required parameters
+##### parameter required 
 
 ```yml
 <<toolkit-function_name>>:
-  - <<parameter_1>>
-  - <<parameter_2>>
-  - assign: <<custom_variable>>
+  <<parameter_name_1>>: <<parameter_value_1>>
+  <<parameter_name_2>>: <<parameter_value_2>>
 ```
 
-##### no required parameter
+##### parameter required (assign the result value to a customized local variable)
+
+```yml
+<<toolkit-function_name>>:
+  <<parameter_name_1>>: <<parameter_value_1>>
+  <<parameter_name_2>>: <<parameter_value_2>>
+  assign: <<custom_variable_name>>
+```
+
+##### parameter no required
 
 ```yml
 <<toolkit-function_name>>: null
 ```
 
+
 ### get the time from one week ago
+##### the result is formatted as `Sat Jun 10 13:59:34 CST 2023`
 
 ```yml
 toolkit-time-one_week_ago: null
 ```
 
-### execute mathematical calculations using mathematical expressions (e.g. 2 * 3 / 4)
+### execute mathematical calculations using mathematical expressions
+##### the result is `1.5`
 
 ```yml
 toolkit-number-calculate:
-  - expression
+  expression: <<e.g. 2 * 3 / 4>>
 ```
 
 ### replace the text in a given string
+##### the result is `hello world2`
 
 ```yml
 toolkit-string-replace:
-  - string
-  - original
-  - replace
+  string: <<e.g. hello world>>
+  original: <<e.g. world>>
+  replace: <<e.g. world2>>
 ```
 
 ### split the string into a list using a separator
+##### the result is a list like `["https:", "", "github", "com", "sheng-kai-wang", "ChatOps4Msa-Sample-Bookinfo", "git"]`
 
 ```yml
 toolkit-string-split:
-  - string
-  - separator
+  string: <<e.g. https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo.git>>
+  separator: <<e.g. use / and . like /|\\. >>
 ```
 
 ### determine if a string matches a specific pattern (return true or false)
+##### the result is `true`
 
 ```yml
 toolkit-string-pattern:
-  - string
-  - regex
+  string: <<e.g. 6>>
+  regex: <<e.g. ^(?!(?:[1-9]|10)$)\d+$ >>
 ```
 
 ### get a specific element from a list
+##### the result is `ChatOps4Msa-Sample-Bookinfo`
 
 ```yml
 toolkit-list-get:
-  - list
-  - index
+  list: <<e.g. ["https:", "", "github", "com", "sheng-kai-wang", "ChatOps4Msa-Sample-Bookinfo", "git"] >>
+  index: <<e.g. 5>>
 ```
 
 ### process the elements in a list in batch
 
 ```yml
 toolkit-list-foreach:
-  - list
-  - element_name
-  - todo
+  list: <<a parameter list>>
+  element_name: <<a parameter alias>>
+  todo: <<a list of functions to execute>>
+
+# example
+toolkit-list-foreach:
+  list: ["service_1", "service_2", "service_3"]
+  element_name: service_name
+  todo:
+    - get-github-service_past_week_team_activity:
+        service_name: ${service_name}
 ```
 
 ### asynchronously process all elements in a list
+##### using Docker technology, concurrently execute the same operation on multiple services
 
 ```yml
 toolkit-list-async:
-  - list
-  - element_name
-  - todo
+  list: <<a parameter list>>
+  element_name: <<a parameter alias>>
+  todo: <<a list of functions to be executed asynchronously>>
+
+# example
+toolkit-list-async:
+  list: ["service_1", "service_2", "service_3"]
+  element_name: service_name
+  todo:
+    - test-k6-stress_testing:
+        service_name: ${service_name}
 ```
 
 ### parse the content of JSON using JSONPath
+##### the result is `["Alert 1", "Alert 2", "Alert 3"]`
 
 ```yml
 toolkit-json-parse:
-  - json
-  - jsonpath
+  json: {"data": {"alerts": [{"alertname": "Alert 1"}, {"alertname": "Alert 2"}, {"alertname": "Alert 3"}]}}
+  jsonpath: <<e.g. $.data.alerts[*].alertname >>
 ```
 
 ### get information from the microservice-system configs
+##### the result is `https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo.git`
 
 ```yml
 toolkit-config-get:
-  - configs
-  - jsonpath
+  configs: <<e.g. cinema>>
+  jsonpath: <<e.g. $.service[?(@.name=='${service_name}')].repository >>
 ```
 
 ### determine if the condition is true or false
 
 ```yml
 toolkit-flow-if:
-  - condition
-  - true
-  - false
+  condition: <<true or false>>
+  true: <<a list of functions to execute>>
+  false: <<a list of functions to execute>>
+
+# example
+toolkit-flow-if:
+  condition: true
+  true:
+    - toolkit-discord-notify:
+        text: "[WARNING] ......"
+  false:
+    - toolkit-flow-return:
+        return: null
 ```
 
 ### return the local variable to the outside of this custom-function, and stop this custom-function
 
 ```yml
 toolkit-flow-return:
-  - return
+  return: <<return value>>
 ```
 
 ### execute a specific function periodically
 
 ```yml
 toolkit-flow-subscribe:
-  - function
-  - function_parameter_json
-  - cron
+  function: <<function name>>
+  function_parameter_json: <<a JSON-formatted list of parameters>>
+  cron: <<e.g. 0 9 * * 1 >>
 ```
 
 ### send a GET request to a specific REST API
 
 ```yml
 toolkit-restapi-get:
-  - url
+  url: <<http url>>
 ```
 
 ### send a POST request to a specific REST API
 
 ```yml
 toolkit-restapi-post:
-  - url
-  - body
-  - accept
-  - content_type
-  - authorization
+  url: <<http_url>>
+  body: <<a JSON-formatted request body>>
+  accept: <<e.g. application/json >>
+  content_type: <<e.g. application/json >>
+  authorization: <<e.g. Bearer ... >>
 ```
 
 ### send a query request to a specific GraphQL API
 
 ```yml
 toolkit-graphql-query:
-  - url
-  - graphql
-  - accept
-  - content_type
-  - authorization
+  url: <<http_url>>
+  graphql: <<graphql>>
+  accept: <<e.g. application/json >>
+  content_type: <<e.g. application/json >>
+  authorization: <<e.g. Bearer ... >>
 ```
 
 ### execute terminal commands using Bash
 
 ```yml
 toolkit-command-bash:
-  - hostname
-  - username
-  - password
-  - command
+  command: <<e.g. docker run --rm -i grafana/k6 run <script.js -e TEST_URL=https://test-api.k6.io >>
 ```
 
 ### visualize JSON data using Grafana
 
 ```yml
 toolkit-render-grafana:
-  - json
+  json: <<JSON>>
 ```
 
 ### send a text message to the Discord channel
 
 ```yml
 toolkit-discord-text:
-  - text
+  text: <<text>>
 ```
 
 ### send a notification message to the Discord channel
 
 ```yml
 toolkit-discord-notify:
-  - text
+  text: <<text>>
 ```
 
 ### send the embed message to the Discord channel (thumbnail is optional)
 
 ```yml
 toolkit-discord-embed:
-  - title
-  - color
-  - field_json
-  - thumbnail
+  title: <<embed title>>
+  color: <<embed color>>
+  field_json: <<embed content in JSON format>>
+  thumbnail: <<thumbnail url>>
 ```

@@ -11,9 +11,6 @@ info:
 
 low_code:
   property:
-    k6_host_ip: ${secret.k6_host_ip}
-    k6_host_username: ${secret.k6_host_username}
-    k6_host_password: ${secret.k6_host_password}
     grafana_prometheus_k6_stress_testing_url: ........
     grafana_prometheus_k6_smoke_testing_url: ........
 
@@ -29,9 +26,6 @@ low_code:
           - team_member
       body:
         - toolkit-command-bash:
-            hostname: ${k6_host_ip}
-            username: ${k6_host_username}
-            password: ${k6_host_password}
             command: docker run --rm -i grafana/k6 run <stressTesting-${service_name}.js -e TEST_URL=https://test-api.k6.io
         - toolkit-discord-embed:
             title: The stress testing of ${service_name}
@@ -62,9 +56,6 @@ low_code:
               - toolkit-flow-return:
                   return: null
         - toolkit-command-bash:
-            hostname: ${k6_host_ip}
-            username: ${k6_host_username}
-            password: ${k6_host_password}
             command: docker run --rm -i grafana/k6 run --vus ${number_of_virtual_user} --duration 30s - <smokeTesting-All.js
         - toolkit-discord-embed:
             title: The smoke testing of all service

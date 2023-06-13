@@ -17,10 +17,10 @@ public class Service {
 
     public String verify() {
         StringBuilder sb = new StringBuilder();
-        if (name == null) sb.append("    service.name is null").append("\n");
-        if (url == null) sb.append("    service.url is null").append("\n");
-        if (repository == null) sb.append("    service.repository is null").append("\n");
-        if (description == null) sb.append("    service.description is null").append("\n");
+        if (name == null) sb.append("    name is null").append("\n");
+        if (url == null) sb.append("    url is null").append("\n");
+        if (repository == null) sb.append("    repository is null").append("\n");
+        if (description == null) sb.append("    description is null").append("\n");
         return sb.toString();
     }
 }
