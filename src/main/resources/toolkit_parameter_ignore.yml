@@ -1,0 +1,4 @@
+function:
+  - toolkit-time-one_week_ago # ignore all parameters
+parameter:
+  - return # toolkit-flow-return

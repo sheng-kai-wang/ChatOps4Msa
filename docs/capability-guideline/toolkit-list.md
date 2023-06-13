@@ -120,12 +120,17 @@ toolkit-list-async:
 ```
 
 ### parse the content of JSON using JSONPath
-##### the result is `["Alert 1", "Alert 2", "Alert 3"]`
+##### the result is a list like `["Alert 1", "Alert 2", "Alert 3"]`
 
 ```yml
 toolkit-json-parse:
+  json: <<the JSON to be parsed>>
+  jsonpath: <<jsonpath>>
+
+# example
+toolkit-json-parse:
   json: {"data": {"alerts": [{"alertname": "Alert 1"}, {"alertname": "Alert 2"}, {"alertname": "Alert 3"}]}}
-  jsonpath: <<e.g. $.data.alerts[*].alertname >>
+  jsonpath: $.data.alerts[*].alertname
 ```
 
 ### get information from the microservice-system configs
@@ -229,7 +234,16 @@ toolkit-discord-notify:
   text: <<text>>
 ```
 
-### send the embed message to the Discord channel (thumbnail is optional)
+### send the embed message to the Discord channel (no thumbnail)
+
+```yml
+toolkit-discord-embed:
+  title: <<embed title>>
+  color: <<embed color>>
+  field_json: <<embed content in JSON format>>
+```
+
+### send the embed message to the Discord channel (with thumbnail)
 
 ```yml
 toolkit-discord-embed:

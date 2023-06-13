@@ -17,7 +17,13 @@ public class InvokedOperation {
 
     public String verify() {
         StringBuilder sb = new StringBuilder();
+
+        // name verify
         if (name == null) sb.append("        name is null").append("\n");
+
+        // parameter verify
+
+
         return sb.toString();
     }
 }

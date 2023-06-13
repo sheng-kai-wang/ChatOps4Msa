@@ -10,7 +10,7 @@ public class AccessPermission {
     private List<String> protectedAccess;
 
     public String verify() {
-        String errorMessage = "      the access must be public, private or protected list";
+        String errorMessage = "      the access must be public, private or protected list\n";
         if (access == null && protectedAccess == null) return errorMessage;
         if (access != null && !access.equals("public") && !access.equals("private")) return errorMessage;
         return "";
