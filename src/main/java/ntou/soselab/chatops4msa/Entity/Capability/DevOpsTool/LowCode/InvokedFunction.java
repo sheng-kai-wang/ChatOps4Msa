@@ -1,8 +1,9 @@
 package ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.LowCode;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import ntou.soselab.chatops4msa.Service.LowCodeService.InvokedFunctionNameDeserializer;
 import org.springframework.core.io.Resource;
@@ -15,49 +16,58 @@ import java.util.Map;
 //@JsonDeserialize(using = InvokedFunctionNameDeserializer.class)
 public class InvokedFunction {
 
+//    @JsonSetter("json")
     private String name;
-    private Map<String, String> parameterMap;
-    @JsonProperty("todo")
-    private List<InvokedFunction> todoList;
-    @JsonProperty("true")
-    private List<InvokedFunction> trueList;
-    @JsonProperty("false")
-    private List<InvokedFunction> falseList;
+    //    @JsonProperty("toolkit-json-parse")
+//    @JsonAnySetter
+//    private Map<String, Object> parameterMap;
+//    @JsonSetter("todo")
+//    private List<InvokedFunction> todoList;
+//    @JsonProperty("true")
+//    private List<InvokedFunction> trueList;
+//    @JsonProperty("false")
+//    private List<InvokedFunction> falseList;
 
-    public void setName(String name) {
+//    public void setName(String name) {
+//        this.name = name;
+//    }
+//
+//    public void setParameterMap(Map<String, String> parameterMap) {
+//        this.parameterMap = parameterMap;
+//    }
+
+    @JsonSetter("json")
+    public void setJson(String name) {
         this.name = name;
     }
 
-    public void setParameterMap(Map<String, String> parameterMap) {
-        this.parameterMap = parameterMap;
-    }
-
     public String verify() {
-        final Map<String, List<String>> toolkitSpecialCaseConfigMap = loadToolkitSpecialCaseConfig();
-
-        StringBuilder sb = new StringBuilder();
-
-        // name verify
-        if (name == null) sb.append("          name is null").append("\n");
-
-        // parameter verify
-        if (parameterMap == null) {
-            if (!toolkitSpecialCaseConfigMap.get("function_without_parameter").contains(name)) {
-                sb.append("          parameter is null").append("\n");
-            }
-
-        } else {
-            for (Map.Entry<String, String> entry : parameterMap.entrySet()) {
-                if (entry.getValue() == null) {
-                    String parameterName = entry.getKey();
-                    if (!toolkitSpecialCaseConfigMap.get("nullable_parameter_of_all_function").contains(parameterName)) {
-                        sb.append("          parameter[").append(parameterName).append("] is null").append("\n");
-                    }
-                }
-            }
-        }
-
-        return sb.toString();
+//        final Map<String, List<String>> toolkitSpecialCaseConfigMap = loadToolkitSpecialCaseConfig();
+//
+//        StringBuilder sb = new StringBuilder();
+//
+//        // name verify
+//        if (name == null) sb.append("          name is null").append("\n");
+//
+//        // parameter verify
+//        if (parameterMap == null) {
+//            if (!toolkitSpecialCaseConfigMap.get("function_without_parameter").contains(name)) {
+//                sb.append("          parameter is null").append("\n");
+//            }
+//
+//        } else {
+//            for (Map.Entry<String, String> entry : parameterMap.entrySet()) {
+//                if (entry.getValue() == null) {
+//                    String parameterName = entry.getKey();
+//                    if (!toolkitSpecialCaseConfigMap.get("nullable_parameter_of_all_function").contains(parameterName)) {
+//                        sb.append("          parameter[").append(parameterName).append("] is null").append("\n");
+//                    }
+//                }
+//            }
+//        }
+//
+//        return sb.toString();
+        return "";
     }
 
     private Map<String, List<String>> loadToolkitSpecialCaseConfig() {
