@@ -21,33 +21,33 @@ public class MicroserviceSystem implements Configs {
         // info verify
         String infoErrorMessage = info.verify();
         if (!"".equals(infoErrorMessage)) {
-            systemSb.append("info error:").append("\n")
+            systemSb.append("  info error:").append("\n")
                     .append(infoErrorMessage).append("\n");
         }
 
         // service verify
         if (serviceList.size() == 0) {
-            systemSb.append("service error:").append("\n")
-                    .append("  the service has no content").append("\n");
+            systemSb.append("  service error:").append("\n")
+                    .append("    the service has no content").append("\n");
         }
         StringBuilder serviceSb = new StringBuilder();
         for (int i = 0; i < serviceList.size(); i++) {
             String serviceErrorMessage = serviceList.get(i).verify();
             if (!"".equals(serviceErrorMessage)) {
-             serviceSb.append("  service[").append(i).append("] error:").append("\n")
+             serviceSb.append("    service[").append(i).append("] error:").append("\n")
                      .append(serviceErrorMessage).append("\n");
             }
         }
         String allServiceErrorMessage = serviceSb.toString();
         if (!"".equals(allServiceErrorMessage)) {
-            systemSb.append("service error:").append("\n")
+            systemSb.append("  service error:").append("\n")
                     .append(allServiceErrorMessage).append("\n");
         }
 
         // capability verify
         if (capabilityList.size() == 0) {
-            systemSb.append("capability error:").append("\n")
-                    .append("  the capability has no content").append("\n");
+            systemSb.append("  capability error:").append("\n")
+                    .append("    the capability has no content").append("\n");
         }
 
         return systemSb.toString();

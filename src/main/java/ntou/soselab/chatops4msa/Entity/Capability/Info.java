@@ -13,9 +13,9 @@ public class Info {
 
     public String verify() {
         StringBuilder sb = new StringBuilder();
-        if (version == null) sb.append("  info.version is null").append("\n");
-        if (title == null) sb.append("  info.title is null").append("\n");
-        if (description == null) sb.append("  info.description is null").append("\n");
+        if (version == null) sb.append("    info.version is null").append("\n");
+        if (title == null) sb.append("    info.title is null").append("\n");
+        if (description == null) sb.append("    info.description is null").append("\n");
         return sb.toString();
     }
 }

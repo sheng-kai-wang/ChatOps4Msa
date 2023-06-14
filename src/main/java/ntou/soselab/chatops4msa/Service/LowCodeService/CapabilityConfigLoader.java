@@ -38,15 +38,15 @@ public class CapabilityConfigLoader {
         this.jdaService = jdaService;
         this.errorMessageSb = new StringBuilder();
 
-        String microserviceSystemClasspath = env.getProperty("capability.microservice-system.classpath");
+//        String microserviceSystemClasspath = env.getProperty("capability.microservice-system.classpath");
         String devOpsToolClasspath = env.getProperty("capability.devops-tool.classpath");
-        String messageDeliveryClasspath = env.getProperty("capability.message-delivery.classpath");
-        String secretClasspath = env.getProperty("capability.secret.classpath");
+//        String messageDeliveryClasspath = env.getProperty("capability.message-delivery.classpath");
+//        String secretClasspath = env.getProperty("capability.secret.classpath");
 
-        this.microserviceSystemMap = loadConfig("microservice-system", MicroserviceSystem.class, microserviceSystemClasspath);
+//        this.microserviceSystemMap = loadConfig("microservice-system", MicroserviceSystem.class, microserviceSystemClasspath);
         this.devOpsToolMap = loadConfig("devops-tool", DevOpsTool.class, devOpsToolClasspath);
-        this.messageDeliveryMap = loadConfig("message-delivery", MessageDelivery.class, messageDeliveryClasspath);
-        this.secretMap = loadConfig("secret", Secret.class, secretClasspath);
+//        this.messageDeliveryMap = loadConfig("message-delivery", MessageDelivery.class, messageDeliveryClasspath);
+//        this.secretMap = loadConfig("secret", Secret.class, secretClasspath);
 
         try {
             checkVerifyMessage();
@@ -67,9 +67,9 @@ public class CapabilityConfigLoader {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        Resource[] resources;
+
         try {
-            resources = new PathMatchingResourcePatternResolver(classLoader).getResources(classpath);
+            Resource[] resources = new PathMatchingResourcePatternResolver(classLoader).getResources(classpath);
             if (resources.length == 0) {
                 System.out.println("[ERROR] there is NO " + configType + " configs");
                 errorMessageSb.append("there is NO ").append(configType).append(" configs").append("\n");
@@ -78,15 +78,18 @@ public class CapabilityConfigLoader {
             for (Resource resource : resources) {
                 String fileName = resource.getFilename();
                 System.out.println("[DEBUG] try to load " + fileName);
-                String nameWithoutExtension = getFileNameWithoutExtension(fileName);
                 T configObj = objectMapper.readValue(resource.getInputStream(), configClass);
 
-                System.out.println("[DEBUG] the content of " + nameWithoutExtension + ": ");
+                System.out.println("[DEBUG] the content of " + fileName + ": ");
                 System.out.println(gson.toJson(configObj));
 
                 String systemErrorMessage = configObj.verify();
-                if (!"".equals(systemErrorMessage)) errorMessageSb.append(systemErrorMessage).append("\n");
+                if (!"".equals(systemErrorMessage)) {
+                    errorMessageSb.append(fileName).append(" error:").append("\n");
+                    errorMessageSb.append(systemErrorMessage).append("\n");
+                }
 
+                String nameWithoutExtension = getFileNameWithoutExtension(fileName);
                 configObjMap.put(nameWithoutExtension, configObj);
             }
 

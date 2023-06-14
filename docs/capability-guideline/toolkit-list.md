@@ -246,7 +246,7 @@ toolkit-discord-embed:
 ### send the embed message to the Discord channel (with thumbnail)
 
 ```yml
-toolkit-discord-embed:
+toolkit-discord-embed_thumbnail:
   title: <<embed title>>
   color: <<embed color>>
   field_json: <<embed content in JSON format>>

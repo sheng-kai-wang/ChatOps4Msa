@@ -18,14 +18,14 @@ public class DevOpsTool implements Configs {
         // info verify
         String infoErrorMessage = info.verify();
         if (!"".equals(infoErrorMessage)) {
-            sb.append("info error:").append("\n")
+            sb.append("  info error:").append("\n")
                     .append(infoErrorMessage).append("\n");
         }
 
         // low-code verify
         String lowCodeErrorMessage = lowCode.verify();
         if (!"".equals(lowCodeErrorMessage)) {
-            sb.append("low-code error:").append("\n")
+            sb.append("  low-code error:").append("\n")
                     .append(lowCodeErrorMessage).append("\n");
         }
 
