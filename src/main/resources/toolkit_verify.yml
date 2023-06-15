@@ -1,0 +1,67 @@
+# required parameters of all toolkit-functions
+toolkit-number-calculate:
+  - expression
+toolkit-string-replace:
+  - string
+  - original
+  - replace
+toolkit-string-split:
+  - string
+  - separator
+toolkit-string-pattern:
+  - string
+  - regex
+toolkit-list-get:
+  - list
+  - index
+toolkit-list-foreach:
+  - list
+  - element_name
+  - todo
+toolkit-list-async:
+  - list
+  - element_name
+  - todo
+toolkit-json-parse:
+  - json
+  - jsonpath
+toolkit-config-get:
+  - configs
+  - jsonpath
+toolkit-flow-if:
+  - condition
+toolkit-flow-subscribe:
+  - function
+  - function_parameter_json
+  - cron
+toolkit-restapi-get:
+  - url
+toolkit-restapi-post:
+  - url
+  - body
+  - accept
+  - content_type
+  - authorization
+toolkit-graphql-query:
+  - url
+  - graphql
+  - accept
+  - content_type
+  - authorization
+toolkit-command-bash:
+  - command
+toolkit-render-grafana:
+  - json
+toolkit-discord-text:
+  - text
+toolkit-discord-notify:
+  - text
+toolkit-discord-embed:
+  - title
+  - color
+  - field_json
+toolkit-discord-embed_thumbnail:
+  - title
+  - color
+  - field_json
+  - thumbnail

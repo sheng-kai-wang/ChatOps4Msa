@@ -1,5 +1,0 @@
-function_without_parameter: # the functions do not require any parameters
-  - toolkit-time-one_week_ago
-nullable_parameter_of_all_function: # the parameter values of all the functions can be null
-  - assign # all toolkit-function
-  - return # toolkit-flow-return

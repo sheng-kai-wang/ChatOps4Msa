@@ -163,9 +163,6 @@ low_code:
             true:
               - toolkit-discord-notify:
                   text: "[WARNING] sorry, the number of activities must be between 1 and 10."
-            false:
-              - toolkit-flow-return:
-                  return: null
         - toolkit-config-get:
             configs: cinema
             jsonpath: $.service[?(@.name=='${service_name}')].repository
@@ -205,7 +202,6 @@ low_code:
             title: The recent activity of ${service_name}
             color: yellow
             field_json: ${toolkit-json-parse}
-            thumbnail: null
 
     - name: get-github-service_latest_commit_report
       parameter:
@@ -233,7 +229,6 @@ low_code:
             title: The newest check report of ${service_name}
             color: yellow
             field_json: ${toolkit-json-parse}
-            thumbnail: null
 
     - name: get-github-service_past_week_team_activity
       parameter:
@@ -263,7 +258,6 @@ low_code:
             title: The activity status of each team member within the past week of ${service_name}
             color: yellow
             field_json: ${toolkit-json-parse}
-            thumbnail: null
 
     - name: get-github-all_service_dependency_risk_past_week
       parameter: null
@@ -335,7 +329,6 @@ low_code:
             title: Create a new issue of ${service_name}
             color: yellow
             field_json: ${toolkit-json-parse}
-            thumbnail: null
 
     - name: set-repo-info_of_service_into_graphql
       parameter:
@@ -398,4 +391,3 @@ low_code:
             title: The activity status of each team member within the past week of ${service_name}
             color: yellow
             field_json: ${toolkit-json-parse}
-            thumbnail: null

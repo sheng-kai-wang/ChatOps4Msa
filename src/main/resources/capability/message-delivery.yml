@@ -23,4 +23,3 @@ low_code:
             title: Prometheus Alert
             color: red
             field_json: ${toolkit-json-parse}
-            thumbnail: null

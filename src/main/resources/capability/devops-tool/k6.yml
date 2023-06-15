@@ -27,10 +27,10 @@ low_code:
       body:
         - toolkit-command-bash:
             command: docker run --rm -i grafana/k6 run <stressTesting-${service_name}.js -e TEST_URL=https://test-api.k6.io
-        - toolkit-discord-embed:
+        - toolkit-discord-embed_thumbnail:
             title: The stress testing of ${service_name}
             color: yellow
-            field_json: {"grafana link": "${grafana_prometheus_k6_stress_testing_url}"}
+            field_json: "{'grafana link': '${grafana_prometheus_k6_stress_testing_url}'}"
             thumbnail: .....
     
     - name: test-k6-smoke_testing_all_service
@@ -52,13 +52,10 @@ low_code:
             true:
               - toolkit-discord-notify:
                   text: "[WARNING] sorry, the number of virtual user must be between 1 and 5."
-            false:
-              - toolkit-flow-return:
-                  return: null
         - toolkit-command-bash:
             command: docker run --rm -i grafana/k6 run --vus ${number_of_virtual_user} --duration 30s - <smokeTesting-All.js
-        - toolkit-discord-embed:
+        - toolkit-discord-embed_thumbnail:
             title: The smoke testing of all service
             color: yellow
-            field_json: {"grafana link": "${grafana_prometheus_k6_smoke_testing_url}"}
+            field_json: "{'grafana link': '${grafana_prometheus_k6_smoke_testing_url}'}"
             thumbnail: .....

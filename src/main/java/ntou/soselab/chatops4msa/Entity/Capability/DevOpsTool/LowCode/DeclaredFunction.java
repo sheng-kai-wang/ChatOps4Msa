@@ -43,7 +43,7 @@ public class DeclaredFunction {
             for (int i = 0; i < invokedFunctionList.size(); i++) {
                 String invokedFunctionErrorMessage = invokedFunctionList.get(i).verify();
                 if (!"".equals(invokedFunctionErrorMessage)) {
-                    invokedFunctionSb.append("        function[").append(i).append("] error:").append("\n")
+                    invokedFunctionSb.append("        body[").append(i).append("] error:").append("\n")
                             .append(invokedFunctionErrorMessage).append("\n");
                 }
             }

@@ -19,6 +19,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -65,7 +66,11 @@ public class CapabilityConfigLoader {
         HashMap<String, T> configObjMap = new HashMap<>();
         ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .disableHtmlEscaping()
+                .excludeFieldsWithModifiers(Modifier.TRANSIENT)
+                .create();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
         try {

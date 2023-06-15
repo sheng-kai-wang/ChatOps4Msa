@@ -143,6 +143,8 @@ toolkit-config-get:
 ```
 
 ### determine if the condition is true or false
+##### you can omit the "true" or "false" parameter:
+If the "false" parameter is omitted, it means that when the condition is false, other functions within the body will continue to be executed. The same principle applies when the "true" parameter is omitted.
 
 ```yml
 toolkit-flow-if:

@@ -1,84 +1,120 @@
 package ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.LowCode;
 
 import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import ntou.soselab.chatops4msa.Service.LowCodeService.InvokedFunctionNameDeserializer;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-//@JsonDeserialize(using = InvokedFunctionNameDeserializer.class)
 public class InvokedFunction {
+    private String functionName;
+    private Map<String, String> parameterMap;
+    private String assign;
+    private List<InvokedFunction> todoList;
+    private List<InvokedFunction> trueList;
+    private List<InvokedFunction> falseList;
 
-//    @JsonSetter("json")
-    private String name;
-    //    @JsonProperty("toolkit-json-parse")
-//    @JsonAnySetter
-//    private Map<String, Object> parameterMap;
-//    @JsonSetter("todo")
-//    private List<InvokedFunction> todoList;
-//    @JsonProperty("true")
-//    private List<InvokedFunction> trueList;
-//    @JsonProperty("false")
-//    private List<InvokedFunction> falseList;
+    private transient StringBuilder errorMessageSb = new StringBuilder();
+    private transient final String TOOLKIT_VERIFY_CLASSPATH = "classpath*:toolkit_verify.{yml,yaml}";
+    private transient final Map<String, List<String>> toolkitVerifyConfigMap;
 
-//    public void setName(String name) {
-//        this.name = name;
-//    }
-//
-//    public void setParameterMap(Map<String, String> parameterMap) {
-//        this.parameterMap = parameterMap;
-//    }
+    public InvokedFunction() {
+        this.toolkitVerifyConfigMap = loadToolkitVerifyConfig();
+    }
 
-    @JsonSetter("json")
-    public void setJson(String name) {
-        this.name = name;
+    @JsonAnySetter
+    public void setFunctionContent(String functionName, Map<String, Object> parameterMap) {
+        this.functionName = functionName;
+        this.parameterMap = new HashMap<>();
+
+        if (parameterMap == null) return;
+        for (Map.Entry<String, Object> entry : parameterMap.entrySet()) {
+            String parameterName = entry.getKey();
+            Object parameterValue = entry.getValue();
+            if (parameterValue instanceof String) {
+                if ("assign".equals(parameterName)) this.assign = (String) parameterValue;
+                else this.parameterMap.put(parameterName, (String) parameterValue);
+
+            } else if (parameterValue instanceof Integer) {
+                this.parameterMap.put(parameterName, parameterValue.toString());
+
+            } else if (parameterValue instanceof List<?> specialParameter) {
+                if (specialParameter.isEmpty()) appendParameterFormatErrorMessage(parameterName);
+                List<InvokedFunction> specialParameterFunctionList = new ArrayList<>();
+                ObjectMapper mapper = new ObjectMapper();
+                for (Object obj : specialParameter) {
+                    InvokedFunction invokedFunction = mapper.convertValue(obj, InvokedFunction.class);
+                    specialParameterFunctionList.add(invokedFunction);
+                }
+                if ("todo".equals(parameterName)) this.todoList = specialParameterFunctionList;
+                else if ("true".equals(parameterName)) this.trueList = specialParameterFunctionList;
+                else if ("false".equals(parameterName)) this.falseList = specialParameterFunctionList;
+                else appendParameterFormatErrorMessage(parameterName);
+
+            } else {
+                appendParameterFormatErrorMessage(parameterName);
+            }
+        }
+    }
+
+    private void appendParameterFormatErrorMessage(String parameterName) {
+        errorMessageSb
+                .append("          the parameter format [")
+                .append(parameterName)
+                .append("] is incorrect")
+                .append("\n");
     }
 
     public String verify() {
-//        final Map<String, List<String>> toolkitSpecialCaseConfigMap = loadToolkitSpecialCaseConfig();
-//
-//        StringBuilder sb = new StringBuilder();
-//
-//        // name verify
-//        if (name == null) sb.append("          name is null").append("\n");
-//
-//        // parameter verify
-//        if (parameterMap == null) {
-//            if (!toolkitSpecialCaseConfigMap.get("function_without_parameter").contains(name)) {
-//                sb.append("          parameter is null").append("\n");
-//            }
-//
-//        } else {
-//            for (Map.Entry<String, String> entry : parameterMap.entrySet()) {
-//                if (entry.getValue() == null) {
-//                    String parameterName = entry.getKey();
-//                    if (!toolkitSpecialCaseConfigMap.get("nullable_parameter_of_all_function").contains(parameterName)) {
-//                        sb.append("          parameter[").append(parameterName).append("] is null").append("\n");
-//                    }
-//                }
-//            }
-//        }
-//
-//        return sb.toString();
-        return "";
+        // name verify
+        if (functionName == null) errorMessageSb.append("          name is null").append("\n");
+
+        // parameter verify
+        if (!toolkitVerifyConfigMap.containsKey(functionName)) return errorMessageSb.toString();
+        for (String requiredParameter : toolkitVerifyConfigMap.get(functionName)) {
+            if (!parameterMap.containsKey(requiredParameter)) {
+                if ("todo".equals(requiredParameter) && todoList != null) continue;
+                if ("true".equals(requiredParameter) && trueList != null) continue;
+                if ("false".equals(requiredParameter) && falseList != null) continue;
+                errorMessageSb
+                        .append("          the parameter \"")
+                        .append(requiredParameter)
+                        .append("\" is missing in ")
+                        .append(functionName)
+                        .append("\n");
+            }
+        }
+
+        // special parameter verify
+        verifySpecialParameter("todo", todoList);
+        verifySpecialParameter("true", trueList);
+        verifySpecialParameter("false", falseList);
+
+        return errorMessageSb.toString();
     }
 
-    private Map<String, List<String>> loadToolkitSpecialCaseConfig() {
-        final String TOOLKIT_SPECIAL_CASE_CLASSPATH = "classpath*:toolkit_special_case.{yml,yaml}";
+    private void verifySpecialParameter(String parameterName, List<InvokedFunction> specialParameter) {
+        if (specialParameter == null) return;
+        for (InvokedFunction function : specialParameter) {
+            String functionErrorMessage = function.verify();
+            if (!"".equals(functionErrorMessage)) {
+                errorMessageSb.append("          ").append(parameterName).append(" function error ===").append("\n");
+                errorMessageSb.append(functionErrorMessage).append("\n");
+                errorMessageSb.append("          =======================").append("\n");
+            }
+        }
+    }
 
+    private Map<String, List<String>> loadToolkitVerifyConfig() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(classLoader);
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-
         try {
-            Resource[] resources = resolver.getResources(TOOLKIT_SPECIAL_CASE_CLASSPATH);
+            Resource[] resources = resolver.getResources(TOOLKIT_VERIFY_CLASSPATH);
             return mapper.readValue(resources[0].getInputStream(), Map.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
