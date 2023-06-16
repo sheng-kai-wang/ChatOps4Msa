@@ -27,9 +27,9 @@ import java.util.Map;
 @Service
 public class CapabilityConfigLoader {
     public Map<String, MicroserviceSystem> microserviceSystemMap;
+    public Map<String, Secret> secretMap;
     public Map<String, DevOpsTool> devOpsToolMap;
     public Map<String, MessageDelivery> messageDeliveryMap;
-    public Map<String, Secret> secretMap;
 
     private final JDAService jdaService;
     private final StringBuilder errorMessageSb;
@@ -39,15 +39,15 @@ public class CapabilityConfigLoader {
         this.jdaService = jdaService;
         this.errorMessageSb = new StringBuilder();
 
-//        String microserviceSystemClasspath = env.getProperty("capability.microservice-system.classpath");
+        String microserviceSystemClasspath = env.getProperty("capability.microservice-system.classpath");
+        String secretClasspath = env.getProperty("capability.secret.classpath");
         String devOpsToolClasspath = env.getProperty("capability.devops-tool.classpath");
-//        String messageDeliveryClasspath = env.getProperty("capability.message-delivery.classpath");
-//        String secretClasspath = env.getProperty("capability.secret.classpath");
+        String messageDeliveryClasspath = env.getProperty("capability.message-delivery.classpath");
 
-//        this.microserviceSystemMap = loadConfig("microservice-system", MicroserviceSystem.class, microserviceSystemClasspath);
+        this.microserviceSystemMap = loadConfig("microservice-system", MicroserviceSystem.class, microserviceSystemClasspath);
+        this.secretMap = loadConfig("secret", Secret.class, secretClasspath);
         this.devOpsToolMap = loadConfig("devops-tool", DevOpsTool.class, devOpsToolClasspath);
-//        this.messageDeliveryMap = loadConfig("message-delivery", MessageDelivery.class, messageDeliveryClasspath);
-//        this.secretMap = loadConfig("secret", Secret.class, secretClasspath);
+        this.messageDeliveryMap = loadConfig("message-delivery", MessageDelivery.class, messageDeliveryClasspath);
 
         try {
             checkVerifyMessage();
