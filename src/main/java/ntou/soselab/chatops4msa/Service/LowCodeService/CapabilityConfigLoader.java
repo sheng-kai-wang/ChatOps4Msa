@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import jakarta.annotation.PostConstruct;
 import ntou.soselab.chatops4msa.Entity.Capability.Configs;
 import ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.DevOpsTool;
+import ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.LowCode.LowCode;
 import ntou.soselab.chatops4msa.Entity.Capability.MessageDelivery;
 import ntou.soselab.chatops4msa.Entity.Capability.MicroserviceSystem.MicroserviceSystem;
 import ntou.soselab.chatops4msa.Entity.Capability.Secret;
@@ -48,6 +50,25 @@ public class CapabilityConfigLoader {
         this.secretMap = loadConfig("secret", Secret.class, secretClasspath);
         this.devOpsToolMap = loadConfig("devops-tool", DevOpsTool.class, devOpsToolClasspath);
         this.messageDeliveryMap = loadConfig("message-delivery", MessageDelivery.class, messageDeliveryClasspath);
+    }
+
+    @PostConstruct
+    public void variableRetrieve() {
+        System.out.println("[DEBUG] start to retrieve the variable");
+        StringBuilder variableRetrieveSb = new StringBuilder();
+        for (Map.Entry<String, DevOpsTool> entry : devOpsToolMap.entrySet()) {
+            LowCode lowCode = entry.getValue().getLowCode();
+            String variableRetrieveErrorMessage = lowCode.variableRetrieve(secretMap.get("secret"));
+            if (!"".equals(variableRetrieveErrorMessage)) {
+                variableRetrieveSb.append("  devops-tool[").append(entry.getKey()).append("] error:").append("\n");
+                variableRetrieveSb.append(variableRetrieveErrorMessage).append("\n");
+            }
+        }
+        String allVariableRetrieveErrorMessage = variableRetrieveSb.toString();
+        if (!"".equals(allVariableRetrieveErrorMessage)) {
+            errorMessageSb.append("variable retrieve error:").append("\n");
+            errorMessageSb.append(allVariableRetrieveErrorMessage).append("\n");
+        }
 
         try {
             checkVerifyMessage();
@@ -88,10 +109,10 @@ public class CapabilityConfigLoader {
                 System.out.println("[DEBUG] the content of " + fileName + ": ");
                 System.out.println(gson.toJson(configObj));
 
-                String systemErrorMessage = configObj.verify();
-                if (!"".equals(systemErrorMessage)) {
+                String errorMessage = configObj.verify();
+                if (!"".equals(errorMessage)) {
                     errorMessageSb.append(fileName).append(" error:").append("\n");
-                    errorMessageSb.append(systemErrorMessage).append("\n");
+                    errorMessageSb.append(errorMessage).append("\n");
                 }
 
                 String nameWithoutExtension = getFileNameWithoutExtension(fileName);

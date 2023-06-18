@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 public class DeclaredFunction {
-
-    private Map<String, String> localVariableMap;
     @JsonProperty("name")
     private String name;
     @JsonProperty("parameter")
@@ -18,6 +16,8 @@ public class DeclaredFunction {
     private AccessPermission access;
     @JsonProperty("body")
     private List<InvokedFunction> invokedFunctionList;
+
+    private Map<String, String> localVariableMap;
 
     public String verify() {
         StringBuilder declaredFunctionSb = new StringBuilder();

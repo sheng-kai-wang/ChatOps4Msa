@@ -5,14 +5,17 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.Map;
 
 public class Secret implements Configs {
-    private Map<String, String> secretMap;
+    private final Map<String, String> secretMap;
 
     @JsonCreator
     public Secret(Map<String, String> secretMap) {
         this.secretMap = secretMap;
     }
 
-    @Override
+    public String getSecretProperty(String propertyName) {
+        return this.secretMap.get(propertyName);
+    }
+
     public String verify() {
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, String> entry : secretMap.entrySet()) {
