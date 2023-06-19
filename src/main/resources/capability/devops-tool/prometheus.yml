@@ -102,7 +102,7 @@ low_code:
             json: ${toolkit-restapi-get}
             jsonpath: .....
         - toolkit-discord-embed:
-            title: The health status of ${service_name}
+            title: The services that trigger alerts
             color: yellow
             field_json: ${toolkit-json-parse}
         - toolkit-flow-return:

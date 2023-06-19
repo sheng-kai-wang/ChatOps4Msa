@@ -273,10 +273,10 @@ low_code:
             jsonpath: $.service[*].name
         - toolkit-list-foreach:
             list: ${toolkit-config-get}
-            element_name: service_name
+            element_name: service
             todo:
               - get-github-service_dependency_risk_past_week:
-                  service_name: ${service_name}
+                  service_name: ${service}
 
 #    - name: subscribe-github-all_service_dependency_risk_past_week
 #      parameter:

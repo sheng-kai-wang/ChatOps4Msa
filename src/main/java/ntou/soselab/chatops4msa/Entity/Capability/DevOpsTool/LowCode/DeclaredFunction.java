@@ -56,4 +56,35 @@ public class DeclaredFunction {
 
         return declaredFunctionSb.toString();
     }
+
+    public String localVariableVerify(Map<String, String> copiedPropertyMap) {
+        StringBuilder sb = new StringBuilder();
+
+        // initial the properties of the devops tool
+        this.localVariableMap = copiedPropertyMap;
+
+        // initial the parameters
+        if (parameterDescriptionMap != null) {
+            for (String parameterName : parameterDescriptionMap.keySet()) {
+                localVariableMap.put(parameterName, null);
+            }
+        }
+
+        for (int i = 0; i < invokedFunctionList.size(); i++) {
+            InvokedFunction function = invokedFunctionList.get(i);
+            // verify the variable retrieval of invoked function
+            String errorMessage = function.variableRetrievalVerify(localVariableMap);
+            if (!"".equals(errorMessage)) {
+                sb.append("      body[").append(i).append("] error:").append("\n");
+                sb.append(errorMessage).append("\n");
+            }
+            // initial the intermediate variables of invoked function
+            String functionName = function.getName();
+            if (functionName != null && !"".equals(functionName)) localVariableMap.put(functionName, null);
+            String functionAssign = function.getAssign();
+            if (functionAssign != null && !"".equals(functionAssign)) localVariableMap.put(functionAssign, null);
+        }
+
+        return sb.toString();
+    }
 }

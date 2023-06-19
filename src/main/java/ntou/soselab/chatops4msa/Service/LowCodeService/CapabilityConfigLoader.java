@@ -53,23 +53,30 @@ public class CapabilityConfigLoader {
     }
 
     @PostConstruct
-    public void variableRetrieve() {
+    public void variableRetrieveAndVerify() {
         System.out.println("[DEBUG] start to retrieve the variable");
+
         StringBuilder variableRetrieveSb = new StringBuilder();
-        for (Map.Entry<String, DevOpsTool> entry : devOpsToolMap.entrySet()) {
-            LowCode lowCode = entry.getValue().getLowCode();
-            String variableRetrieveErrorMessage = lowCode.variableRetrieve(secretMap.get("secret"));
-            if (!"".equals(variableRetrieveErrorMessage)) {
-                variableRetrieveSb.append("  devops-tool[").append(entry.getKey()).append("] error:").append("\n");
-                variableRetrieveSb.append(variableRetrieveErrorMessage).append("\n");
-            }
-        }
+        variableRetrieveAndVerify("devops-tool", devOpsToolMap, variableRetrieveSb);
+        variableRetrieveAndVerify("message-delivery", messageDeliveryMap, variableRetrieveSb);
+
         String allVariableRetrieveErrorMessage = variableRetrieveSb.toString();
         if (!"".equals(allVariableRetrieveErrorMessage)) {
             errorMessageSb.append("variable retrieve error:").append("\n");
             errorMessageSb.append(allVariableRetrieveErrorMessage).append("\n");
         }
+    }
 
+    /**
+     * verify the validity of the JSONPath in toolkit-config-get
+     */
+    @PostConstruct
+    public void toolkitConfigGetVerify() {
+        // TODO: verify the toolkit-config-get function
+    }
+
+    @PostConstruct
+    public void sendVerifyMessage() {
         try {
             checkVerifyMessage();
         } catch (IllegalCapabilityConfigException e) {
@@ -108,6 +115,7 @@ public class CapabilityConfigLoader {
 
                 System.out.println("[DEBUG] the content of " + fileName + ": ");
                 System.out.println(gson.toJson(configObj));
+                System.out.println();
 
                 String errorMessage = configObj.verify();
                 if (!"".equals(errorMessage)) {
@@ -131,6 +139,20 @@ public class CapabilityConfigLoader {
         int lastDotIndex;
         lastDotIndex = fileName.lastIndexOf('.');
         return (lastDotIndex != -1) ? fileName.substring(0, lastDotIndex) : fileName;
+    }
+
+    private <T extends DevOpsTool> void variableRetrieveAndVerify(String devOpsToolType,
+                                             Map<String, T> devOpsToolMap,
+                                             StringBuilder sb) {
+
+        for (Map.Entry<String, T> entry : devOpsToolMap.entrySet()) {
+            LowCode lowCode = entry.getValue().getLowCode();
+            String variableRetrieveErrorMessage = lowCode.variableRetrieveAndVerify(secretMap.get("secret"));
+            if (!"".equals(variableRetrieveErrorMessage)) {
+                sb.append("  ").append(devOpsToolType).append("[").append(entry.getKey()).append("] error:").append("\n");
+                sb.append(variableRetrieveErrorMessage).append("\n");
+            }
+        }
     }
 
     private void checkVerifyMessage() throws IllegalCapabilityConfigException {

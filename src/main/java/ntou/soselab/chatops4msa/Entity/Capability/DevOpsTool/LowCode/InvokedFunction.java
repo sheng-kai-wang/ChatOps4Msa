@@ -1,13 +1,8 @@
 package ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.LowCode;
 
 import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
-import java.io.IOException;
 import java.util.*;
 
 public class InvokedFunction {
@@ -19,11 +14,13 @@ public class InvokedFunction {
     private List<InvokedFunction> falseList;
 
     private transient StringBuilder errorMessageSb = new StringBuilder();
-    private transient final String TOOLKIT_VERIFY_CLASSPATH = "classpath*:toolkit_verify.{yml,yaml}";
     private transient final Map<String, List<String>> toolkitVerifyConfigMap;
 
+    // within the DeclaredFunction, it is shared with all InvokedFunction (object reference)
+    private transient Map<String, String> currentVariableMap;
+
     public InvokedFunction() {
-        this.toolkitVerifyConfigMap = loadToolkitVerifyConfig();
+        this.toolkitVerifyConfigMap = ToolkitVerifyConfigLoader.CONFIG_MAP;
     }
 
     @JsonAnySetter
@@ -69,6 +66,14 @@ public class InvokedFunction {
                 .append("\n");
     }
 
+    public String getName() {
+        return this.functionName;
+    }
+
+    public String getAssign() {
+        return this.assign;
+    }
+
     public String verify() {
         // name verify
         if (functionName == null) errorMessageSb.append("          name is null").append("\n");
@@ -100,24 +105,51 @@ public class InvokedFunction {
     private void verifySpecialParameter(String parameterName, List<InvokedFunction> specialParameter) {
         if (specialParameter == null) return;
         for (InvokedFunction function : specialParameter) {
-            String functionErrorMessage = function.verify();
-            if (!"".equals(functionErrorMessage)) {
-                errorMessageSb.append("          ").append(parameterName).append(" function error ===").append("\n");
-                errorMessageSb.append(functionErrorMessage).append("\n");
-                errorMessageSb.append("          =======================").append("\n");
+            String errorMessage = function.verify();
+            if (!"".equals(errorMessage)) {
+                errorMessageSb.append("          ").append(parameterName).append(" function error ==========").append("\n");
+                errorMessageSb.append(errorMessage);
+                errorMessageSb.append("          ==============================").append("\n");
             }
         }
     }
 
-    private Map<String, List<String>> loadToolkitVerifyConfig() {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(classLoader);
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        try {
-            Resource[] resources = resolver.getResources(TOOLKIT_VERIFY_CLASSPATH);
-            return mapper.readValue(resources[0].getInputStream(), Map.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    public String variableRetrievalVerify(Map<String, String> localVariableMap) {
+        StringBuilder sb = new StringBuilder();
+
+        // update the current variable map
+        this.currentVariableMap = localVariableMap;
+
+        // verify the parameter
+        for (String parameterValue : parameterMap.values()) {
+            List<String> extractedVariableList = LowCodeVariableParser.extractVariableList(parameterValue);
+            for (String extractedVariable : extractedVariableList) {
+                if (currentVariableMap.containsKey(extractedVariable)) continue;
+                sb.append("        the variable[").append(extractedVariable).append("] has not been assigned").append("\n");
+            }
+        }
+
+        // special parameter verify
+        variableRetrievalVerifyOfSpecialParameter("todo", todoList, localVariableMap, sb);
+        variableRetrievalVerifyOfSpecialParameter("true", trueList, localVariableMap, sb);
+        variableRetrievalVerifyOfSpecialParameter("false", falseList, localVariableMap, sb);
+
+        return sb.toString();
+    }
+
+    private void variableRetrievalVerifyOfSpecialParameter(String parameterName,
+                                                             List<InvokedFunction> specialParameter,
+                                                             Map<String, String> currentVariableMap,
+                                                             StringBuilder sb) {
+        if (specialParameter == null) return;
+        if ("todo".equals(parameterName)) currentVariableMap.put(parameterMap.get("element_name"), null);
+        for (InvokedFunction function : specialParameter) {
+            String errorMessage = function.variableRetrievalVerify(currentVariableMap);
+            if (!"".equals(errorMessage)) {
+                sb.append("        ").append(parameterName).append(" function error ==========").append("\n");
+                sb.append(errorMessage);
+                sb.append("        ==============================").append("\n");
+            }
         }
     }
 }

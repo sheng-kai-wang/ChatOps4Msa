@@ -37,8 +37,8 @@ low_code:
         - toolkit-list-foreach:
             list: ${alerted_service_list}
             # iterated elements
-            element_name: service_name
+            element_name: service
             todo:
               # declared in github.yml
               - get-github-service_past_week_team_activity:
-                  service_name: ${service_name}
+                  service_name: ${service}

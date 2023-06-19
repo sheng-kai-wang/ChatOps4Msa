@@ -16,6 +16,10 @@ public class Secret implements Configs {
         return this.secretMap.get(propertyName);
     }
 
+    public Map<String, String> getSecretPropertyMap() {
+        return this.secretMap;
+    }
+
     public String verify() {
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, String> entry : secretMap.entrySet()) {
