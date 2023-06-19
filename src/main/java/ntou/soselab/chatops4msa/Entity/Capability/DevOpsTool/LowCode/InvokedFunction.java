@@ -74,7 +74,7 @@ public class InvokedFunction {
         return this.assign;
     }
 
-    public String verify() {
+    public String verify(String indent) {
         // name verify
         if (functionName == null) errorMessageSb.append("          name is null").append("\n");
 
@@ -86,35 +86,35 @@ public class InvokedFunction {
                 if ("true".equals(requiredParameter) && trueList != null) continue;
                 if ("false".equals(requiredParameter) && falseList != null) continue;
                 errorMessageSb
-                        .append("          the parameter \"")
+                        .append(indent)
+                        .append("        the parameter [")
                         .append(requiredParameter)
-                        .append("\" is missing in ")
+                        .append("] is missing in ")
                         .append(functionName)
                         .append("\n");
             }
         }
 
         // special parameter verify
-        verifySpecialParameter("todo", todoList);
-        verifySpecialParameter("true", trueList);
-        verifySpecialParameter("false", falseList);
+        verifySpecialParameter("todo", todoList, indent);
+        verifySpecialParameter("true", trueList, indent);
+        verifySpecialParameter("false", falseList, indent);
 
         return errorMessageSb.toString();
     }
 
-    private void verifySpecialParameter(String parameterName, List<InvokedFunction> specialParameter) {
+    private void verifySpecialParameter(String parameterName, List<InvokedFunction> specialParameter, String indent) {
         if (specialParameter == null) return;
         for (InvokedFunction function : specialParameter) {
-            String errorMessage = function.verify();
+            String errorMessage = function.verify(indent + "  ");
             if (!"".equals(errorMessage)) {
-                errorMessageSb.append("          ").append(parameterName).append(" function error ==========").append("\n");
-                errorMessageSb.append(errorMessage);
-                errorMessageSb.append("          ==============================").append("\n");
+                errorMessageSb.append(indent).append("        ").append(parameterName).append(" function error:").append("\n");
+                errorMessageSb.append(indent).append(errorMessage).append("\n");
             }
         }
     }
 
-    public String variableRetrievalVerify(Map<String, String> localVariableMap) {
+    public String variableRetrievalVerify(Map<String, String> localVariableMap, String indent) {
         StringBuilder sb = new StringBuilder();
 
         // update the current variable map
@@ -125,30 +125,30 @@ public class InvokedFunction {
             List<String> extractedVariableList = LowCodeVariableParser.extractVariableList(parameterValue);
             for (String extractedVariable : extractedVariableList) {
                 if (currentVariableMap.containsKey(extractedVariable)) continue;
-                sb.append("        the variable[").append(extractedVariable).append("] has not been assigned").append("\n");
+                sb.append(indent).append("        the variable[").append(extractedVariable).append("] has not been assigned").append("\n");
             }
         }
 
         // special parameter verify
-        variableRetrievalVerifyOfSpecialParameter("todo", todoList, localVariableMap, sb);
-        variableRetrievalVerifyOfSpecialParameter("true", trueList, localVariableMap, sb);
-        variableRetrievalVerifyOfSpecialParameter("false", falseList, localVariableMap, sb);
+        variableRetrievalVerifyOfSpecialParameter("todo", todoList, localVariableMap, sb, indent);
+        variableRetrievalVerifyOfSpecialParameter("true", trueList, localVariableMap, sb, indent);
+        variableRetrievalVerifyOfSpecialParameter("false", falseList, localVariableMap, sb, indent);
 
         return sb.toString();
     }
 
     private void variableRetrievalVerifyOfSpecialParameter(String parameterName,
-                                                             List<InvokedFunction> specialParameter,
-                                                             Map<String, String> currentVariableMap,
-                                                             StringBuilder sb) {
+                                                           List<InvokedFunction> specialParameter,
+                                                           Map<String, String> currentVariableMap,
+                                                           StringBuilder sb,
+                                                           String indent) {
         if (specialParameter == null) return;
         if ("todo".equals(parameterName)) currentVariableMap.put(parameterMap.get("element_name"), null);
         for (InvokedFunction function : specialParameter) {
-            String errorMessage = function.variableRetrievalVerify(currentVariableMap);
+            String errorMessage = function.variableRetrievalVerify(currentVariableMap, indent + "  ");
             if (!"".equals(errorMessage)) {
-                sb.append("        ").append(parameterName).append(" function error ==========").append("\n");
-                sb.append(errorMessage);
-                sb.append("        ==============================").append("\n");
+                sb.append(indent).append("        ").append(parameterName).append(" function error:").append("\n");
+                sb.append(indent).append(errorMessage).append("\n");
             }
         }
     }

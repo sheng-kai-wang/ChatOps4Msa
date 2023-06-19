@@ -82,7 +82,6 @@ public class CapabilityConfigLoader {
         } catch (IllegalCapabilityConfigException e) {
             String failedMessage = "[ERROR] Capability Configs Verification Failed";
             System.out.println(failedMessage);
-            System.out.println(e.getMessage());
             jdaService.sendChatOpsChannelErrorMessage(failedMessage);
             jdaService.sendChatOpsChannelBlocksMessage(e.getMessage());
             e.printStackTrace();
@@ -156,7 +155,7 @@ public class CapabilityConfigLoader {
     }
 
     private void checkVerifyMessage() throws IllegalCapabilityConfigException {
-        String errorMessage = errorMessageSb.toString();
+        String errorMessage = compactLineBreaks(errorMessageSb.toString());
         if (!"".equals(errorMessage)) throw new IllegalCapabilityConfigException(errorMessage);
         else {
             String passedMessage = "[INFO] Capability Configs Verification Passed";
@@ -164,5 +163,13 @@ public class CapabilityConfigLoader {
             System.out.println();
             jdaService.sendChatOpsChannelInfoMessage(passedMessage);
         }
+    }
+
+    private String compactLineBreaks(String errorMessage) {
+        errorMessage = errorMessage.replaceAll("\n\n\n\n\n\n\n", "\n \n");
+        while (errorMessage.contains("\n\n")) {
+            errorMessage = errorMessage.replaceAll("\n\n", "\n");
+        }
+        return errorMessage;
     }
 }

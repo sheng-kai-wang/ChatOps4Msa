@@ -41,16 +41,15 @@ public class DeclaredFunction {
             }
             StringBuilder invokedFunctionSb = new StringBuilder();
             for (int i = 0; i < invokedFunctionList.size(); i++) {
-                String invokedFunctionErrorMessage = invokedFunctionList.get(i).verify();
+                String invokedFunctionErrorMessage = invokedFunctionList.get(i).verify("");
                 if (!"".equals(invokedFunctionErrorMessage)) {
-                    invokedFunctionSb.append("        body[").append(i).append("] error:").append("\n")
+                    invokedFunctionSb.append("      body[").append(i).append("] error:").append("\n")
                             .append(invokedFunctionErrorMessage).append("\n");
                 }
             }
             String allInvokedFunctionErrorMessage = invokedFunctionSb.toString();
             if (!"".equals(allInvokedFunctionErrorMessage)) {
-                declaredFunctionSb.append("      body error:").append("\n")
-                        .append(allInvokedFunctionErrorMessage).append("\n");
+                declaredFunctionSb.append(allInvokedFunctionErrorMessage).append("\n");
             }
         }
 
@@ -73,7 +72,7 @@ public class DeclaredFunction {
         for (int i = 0; i < invokedFunctionList.size(); i++) {
             InvokedFunction function = invokedFunctionList.get(i);
             // verify the variable retrieval of invoked function
-            String errorMessage = function.variableRetrievalVerify(localVariableMap);
+            String errorMessage = function.variableRetrievalVerify(localVariableMap, "");
             if (!"".equals(errorMessage)) {
                 sb.append("      body[").append(i).append("] error:").append("\n");
                 sb.append(errorMessage).append("\n");
