@@ -84,7 +84,7 @@ public class CapabilityConfigLoader {
         // duplicated function name verify (declared function in low-code)
         List<String> allDeclaredFunctionNameList = getAllDeclaredFunctionNameList();
         String errorMessage = duplicatedFunctionNameVerify("declared function in low-code", allDeclaredFunctionNameList);
-        errorMessageSb.append(errorMessage).append("\n");
+        if (!"".equals(errorMessage)) errorMessageSb.append(errorMessage).append("\n");
 
         for (Map.Entry<String, MicroserviceSystem> entry : microserviceSystemMap.entrySet()) {
             String microserviceSystemName = entry.getKey();
@@ -92,7 +92,7 @@ public class CapabilityConfigLoader {
             // duplicated function name verify (capability list)
             List<String> capabilityList = entry.getValue().getCapabilityList();
             errorMessage = duplicatedFunctionNameVerify("capability list in " + microserviceSystemName, capabilityList);
-            errorMessageSb.append(errorMessage).append("\n");
+            if (!"".equals(errorMessage)) errorMessageSb.append(errorMessage).append("\n");
 
             // undefined function name
             ArrayList<String> undefinedFunctionNameList = new ArrayList<>();
