@@ -6,7 +6,7 @@ info:
 
 low_code:
   property:
-    system_name: Cinema
+    system_name: bookinfo
 
   operation:
     # this function combines the functions of prometheus, k6, and GitHub.

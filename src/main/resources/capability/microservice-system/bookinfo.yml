@@ -5,9 +5,9 @@
 
 info:
   version: 1.0.0
-  title: Cinema Microservices System
+  title: Bookinfo Microservices System
   description: |
-    It's a Cinema Microservices System, which consists of the Ordering, Payment and Notification services.
+    It's a Bookinfo Microservices System, which consists of the Ordering, Payment and Notification services.
 
 service:
   - name: Ordering

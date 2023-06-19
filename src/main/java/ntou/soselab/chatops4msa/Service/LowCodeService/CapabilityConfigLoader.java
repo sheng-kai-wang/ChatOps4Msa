@@ -22,9 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class CapabilityConfigLoader {
@@ -54,7 +52,7 @@ public class CapabilityConfigLoader {
 
     @PostConstruct
     public void variableRetrieveAndVerify() {
-        System.out.println("[DEBUG] start to retrieve the variable");
+        System.out.println("[DEBUG] start to verify the variable retrieval and retrieve the property variable of low code");
 
         StringBuilder variableRetrieveSb = new StringBuilder();
         variableRetrieveAndVerify("devops-tool", devOpsToolMap, variableRetrieveSb);
@@ -73,6 +71,39 @@ public class CapabilityConfigLoader {
     @PostConstruct
     public void toolkitConfigGetVerify() {
         // TODO: verify the toolkit-config-get function
+        System.out.println("[DEBUG] start to verify the validity of the JSONPath in toolkit-config-get");
+    }
+
+    /**
+     * verify the capability list in microservice-system
+     */
+    @PostConstruct
+    public void microserviceSystemCapabilityListVerify() {
+        System.out.println("[DEBUG] start to verify the capability list in microservice-system");
+
+        // duplicated function name verify (declared function in low-code)
+        List<String> allDeclaredFunctionNameList = getAllDeclaredFunctionNameList();
+        String errorMessage = duplicatedFunctionNameVerify("declared function in low-code", allDeclaredFunctionNameList);
+        errorMessageSb.append(errorMessage).append("\n");
+
+        for (Map.Entry<String, MicroserviceSystem> entry : microserviceSystemMap.entrySet()) {
+            String microserviceSystemName = entry.getKey();
+
+            // duplicated function name verify (capability list)
+            List<String> capabilityList = entry.getValue().getCapabilityList();
+            errorMessage = duplicatedFunctionNameVerify("capability list in " + microserviceSystemName, capabilityList);
+            errorMessageSb.append(errorMessage).append("\n");
+
+            // undefined function name
+            ArrayList<String> undefinedFunctionNameList = new ArrayList<>();
+            for (String functionName : capabilityList) {
+                if (allDeclaredFunctionNameList.contains(functionName)) continue;
+                undefinedFunctionNameList.add(functionName);
+            }
+            if (undefinedFunctionNameList.isEmpty()) continue;
+            errorMessageSb.append("the ").append(microserviceSystemName).append(" contains undefined function name or private function").append("\n");
+            errorMessageSb.append("  ").append(undefinedFunctionNameList).append("\n");
+        }
     }
 
     @PostConstruct
@@ -141,8 +172,8 @@ public class CapabilityConfigLoader {
     }
 
     private <T extends DevOpsTool> void variableRetrieveAndVerify(String devOpsToolType,
-                                             Map<String, T> devOpsToolMap,
-                                             StringBuilder sb) {
+                                                                  Map<String, T> devOpsToolMap,
+                                                                  StringBuilder sb) {
 
         for (Map.Entry<String, T> entry : devOpsToolMap.entrySet()) {
             LowCode lowCode = entry.getValue().getLowCode();
@@ -152,6 +183,36 @@ public class CapabilityConfigLoader {
                 sb.append(variableRetrieveErrorMessage).append("\n");
             }
         }
+    }
+
+    private List<String> getAllDeclaredFunctionNameList() {
+        List<String> allDeclaredFunctionNameList = new ArrayList<>();
+        for (DevOpsTool devOpsTool : devOpsToolMap.values()) {
+            allDeclaredFunctionNameList.addAll(devOpsTool.getLowCode().getAllDeclaredFunctionNameList());
+        }
+        for (MessageDelivery messageDelivery : messageDeliveryMap.values()) {
+            allDeclaredFunctionNameList.addAll(messageDelivery.getLowCode().getAllDeclaredFunctionNameList());
+        }
+        return allDeclaredFunctionNameList;
+    }
+
+    private String duplicatedFunctionNameVerify(String verifyType, List<String> functionNameList) {
+        StringBuilder sb = new StringBuilder();
+
+        Set<String> uniqueFunctionNames = new HashSet<>();
+        Set<String> duplicates = new HashSet<>();
+        for (String functionName : functionNameList) {
+            if (uniqueFunctionNames.add(functionName)) continue;
+            duplicates.add(functionName);
+        }
+
+        if (!duplicates.isEmpty()) {
+            sb.append(verifyType).append(" error:").append("\n");
+            sb.append("  duplicate function name found:").append("\n");
+            sb.append("    ").append(duplicates).append("\n");
+        }
+
+        return sb.toString();
     }
 
     private void checkVerifyMessage() throws IllegalCapabilityConfigException {
@@ -166,9 +227,8 @@ public class CapabilityConfigLoader {
     }
 
     private String compactLineBreaks(String errorMessage) {
-        errorMessage = errorMessage.replaceAll("\n\n\n\n\n\n\n", "\n \n");
-        while (errorMessage.contains("\n\n")) {
-            errorMessage = errorMessage.replaceAll("\n\n", "\n");
+        while (errorMessage.contains("\n\n\n")) {
+            errorMessage = errorMessage.replaceAll("\n\n\n", "\n\n");
         }
         return errorMessage;
     }

@@ -138,7 +138,7 @@ toolkit-json-parse:
 
 ```yml
 toolkit-config-get:
-  configs: <<e.g. cinema>>
+  configs: <<e.g. bookinfo>>
   jsonpath: <<e.g. $.service[?(@.name=='${service_name}')].repository >>
 ```
 

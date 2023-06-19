@@ -12,7 +12,7 @@ info:
 
 low_code:
   property:
-    system_name: Cinema
+    system_name: bookinfo
     prometheus_host_ip: ${secret.prometheus_host_ip}
     prometheus_host_port: ${secret.prometheus_host_port}
     prometheus_monitor_health_path: /api/v1/query

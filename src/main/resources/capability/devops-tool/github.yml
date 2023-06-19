@@ -13,7 +13,7 @@ info:
 
 low_code:
   property:
-    system_name: Cinema
+    system_name: bookinfo
     github_graphql_url: https://api.github.com/graphql
     github_authorization_bearer: ${secret.github_authorization_bearer}
     get_github_service_recent_activity_graphql: |
@@ -164,7 +164,7 @@ low_code:
               - toolkit-discord-warning:
                   text: "[WARNING] sorry, the number of activities must be between 1 and 10."
         - toolkit-config-get:
-            configs: cinema
+            configs: bookinfo
             jsonpath: $.service[?(@.name=='${service_name}')].repository
         - toolkit-string-split:
             string: ${toolkit-config-get}
@@ -269,7 +269,7 @@ low_code:
           - team_member
       body:
         - toolkit-config-get:
-            configs: cinema
+            configs: bookinfo
             jsonpath: $.service[*].name
         - toolkit-list-foreach:
             list: ${toolkit-config-get}
@@ -339,7 +339,7 @@ low_code:
       access: private
       body:
         - toolkit-config-get:
-            configs: cinema
+            configs: bookinfo
             jsonpath: $.service[?(@.name=='${service_name}')].repository
         - toolkit-string-split:
             string: ${toolkit-config-get}

@@ -19,6 +19,14 @@ public class DeclaredFunction {
 
     private Map<String, String> localVariableMap;
 
+    public String getFunctionName() {
+        return this.name;
+    }
+
+    public boolean isPrivate() {
+        return "private".equals(access.getAccess());
+    }
+
     public String verify() {
         StringBuilder declaredFunctionSb = new StringBuilder();
 
@@ -26,31 +34,27 @@ public class DeclaredFunction {
         if (description == null) declaredFunctionSb.append("      description is null").append("\n");
 
         // access verify
-        String errorMessage = access.verify();
-        if (!"".equals(errorMessage)) declaredFunctionSb.append(errorMessage).append("\n");
+        declaredFunctionSb.append(access.verify());
 
         // body verify
         if (invokedFunctionList == null) {
-            declaredFunctionSb.append("      body error:").append("\n")
-                    .append("        there is no body").append("\n");
+            declaredFunctionSb.append("      body error:").append("\n");
+            declaredFunctionSb.append("        there is no body").append("\n");
 
         } else {
             if (invokedFunctionList.size() == 0) {
-                declaredFunctionSb.append("      body error:").append("\n")
-                        .append("        the body has no content").append("\n");
+                declaredFunctionSb.append("      body error:").append("\n");
+                declaredFunctionSb.append("        the body has no content").append("\n");
             }
             StringBuilder invokedFunctionSb = new StringBuilder();
             for (int i = 0; i < invokedFunctionList.size(); i++) {
                 String invokedFunctionErrorMessage = invokedFunctionList.get(i).verify("");
                 if (!"".equals(invokedFunctionErrorMessage)) {
-                    invokedFunctionSb.append("      body[").append(i).append("] error:").append("\n")
-                            .append(invokedFunctionErrorMessage).append("\n");
+                    invokedFunctionSb.append("      body[").append(i).append("] error:").append("\n");
+                    invokedFunctionSb.append(invokedFunctionErrorMessage).append("\n");
                 }
             }
-            String allInvokedFunctionErrorMessage = invokedFunctionSb.toString();
-            if (!"".equals(allInvokedFunctionErrorMessage)) {
-                declaredFunctionSb.append(allInvokedFunctionErrorMessage).append("\n");
-            }
+            declaredFunctionSb.append(invokedFunctionSb);
         }
 
         return declaredFunctionSb.toString();

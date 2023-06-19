@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import ntou.soselab.chatops4msa.Entity.Capability.Secret;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,20 +20,27 @@ public class LowCode {
     @JsonProperty("on_message")
     private List<DeclaredFunction> onMessageList;
 
+    public List<String> getAllDeclaredFunctionNameList() {
+        List<String> list = new ArrayList<>();
+        if (operationList == null || operationList.isEmpty()) return list;
+        for (DeclaredFunction operation : operationList) {
+            if (operation.isPrivate()) continue;
+            list.add(operation.getFunctionName());
+        }
+        return list;
+    }
+
     public String verify() {
         StringBuilder sb = new StringBuilder();
 
         // constructor verify
-        String errorMessage = functionVerify("constructor", constructorList);
-        if (!"".equals(errorMessage)) sb.append(errorMessage);
+        sb.append(functionVerify("constructor", constructorList));
 
         // operation verify
-        errorMessage = functionVerify("operation", operationList);
-        if (!"".equals(errorMessage)) sb.append(errorMessage);
+        sb.append(functionVerify("operation", operationList));
 
         // on message operation verify
-        errorMessage = functionVerify("on_message", onMessageList);
-        if (!"".equals(errorMessage)) sb.append(errorMessage);
+        sb.append(functionVerify("on_message", onMessageList));
 
         return sb.toString();
     }
@@ -82,16 +90,13 @@ public class LowCode {
         }
 
         // verify the local variable of constructor
-        String errorMessage = functionVariableVerify("constructor", constructorList);
-        if (!"".equals(errorMessage)) sb.append(errorMessage);
+        sb.append(functionVariableVerify("constructor", constructorList));
 
         // verify the local variable of operation
-        errorMessage = functionVariableVerify("operation", operationList);
-        if (!"".equals(errorMessage)) sb.append(errorMessage);
+        sb.append(functionVariableVerify("operation", operationList));
 
         // verify the local variable of on message operation
-        errorMessage = functionVariableVerify("on_message", onMessageList);
-        if (!"".equals(errorMessage)) sb.append(errorMessage);
+        sb.append(functionVariableVerify("on_message", onMessageList));
 
         return sb.toString();
     }

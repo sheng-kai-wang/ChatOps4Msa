@@ -10,17 +10,22 @@ public class AccessPermission {
     @JsonProperty("protected")
     private List<String> protectedAccess;
 
-    public AccessPermission() {
-    }
-
     public AccessPermission(String access) {
         this.access = access;
     }
 
+    public AccessPermission() {
+        this.access = "protected";
+    }
+
+    public String getAccess() {
+        return this.access;
+    }
+
     public String verify() {
         String errorMessage = "      the access must be public, private or protected list\n";
-        if (access == null && protectedAccess == null) return errorMessage;
-        if (access != null && !access.equals("public") && !access.equals("private")) return errorMessage;
+        if (!access.equals("public") && !access.equals("protected") && !access.equals("private")) return errorMessage;
+        if ("protected".equals(access) && protectedAccess == null) return errorMessage;
         return "";
     }
 }
