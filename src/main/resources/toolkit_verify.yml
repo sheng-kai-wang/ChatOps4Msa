@@ -54,7 +54,13 @@ toolkit-render-grafana:
   - json
 toolkit-discord-text:
   - text
-toolkit-discord-notify:
+toolkit-discord-info:
+  - text
+toolkit-discord-warning:
+  - text
+toolkit-discord-error:
+  - text
+toolkit-discord-blocks:
   - text
 toolkit-discord-embed:
   - title

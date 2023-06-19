@@ -48,8 +48,20 @@ public class JDAService {
         System.out.println();
     }
 
-    public void sendChatOpsChannelPropertiesMessage(String message) {
-        sendChatOpsChannelMessage("```properties\n" + message + "```");
+    public void sendChatOpsChannelInfoMessage(String message) {
+        sendChatOpsChannelMessage("```yaml\n" + message + "```");
+    }
+
+    public void sendChatOpsChannelWarningMessage(String message) {
+        sendChatOpsChannelMessage("```prolog\n" + message + "```");
+    }
+
+    public void sendChatOpsChannelErrorMessage(String message) {
+        sendChatOpsChannelMessage("```ml\n" + message + "```");
+    }
+
+    public void sendChatOpsChannelBlocksMessage(String message) {
+        sendChatOpsChannelMessage("```\n" + message + "```");
     }
 
     private void sendChatOpsChannelMessage(String message) {

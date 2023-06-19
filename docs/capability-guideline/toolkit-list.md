@@ -156,7 +156,7 @@ toolkit-flow-if:
 toolkit-flow-if:
   condition: true
   true:
-    - toolkit-discord-notify:
+    - toolkit-discord-warning:
         text: "[WARNING] ......"
   false:
     - toolkit-flow-return:
@@ -229,10 +229,31 @@ toolkit-discord-text:
   text: <<text>>
 ```
 
-### send a notification message to the Discord channel
+### send a INFO message to the Discord channel
 
 ```yml
-toolkit-discord-notify:
+toolkit-discord-info:
+  text: <<text>>
+```
+
+### send a WARNING message to the Discord channel
+
+```yml
+toolkit-discord-warning:
+  text: <<text>>
+```
+
+### send a ERROR message to the Discord channel
+
+```yml
+toolkit-discord-error:
+  text: <<text>>
+```
+
+### send a blocks message to the Discord channel
+
+```yml
+toolkit-discord-blocks:
   text: <<text>>
 ```
 

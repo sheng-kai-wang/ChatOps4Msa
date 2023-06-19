@@ -161,7 +161,7 @@ low_code:
         - toolkit-flow-if:
             condition: ${is_out_of_range}
             true:
-              - toolkit-discord-notify:
+              - toolkit-discord-warning:
                   text: "[WARNING] sorry, the number of activities must be between 1 and 10."
         - toolkit-config-get:
             configs: cinema

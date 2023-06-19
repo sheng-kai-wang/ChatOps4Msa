@@ -76,8 +76,8 @@ public class CapabilityConfigLoader {
             String failedMessage = "[ERROR] Capability Configs Verification Failed";
             System.out.println(failedMessage);
             System.out.println(e.getMessage());
-            jdaService.sendChatOpsChannelPropertiesMessage(failedMessage);
-            jdaService.sendChatOpsChannelPropertiesMessage(e.getMessage());
+            jdaService.sendChatOpsChannelErrorMessage(failedMessage);
+            jdaService.sendChatOpsChannelBlocksMessage(e.getMessage());
             e.printStackTrace();
         }
     }
@@ -140,7 +140,7 @@ public class CapabilityConfigLoader {
             String passedMessage = "[INFO] Capability Configs Verification Passed";
             System.out.println(passedMessage);
             System.out.println();
-            jdaService.sendChatOpsChannelPropertiesMessage(passedMessage);
+            jdaService.sendChatOpsChannelInfoMessage(passedMessage);
         }
     }
 }

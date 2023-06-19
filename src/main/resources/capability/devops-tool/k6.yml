@@ -50,7 +50,7 @@ low_code:
         - toolkit-flow-if:
             condition: ${is_out_of_range}
             true:
-              - toolkit-discord-notify:
+              - toolkit-discord-warning:
                   text: "[WARNING] sorry, the number of virtual user must be between 1 and 5."
         - toolkit-command-bash:
             command: docker run --rm -i grafana/k6 run --vus ${number_of_virtual_user} --duration 30s - <smokeTesting-All.js
