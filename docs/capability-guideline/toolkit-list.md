@@ -137,9 +137,10 @@ toolkit-json-parse:
 ##### the result is `https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo.git`
 
 ```yml
-toolkit-config-get:
-  configs: <<e.g. bookinfo>>
-  jsonpath: <<e.g. $.service[?(@.name=='${service_name}')].repository >>
+toolkit-info-get:
+  system: <<e.g. bookinfo>>
+  service: <<e.g. productpage, reviews, details, ratings or all_service>>
+  info: <<e.g. name, url, repository, description or custom property name>>
 ```
 
 ### determine if the condition is true or false

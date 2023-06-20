@@ -10,52 +10,25 @@ info:
     It's a Bookinfo Microservices System, which consists of the Ordering, Payment and Notification services.
 
 service:
-  - name: Ordering
+  - name: productpage
     url: http://localhost:3000
-    repository: https://github.com/sheng-kai-wang/MsdoBot-Service-Ordering
-    description: |
-      It's responsible for handling orders for movie tickets.
-    swagger:
-      $ref: ../swagger/ordering.yaml
-    paths:
-      /orders:
-        - method: POST
-          description: create a new order
-      /orders/{orderId}:
-        - method: GET
-          description: retrieve an order by ID
-        - method: DELETE
-          description: cancel an order by ID
+    repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo.git
+    description: This is the product page microservice.
 
-  - name: Payment
+  - name: reviews
     url: http://localhost:3001
-    repository: https://github.com/sheng-kai-wang/MsdoBot-Service-Payment
-    description: |
-      It's responsible for processing payment transactions for movie ticket purchases. This service handles payment processing for multiple payment methods, such as credit card and digital wallets.
-    swagger:
-      $ref: ../swagger/payment.yaml
-    paths:
-      /payments:
-        - method: POST
-          description: create a new payment
-      /payments/{paymentId}:
-        - method: GET
-          description: retrieve a payment by ID
-      /payments/{paymentId}/refund:
-        - method: POST
-          description: refund a payment by ID
-
-  - name: Notification
+    repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo.git
+    description: This is the reviews microservice.
+      
+  - name: details
     url: http://localhost:3002
-    repository: https://github.com/sheng-kai-wang/MsdoBot-Service-Notification
-    description: |
-      It allows our system to send notifications through different channels, including email, SMS, and push notifications. This service is responsible for receiving requests from other services, such as the Ordering service, to send notifications to users.
-    swagger:
-      $ref: ../swagger/notification.yaml
-    paths:
-      /notifications:
-        - method: POST
-          description: create a new notification
+    repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo.git
+    description: This is the details microservice.
+
+  - name: ratings
+    url: http://localhost:3003
+    repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo.git
+    description: This is the ratings microservice.
 
 capability:
   - echo-null-text_message

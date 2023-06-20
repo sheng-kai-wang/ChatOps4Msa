@@ -53,6 +53,7 @@ public class CapabilityConfigLoader {
     @PostConstruct
     public void variableRetrieveAndVerify() {
         System.out.println("[DEBUG] start to verify the variable retrieval and retrieve the property variable of low code");
+        System.out.println();
 
         StringBuilder variableRetrieveSb = new StringBuilder();
         variableRetrieveAndVerify("devops-tool", devOpsToolMap, variableRetrieveSb);
@@ -66,12 +67,13 @@ public class CapabilityConfigLoader {
     }
 
     /**
-     * verify the validity of the JSONPath in toolkit-config-get
+     * verify the validity of the JSONPath in toolkit-info-get
      */
     @PostConstruct
     public void toolkitConfigGetVerify() {
-        // TODO: verify the toolkit-config-get function
-        System.out.println("[DEBUG] start to verify the validity of the JSONPath in toolkit-config-get");
+        // TODO: verify the parameters of toolkit function (e.g. service_name...)
+        System.out.println("[DEBUG] start to verify the parameters of toolkit function");
+        System.out.println();
     }
 
     /**
@@ -80,6 +82,7 @@ public class CapabilityConfigLoader {
     @PostConstruct
     public void microserviceSystemCapabilityListVerify() {
         System.out.println("[DEBUG] start to verify the capability list in microservice-system");
+        System.out.println();
 
         // duplicated function name verify (declared function in low-code)
         List<String> allDeclaredFunctionNameList = getAllDeclaredFunctionNameList();
@@ -113,6 +116,7 @@ public class CapabilityConfigLoader {
         } catch (IllegalCapabilityConfigException e) {
             String failedMessage = "[ERROR] Capability Configs Verification Failed";
             System.out.println(failedMessage);
+            System.out.println();
             jdaService.sendChatOpsChannelErrorMessage(failedMessage);
             jdaService.sendChatOpsChannelBlocksMessage(e.getMessage());
             e.printStackTrace();
@@ -144,7 +148,7 @@ public class CapabilityConfigLoader {
                 T configObj = objectMapper.readValue(resource.getInputStream(), configClass);
 
                 System.out.println("[DEBUG] the content of " + fileName + ": ");
-                System.out.println(gson.toJson(configObj));
+//                System.out.println(gson.toJson(configObj));
                 System.out.println();
 
                 String errorMessage = configObj.verify();

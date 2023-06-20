@@ -1,19 +1,31 @@
 package ntou.soselab.chatops4msa.Entity.Capability.MicroserviceSystem;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.net.URL;
+import java.util.Map;
 
 public class Service {
 
     @JsonProperty("name")
     private String name;
     @JsonProperty("url")
-    private URL url;
+    private String url;
     @JsonProperty("repository")
-    private URL repository;
+    private String repository;
     @JsonProperty("description")
     private String description;
+    @JsonAnySetter
+    private Map<String, String> customPropertyMap;
+
+    public String getProperty(String info) {
+        if ("name".equals(info)) return name;
+        if ("url".equals(info)) return url;
+        if ("repository".equals(info)) return repository;
+        if ("description".equals(info)) return description;
+        if (customPropertyMap == null) return null;
+        return this.customPropertyMap.get(info);
+    }
 
     public String verify() {
         StringBuilder sb = new StringBuilder();

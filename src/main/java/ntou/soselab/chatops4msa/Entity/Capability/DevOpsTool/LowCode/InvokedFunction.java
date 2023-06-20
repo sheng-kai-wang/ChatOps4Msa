@@ -2,6 +2,9 @@ package ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.LowCode;
 
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ntou.soselab.chatops4msa.Service.LowCodeService.LowCodeVariableExtractor;
+import ntou.soselab.chatops4msa.Service.LowCodeService.ToolkitVerifyConfigLoader;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
@@ -122,7 +125,7 @@ public class InvokedFunction {
 
         // verify the parameter
         for (String parameterValue : parameterMap.values()) {
-            List<String> extractedVariableList = LowCodeVariableParser.extractVariableList(parameterValue);
+            List<String> extractedVariableList = LowCodeVariableExtractor.extractVariableList(parameterValue);
             for (String extractedVariable : extractedVariableList) {
                 if (currentVariableMap.containsKey(extractedVariable)) continue;
                 sb.append(indent).append("        the variable[").append(extractedVariable).append("] has not been assigned").append("\n");

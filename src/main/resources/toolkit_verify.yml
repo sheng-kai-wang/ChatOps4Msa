@@ -25,9 +25,10 @@ toolkit-list-async:
 toolkit-json-parse:
   - json
   - jsonpath
-toolkit-config-get:
-  - configs
-  - jsonpath
+toolkit-info-get:
+  - system
+  - service
+  - info
 toolkit-flow-if:
   - condition
 toolkit-flow-subscribe:

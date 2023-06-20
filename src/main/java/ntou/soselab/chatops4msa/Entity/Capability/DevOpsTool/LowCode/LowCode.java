@@ -2,6 +2,7 @@ package ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.LowCode;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import ntou.soselab.chatops4msa.Entity.Capability.Secret;
+import ntou.soselab.chatops4msa.Service.LowCodeService.LowCodeVariableExtractor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -66,7 +67,7 @@ public class LowCode {
         // verify and update the property
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, String> entry : propertyMap.entrySet()) {
-            List<String> extractedVariableList = LowCodeVariableParser.extractVariableList(entry.getValue());
+            List<String> extractedVariableList = LowCodeVariableExtractor.extractVariableList(entry.getValue());
             for (String variable : extractedVariableList) {
                 if (!variable.contains("secret.")) {
                     sb.append("    The variable value of the property can only be obtained from \"secret.yml\"").append("\n");

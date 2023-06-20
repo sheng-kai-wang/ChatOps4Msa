@@ -1,4 +1,4 @@
-package ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.LowCode;
+package ntou.soselab.chatops4msa.Service.LowCodeService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;

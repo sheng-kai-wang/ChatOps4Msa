@@ -163,11 +163,12 @@ low_code:
             true:
               - toolkit-discord-warning:
                   text: "[WARNING] sorry, the number of activities must be between 1 and 10."
-        - toolkit-config-get:
-            configs: bookinfo
-            jsonpath: $.service[?(@.name=='${service_name}')].repository
+        - toolkit-info-get:
+            system: bookinfo
+            service: ${service_name}
+            info: repository
         - toolkit-string-split:
-            string: ${toolkit-config-get}
+            string: ${toolkit-info-get}
             separator: /
         - toolkit-list-get:
             list: ${toolkit-string-split}
@@ -268,11 +269,12 @@ low_code:
           - supervisor
           - team_member
       body:
-        - toolkit-config-get:
-            configs: bookinfo
-            jsonpath: $.service[*].name
+        - toolkit-info-get:
+            system: bookinfo
+            service: all_service
+            info: name
         - toolkit-list-foreach:
-            list: ${toolkit-config-get}
+            list: ${toolkit-info-get}
             element_name: service
             todo:
               - get-github-service_dependency_risk_past_week:
@@ -338,11 +340,12 @@ low_code:
         Put the repository information of a certain service into GraphQL string.
       access: private
       body:
-        - toolkit-config-get:
-            configs: bookinfo
-            jsonpath: $.service[?(@.name=='${service_name}')].repository
+        - toolkit-info-get:
+            system: bookinfo
+            service: ${service_name}
+            info: repository
         - toolkit-string-split:
-            string: ${toolkit-config-get}
+            string: ${toolkit-info-get}
             separator: /
         - toolkit-list-get:
             list: ${toolkit-string-split}
