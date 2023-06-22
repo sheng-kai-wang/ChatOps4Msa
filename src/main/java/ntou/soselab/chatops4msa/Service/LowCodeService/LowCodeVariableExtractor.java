@@ -17,4 +17,8 @@ public class LowCodeVariableExtractor {
         while (matcher.find()) variableNameList.add(matcher.group(1));
         return variableNameList;
     }
+
+    public static boolean hasVariable(String parameterValue) {
+        return Pattern.compile(VARIABLE_REGEX).matcher(parameterValue).find();
+    }
 }

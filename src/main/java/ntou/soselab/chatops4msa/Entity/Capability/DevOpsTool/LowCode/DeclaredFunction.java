@@ -19,19 +19,19 @@ public class DeclaredFunction {
 
     private Map<String, String> localVariableMap;
 
-    public String getFunctionName() {
+    public String getName() {
         return this.name;
     }
 
-    public boolean isPrivate() {
-        return "private".equals(access.getAccess());
+    public List<InvokedFunction> getAllInvokedFunctionList() {
+        return this.invokedFunctionList;
     }
 
     public String verify() {
         StringBuilder declaredFunctionSb = new StringBuilder();
 
-        if (name == null) declaredFunctionSb.append("      name is null").append("\n");
-        if (description == null) declaredFunctionSb.append("      description is null").append("\n");
+        if (name == null) declaredFunctionSb.append("      there is NO name").append("\n");
+        if (description == null) declaredFunctionSb.append("      there is NO description").append("\n");
 
         // access verify
         declaredFunctionSb.append(access.verify());
@@ -39,17 +39,17 @@ public class DeclaredFunction {
         // body verify
         if (invokedFunctionList == null) {
             declaredFunctionSb.append("      body error:").append("\n");
-            declaredFunctionSb.append("        there is no body").append("\n");
+            declaredFunctionSb.append("        there is NO body").append("\n");
 
         } else {
             if (invokedFunctionList.size() == 0) {
                 declaredFunctionSb.append("      body error:").append("\n");
-                declaredFunctionSb.append("        the body has no content").append("\n");
+                declaredFunctionSb.append("        the body has NO content").append("\n");
             }
             StringBuilder invokedFunctionSb = new StringBuilder();
             for (int i = 0; i < invokedFunctionList.size(); i++) {
                 String invokedFunctionErrorMessage = invokedFunctionList.get(i).verify("");
-                if (!"".equals(invokedFunctionErrorMessage)) {
+                if (!invokedFunctionErrorMessage.isEmpty()) {
                     invokedFunctionSb.append("      body[").append(i).append("] error:").append("\n");
                     invokedFunctionSb.append(invokedFunctionErrorMessage).append("\n");
                 }
@@ -77,15 +77,15 @@ public class DeclaredFunction {
             InvokedFunction function = invokedFunctionList.get(i);
             // verify the variable retrieval of invoked function
             String errorMessage = function.variableRetrievalVerify(localVariableMap, "");
-            if (!"".equals(errorMessage)) {
+            if (!errorMessage.isEmpty()) {
                 sb.append("      body[").append(i).append("] error:").append("\n");
                 sb.append(errorMessage).append("\n");
             }
             // initial the intermediate variables of invoked function
             String functionName = function.getName();
-            if (functionName != null && !"".equals(functionName)) localVariableMap.put(functionName, null);
+            if (functionName != null && !functionName.isEmpty()) localVariableMap.put(functionName, null);
             String functionAssign = function.getAssign();
-            if (functionAssign != null && !"".equals(functionAssign)) localVariableMap.put(functionAssign, null);
+            if (functionAssign != null && !functionAssign.isEmpty()) localVariableMap.put(functionAssign, null);
         }
 
         return sb.toString();

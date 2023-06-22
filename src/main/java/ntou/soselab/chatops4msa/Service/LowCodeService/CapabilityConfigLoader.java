@@ -8,6 +8,7 @@ import com.google.gson.GsonBuilder;
 import jakarta.annotation.PostConstruct;
 import ntou.soselab.chatops4msa.Entity.Capability.Configs;
 import ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.DevOpsTool;
+import ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.LowCode.DeclaredFunction;
 import ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.LowCode.LowCode;
 import ntou.soselab.chatops4msa.Entity.Capability.MessageDelivery;
 import ntou.soselab.chatops4msa.Entity.Capability.MicroserviceSystem.MicroserviceSystem;
@@ -60,20 +61,10 @@ public class CapabilityConfigLoader {
         variableRetrieveAndVerify("message-delivery", messageDeliveryMap, variableRetrieveSb);
 
         String allVariableRetrieveErrorMessage = variableRetrieveSb.toString();
-        if (!"".equals(allVariableRetrieveErrorMessage)) {
+        if (!allVariableRetrieveErrorMessage.isEmpty()) {
             errorMessageSb.append("variable retrieve error:").append("\n");
             errorMessageSb.append(allVariableRetrieveErrorMessage).append("\n");
         }
-    }
-
-    /**
-     * verify the validity of the JSONPath in toolkit-info-get
-     */
-    @PostConstruct
-    public void toolkitConfigGetVerify() {
-        // TODO: verify the parameters of toolkit function (e.g. service_name...)
-        System.out.println("[DEBUG] start to verify the parameters of toolkit function");
-        System.out.println();
     }
 
     /**
@@ -87,7 +78,7 @@ public class CapabilityConfigLoader {
         // duplicated function name verify (declared function in low-code)
         List<String> allDeclaredFunctionNameList = getAllDeclaredFunctionNameList();
         String errorMessage = duplicatedFunctionNameVerify("declared function in low-code", allDeclaredFunctionNameList);
-        if (!"".equals(errorMessage)) errorMessageSb.append(errorMessage).append("\n");
+        if (!errorMessage.isEmpty()) errorMessageSb.append(errorMessage).append("\n");
 
         for (Map.Entry<String, MicroserviceSystem> entry : microserviceSystemMap.entrySet()) {
             String microserviceSystemName = entry.getKey();
@@ -95,7 +86,7 @@ public class CapabilityConfigLoader {
             // duplicated function name verify (capability list)
             List<String> capabilityList = entry.getValue().getCapabilityList();
             errorMessage = duplicatedFunctionNameVerify("capability list in " + microserviceSystemName, capabilityList);
-            if (!"".equals(errorMessage)) errorMessageSb.append(errorMessage).append("\n");
+            if (!errorMessage.isEmpty()) errorMessageSb.append(errorMessage).append("\n");
 
             // undefined function name
             ArrayList<String> undefinedFunctionNameList = new ArrayList<>();
@@ -104,7 +95,7 @@ public class CapabilityConfigLoader {
                 undefinedFunctionNameList.add(functionName);
             }
             if (undefinedFunctionNameList.isEmpty()) continue;
-            errorMessageSb.append("the ").append(microserviceSystemName).append(" contains undefined function name or private function").append("\n");
+            errorMessageSb.append("the ").append(microserviceSystemName).append(" contains undefined function name or private function:").append("\n");
             errorMessageSb.append("  ").append(undefinedFunctionNameList).append("\n");
         }
     }
@@ -125,6 +116,8 @@ public class CapabilityConfigLoader {
 
     private <T extends Configs> Map<String, T> loadConfig(String configType, Class<T> configClass, String classpath) {
         System.out.println("[DEBUG] start to load " + configType + " configs");
+        System.out.println();
+
         HashMap<String, T> configObjMap = new HashMap<>();
         ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -148,11 +141,11 @@ public class CapabilityConfigLoader {
                 T configObj = objectMapper.readValue(resource.getInputStream(), configClass);
 
                 System.out.println("[DEBUG] the content of " + fileName + ": ");
-//                System.out.println(gson.toJson(configObj));
+                System.out.println(gson.toJson(configObj));
                 System.out.println();
 
                 String errorMessage = configObj.verify();
-                if (!"".equals(errorMessage)) {
+                if (!errorMessage.isEmpty()) {
                     errorMessageSb.append(fileName).append(" error:").append("\n");
                     errorMessageSb.append(errorMessage).append("\n");
                 }
@@ -182,7 +175,7 @@ public class CapabilityConfigLoader {
         for (Map.Entry<String, T> entry : devOpsToolMap.entrySet()) {
             LowCode lowCode = entry.getValue().getLowCode();
             String variableRetrieveErrorMessage = lowCode.variableRetrieveAndVerify(secretMap.get("secret"));
-            if (!"".equals(variableRetrieveErrorMessage)) {
+            if (!variableRetrieveErrorMessage.isEmpty()) {
                 sb.append("  ").append(devOpsToolType).append("[").append(entry.getKey()).append("] error:").append("\n");
                 sb.append(variableRetrieveErrorMessage).append("\n");
             }
@@ -219,9 +212,28 @@ public class CapabilityConfigLoader {
         return sb.toString();
     }
 
+    private List<DeclaredFunction> getAllDeclaredFunctionObjList() {
+        List<DeclaredFunction> allDeclaredFunctionObjList = new ArrayList<>();
+        for (DevOpsTool devOpsTool : devOpsToolMap.values()) {
+            allDeclaredFunctionObjList.addAll(devOpsTool.getLowCode().getAllDeclaredFunctionObjList());
+        }
+        for (MessageDelivery messageDelivery : messageDeliveryMap.values()) {
+            allDeclaredFunctionObjList.addAll(messageDelivery.getLowCode().getAllDeclaredFunctionObjList());
+        }
+        return allDeclaredFunctionObjList;
+    }
+
+    private List<String> getAllServiceNameList() {
+        List<String> allServiceNameList = new ArrayList<>();
+        for (MicroserviceSystem microserviceSystem : microserviceSystemMap.values()) {
+            allServiceNameList.addAll(microserviceSystem.getAllServiceNameList());
+        }
+        return allServiceNameList;
+    }
+
     private void checkVerifyMessage() throws IllegalCapabilityConfigException {
         String errorMessage = compactLineBreaks(errorMessageSb.toString());
-        if (!"".equals(errorMessage)) throw new IllegalCapabilityConfigException(errorMessage);
+        if (!errorMessage.isEmpty()) throw new IllegalCapabilityConfigException(errorMessage);
         else {
             String passedMessage = "[INFO] Capability Configs Verification Passed";
             System.out.println(passedMessage);

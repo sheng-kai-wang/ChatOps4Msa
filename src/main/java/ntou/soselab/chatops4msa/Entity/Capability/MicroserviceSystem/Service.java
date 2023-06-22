@@ -29,10 +29,10 @@ public class Service {
 
     public String verify() {
         StringBuilder sb = new StringBuilder();
-        if (name == null) sb.append("      name is null").append("\n");
-        if (url == null) sb.append("      url is null").append("\n");
-        if (repository == null) sb.append("      repository is null").append("\n");
-        if (description == null) sb.append("      description is null").append("\n");
+        if (name == null) sb.append("    there is NO name").append("\n");
+        if (url == null) sb.append("    there is NO url").append("\n");
+        if (repository == null) sb.append("    there is NO repository").append("\n");
+        if (description == null) sb.append("    there is NO description").append("\n");
         return sb.toString();
     }
 }

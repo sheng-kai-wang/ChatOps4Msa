@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ntou.soselab.chatops4msa.Service.LowCodeService.LowCodeVariableExtractor;
 import ntou.soselab.chatops4msa.Service.LowCodeService.ToolkitVerifyConfigLoader;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
@@ -27,7 +26,7 @@ public class InvokedFunction {
     }
 
     @JsonAnySetter
-    public void setFunctionContent(String functionName, Map<String, Object> parameterMap) {
+    public void setFunctionContentAndVerify(String functionName, Map<String, Object> parameterMap) {
         this.functionName = functionName;
         this.parameterMap = new HashMap<>();
 
@@ -73,13 +72,47 @@ public class InvokedFunction {
         return this.functionName;
     }
 
+    public String getParameterString(String parameterName) {
+        return parameterMap.get(parameterName);
+    }
+
+    public List<Map<String, String>> getAllParameterMapList() {
+        List<Map<String, String>> list = new ArrayList<>();
+
+        // add parameter
+        list.add(parameterMap);
+
+        // add todoList
+        if (todoList != null) {
+            for (InvokedFunction specialParameter : todoList) {
+                list.addAll(specialParameter.getAllParameterMapList());
+            }
+        }
+
+        // add trueList
+        if (trueList != null) {
+            for (InvokedFunction specialParameter : trueList) {
+                list.addAll(specialParameter.getAllParameterMapList());
+            }
+        }
+
+        // add falseList
+        if (falseList != null) {
+            for (InvokedFunction specialParameter : falseList) {
+                list.addAll(specialParameter.getAllParameterMapList());
+            }
+        }
+
+        return list;
+    }
+
     public String getAssign() {
         return this.assign;
     }
 
     public String verify(String indent) {
         // name verify
-        if (functionName == null) errorMessageSb.append("          name is null").append("\n");
+        if (functionName == null) errorMessageSb.append("          there is NO name").append("\n");
 
         // parameter verify
         if (!toolkitVerifyConfigMap.containsKey(functionName)) return errorMessageSb.toString();
@@ -110,7 +143,7 @@ public class InvokedFunction {
         if (specialParameter == null) return;
         for (InvokedFunction function : specialParameter) {
             String errorMessage = function.verify(indent + "  ");
-            if (!"".equals(errorMessage)) {
+            if (!errorMessage.isEmpty()) {
                 errorMessageSb.append(indent).append("        ").append(parameterName).append(" function error:").append("\n");
                 errorMessageSb.append(indent).append(errorMessage).append("\n");
             }
@@ -149,7 +182,7 @@ public class InvokedFunction {
         if ("todo".equals(parameterName)) currentVariableMap.put(parameterMap.get("element_name"), null);
         for (InvokedFunction function : specialParameter) {
             String errorMessage = function.variableRetrievalVerify(currentVariableMap, indent + "  ");
-            if (!"".equals(errorMessage)) {
+            if (!errorMessage.isEmpty()) {
                 sb.append(indent).append("        ").append(parameterName).append(" function error:").append("\n");
                 sb.append(indent).append(errorMessage).append("\n");
             }
