@@ -212,7 +212,7 @@ public class CapabilityConfigLoader {
         return sb.toString();
     }
 
-    private List<DeclaredFunction> getAllDeclaredFunctionObjList() {
+    public List<DeclaredFunction> getAllDeclaredFunctionObjList() {
         List<DeclaredFunction> allDeclaredFunctionObjList = new ArrayList<>();
         for (DevOpsTool devOpsTool : devOpsToolMap.values()) {
             allDeclaredFunctionObjList.addAll(devOpsTool.getLowCode().getAllDeclaredFunctionObjList());

@@ -134,7 +134,23 @@ low_code:
           }
         }
       }
-    update_github_service_dependency_risk_issue_graphql: |
+    get_github_issue_graphql: |
+      query {
+        repository(owner: $owner, name: $name) {
+          issues(first: $first) {
+            nodes {
+              title
+              createdAt
+              updatedAt
+              closedAt
+              state
+            }
+          }
+        }
+      }
+
+
+    create_github_issue_graphql: |
       {
         createIssue(input: {repositoryName: $name, repositoryOwner: $owner, title: $title, body: $body}) {
           issue {
@@ -295,7 +311,37 @@ low_code:
 #            operation_parameter_json: null
 #            cron: ${cron}
 
-    - name: create-github-service_dependency_risk_issue
+    - name: get-github-issue_progress_timeline
+      parameter:
+        service_name: service name
+        number_of_issue: number of issue
+      description: |
+        Plot the progress of the issue on a timeline.
+      access: public
+      body:
+        - set-repo-info_of_service_into_graphql:
+            service_name: ${service_name}
+            graphql: ${get_github_issue_graphql}
+        - toolkit-string-replace:
+            string: ${set-repo-info_of_service_into_graphql}
+            original: $first
+            replace: ${number_of_issue}
+        - toolkit-graphql-query:
+            url: ${github_graphql_url}
+            graphql: ${toolkit-string-replace}
+            accept: application/json
+            content_type: application/json
+            authorization: ${github_authorization_bearer}
+        - toolkit-render-grafana:
+            json: ${toolkit-graphql-query}
+        - toolkit-discord-embed_thumbnail:
+            title: the progress of the issue
+            color: orange
+            field_json: .....
+            thumbnail: .....
+
+# 也許回傳建立 Issue 的 GitHub 網頁即可
+    - name: create-github-issue
       parameter: 
         service_name: service name
         issue_title: issue title
@@ -309,7 +355,7 @@ low_code:
       body:
         - set-repo-info_of_service_into_graphql:
             service_name: ${service_name}
-            graphql: ${update_github_service_dependency_risk_issue_graphql}
+            graphql: ${create_github_issue_graphql}
         - toolkit-string-replace:
             string: ${set-repo-info_of_service_into_graphql}
             original: $title

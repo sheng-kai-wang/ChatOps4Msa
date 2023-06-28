@@ -37,7 +37,8 @@ capability:
   - get-github-service_past_week_team_activity
   - get-github-all_service_dependency_risk_past_week
 #  - subscribe-github-all_service_dependency_risk_past_week
-  - create-github-service_dependency_risk_issue
+  - get-github-issue_progress_timeline
+  - create-github-issue
   - set-prometheus-edit_alert_rules
   - monitor-prometheus-health
   - monitor-prometheus-overview

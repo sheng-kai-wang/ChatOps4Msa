@@ -48,6 +48,10 @@ public class JDAService {
         System.out.println();
     }
 
+    public JDA getJDA() {
+        return this.jda;
+    }
+
     public void sendChatOpsChannelInfoMessage(String message) {
         sendChatOpsChannelMessage("```yaml\n" + message + "```");
     }
