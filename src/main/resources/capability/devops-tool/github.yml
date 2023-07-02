@@ -111,29 +111,30 @@ low_code:
           }
         }
       }
-    get_github_all_service_dependency_risk_past_week_graphql: |
-      {
-        repository(owner: $owner, name: $name) {
-          vulnerabilityAlerts(last: 100) {
-            nodes {
-              createdAt
-              securityVulnerability {
-                package {
-                  name
-                }
-                advisory {
-                  description
-                  severity
-                  references {
-                    url
-                  }
-                }
-                updatedAt
-              }
-            }
-          }
-        }
-      }
+    # get_github_all_service_dependency_risk_past_week_graphql: |
+    #   {
+    #     repository(owner: $owner, name: $name) {
+    #       vulnerabilityAlerts(last: 100) {
+    #         nodes {
+    #           createdAt
+    #           securityVulnerability {
+    #             package {
+    #               name
+    #             }
+    #             advisory {
+    #               description
+    #               severity
+    #               references {
+    #                 url
+    #               }
+    #             }
+    #             updatedAt
+    #           }
+    #         }
+    #       }
+    #     }
+    #   }
+    get-github-contribution_of_team_member_path: /graphs/contributors
     get_github_issue_graphql: |
       query {
         repository(owner: $owner, name: $name) {
@@ -276,10 +277,11 @@ low_code:
             color: yellow
             field_json: ${toolkit-json-parse}
 
-    - name: get-github-all_service_dependency_risk_past_week
-      parameter: null
+    - name: get-github-contribution_of_team_member
+      parameter:
+        service_name: service name
       description: |
-        Get the dependency risks of all services' repositories in the past week.
+        Get the contribution analysis of team members.
       access:
         protected:
           - supervisor
@@ -287,14 +289,34 @@ low_code:
       body:
         - toolkit-info-get:
             system: bookinfo
-            service: all_service
-            info: name
-        - toolkit-list-foreach:
-            list: ${toolkit-info-get}
-            element_name: service
-            todo:
-              - get-github-service_dependency_risk_past_week:
-                  service_name: ${service}
+            service: ${service_name}
+            info: repository
+        - toolkit-string-replace:
+            string: ${toolkit-info-get}
+            original: ".git"
+            replace: ""
+        - toolkit-discord-text:
+            text: ${toolkit-string-replace}${get-github-contribution_of_team_member_path}
+
+    # - name: get-github-all_service_dependency_risk_past_week
+    #   parameter: null
+    #   description: |
+    #     Get the dependency risks of all services' repositories in the past week.
+    #   access:
+    #     protected:
+    #       - supervisor
+    #       - team_member
+    #   body:
+    #     - toolkit-info-get:
+    #         system: bookinfo
+    #         service: all_service
+    #         info: name
+    #     - toolkit-list-foreach:
+    #         list: ${toolkit-info-get}
+    #         element_name: service
+    #         todo:
+    #           - get-github-service_dependency_risk_past_week:
+    #               service_name: ${service}
 
 #    - name: subscribe-github-all_service_dependency_risk_past_week
 #      parameter:

@@ -35,7 +35,8 @@ capability:
   - get-github-service_recent_activity
   - get-github-service_latest_commit_report
   - get-github-service_past_week_team_activity
-  - get-github-all_service_dependency_risk_past_week
+  # - get-github-all_service_dependency_risk_past_week
+  - get-github-contribution_of_team_member
 #  - subscribe-github-all_service_dependency_risk_past_week
   - get-github-issue_progress_timeline
   - create-github-issue
