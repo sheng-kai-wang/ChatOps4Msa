@@ -2,6 +2,7 @@ package ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.LowCode;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,19 @@ public class DeclaredFunction {
 
     public String getName() {
         return this.name;
+    }
+
+    public Map<String, String> getParameterDescriptionMap() {
+        if (parameterDescriptionMap == null) return new HashMap<>();
+        return this.parameterDescriptionMap;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public boolean isPrivate() {
+        return "private".equals(this.access.getAccess());
     }
 
     public List<InvokedFunction> getAllInvokedFunctionList() {

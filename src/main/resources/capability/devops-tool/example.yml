@@ -5,11 +5,11 @@ info:
   version: 1.0.0
   title: example
   description: |
-    Just echo a message
+    Just a example for ChatOps Query Language
 
 low_code:
   operation:
-    - name: echo-null-text_message
+    - name: get-example-echo_message
       parameter:
         message: text message # get from Discord
       description: |
@@ -20,7 +20,7 @@ low_code:
             text: ${message}
             assign: custom_variable # Declare a new variable
 
-    - name: get-null-cube_of_given_number
+    - name: get-example-cube_of_given_number
       parameter:
         given_number: a given number # 4
       description: |

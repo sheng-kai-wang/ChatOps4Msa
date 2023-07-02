@@ -7,7 +7,7 @@ info:
   version: 1.0.0
   title: k6
   description: |
-    k6 is an open-source load testing tool designed for developers, allowing them to efficiently test the performance and scalability of their systems with ease.
+    k6 is an open-source load testing tool.
 
 low_code:
   property:

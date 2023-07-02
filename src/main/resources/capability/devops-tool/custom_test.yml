@@ -10,11 +10,11 @@ low_code:
 
   operation:
     # this function combines the functions of prometheus, k6, and GitHub.
-    - name: test-custom_test-smoke_testing_all_service_and_repository_report
+    - name: test-custom_test-smoke_and_repo_all_service
       parameter:
         number_of_virtual_user: 1 <= n <= 5
       description: |
-        Perform smoke testing on all services simultaneously while monitoring the testing status. Then, for the microservices that did not pass the tests, retrieve their recent activity within the past week, including the activity of each team member in their respective repositories. Finally, aggregate and present the results.
+        Perform smoke tests on all services, monitor status. Get recent activity for failing microservices.
       # only supervisor can execute
       access:
         protected:

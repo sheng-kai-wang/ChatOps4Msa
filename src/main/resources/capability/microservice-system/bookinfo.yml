@@ -31,7 +31,7 @@ service:
     description: This is the ratings microservice.
 
 capability:
-  - echo-null-text_message
+  - get-example-echo_message
   - get-github-service_recent_activity
   - get-github-service_latest_commit_report
   - get-github-service_past_week_team_activity
@@ -48,4 +48,4 @@ capability:
   - monitor-prometheus-service_dependency
   - test-k6-stress_testing
   - test-k6-smoke_testing_all_service
-  - test-custom_test-smoke_testing_all_service_and_repository_report
+  - test-custom_test-smoke_and_repo_all_service

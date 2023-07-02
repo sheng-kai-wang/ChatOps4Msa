@@ -11,6 +11,10 @@ public class Info {
     @JsonProperty("description")
     private String description;
 
+    public String getDescription() {
+        return this.description;
+    }
+
     public String verify() {
         StringBuilder sb = new StringBuilder();
         if (version == null) sb.append("    there is NO version").append("\n");

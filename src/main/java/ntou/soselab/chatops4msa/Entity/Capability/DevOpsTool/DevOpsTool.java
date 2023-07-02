@@ -12,6 +12,10 @@ public class DevOpsTool implements Configs {
     @JsonProperty("low_code")
     private LowCode lowCode;
 
+    public String getDescription() {
+        return this.info.getDescription();
+    }
+
     public LowCode getLowCode() {
         return this.lowCode;
     }

@@ -27,10 +27,10 @@ import java.util.*;
 
 @Service
 public class CapabilityConfigLoader {
-    public Map<String, MicroserviceSystem> microserviceSystemMap;
-    public Map<String, Secret> secretMap;
-    public Map<String, DevOpsTool> devOpsToolMap;
-    public Map<String, MessageDelivery> messageDeliveryMap;
+    public final Map<String, MicroserviceSystem> microserviceSystemMap;
+    public final Map<String, Secret> secretMap;
+    public final Map<String, DevOpsTool> devOpsToolMap;
+    public final Map<String, MessageDelivery> messageDeliveryMap;
 
     private final JDAService jdaService;
     private final StringBuilder errorMessageSb;
@@ -212,6 +212,17 @@ public class CapabilityConfigLoader {
         return sb.toString();
     }
 
+    /**
+     * in order to generate ChatOps Query Language
+     */
+    public List<String> getAllServiceNameList() {
+        List<String> allServiceNameList = new ArrayList<>();
+        for (MicroserviceSystem microserviceSystem : microserviceSystemMap.values()) {
+            allServiceNameList.addAll(microserviceSystem.getAllServiceNameList());
+        }
+        return allServiceNameList;
+    }
+
     public List<DeclaredFunction> getAllDeclaredFunctionObjList() {
         List<DeclaredFunction> allDeclaredFunctionObjList = new ArrayList<>();
         for (DevOpsTool devOpsTool : devOpsToolMap.values()) {
@@ -221,14 +232,6 @@ public class CapabilityConfigLoader {
             allDeclaredFunctionObjList.addAll(messageDelivery.getLowCode().getAllDeclaredFunctionObjList());
         }
         return allDeclaredFunctionObjList;
-    }
-
-    private List<String> getAllServiceNameList() {
-        List<String> allServiceNameList = new ArrayList<>();
-        for (MicroserviceSystem microserviceSystem : microserviceSystemMap.values()) {
-            allServiceNameList.addAll(microserviceSystem.getAllServiceNameList());
-        }
-        return allServiceNameList;
     }
 
     private void checkVerifyMessage() throws IllegalCapabilityConfigException {

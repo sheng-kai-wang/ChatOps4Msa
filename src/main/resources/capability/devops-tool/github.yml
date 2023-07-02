@@ -111,29 +111,29 @@ low_code:
           }
         }
       }
-    # get_github_all_service_dependency_risk_past_week_graphql: |
-    #   {
-    #     repository(owner: $owner, name: $name) {
-    #       vulnerabilityAlerts(last: 100) {
-    #         nodes {
-    #           createdAt
-    #           securityVulnerability {
-    #             package {
-    #               name
-    #             }
-    #             advisory {
-    #               description
-    #               severity
-    #               references {
-    #                 url
-    #               }
-    #             }
-    #             updatedAt
-    #           }
-    #         }
-    #       }
-    #     }
-    #   }
+    get_github_all_service_dependency_risk_past_week_graphql: |
+      {
+        repository(owner: $owner, name: $name) {
+          vulnerabilityAlerts(last: 100) {
+            nodes {
+              createdAt
+              securityVulnerability {
+                package {
+                  name
+                }
+                advisory {
+                  description
+                  severity
+                  references {
+                    url
+                  }
+                }
+                updatedAt
+              }
+            }
+          }
+        }
+      }
     get-github-contribution_of_team_member_path: /graphs/contributors
     get_github_issue_graphql: |
       query {
@@ -251,8 +251,7 @@ low_code:
     - name: get-github-service_past_week_team_activity
       parameter:
         service_name: service name
-      description: |
-        Get the activity level of the service's repo and the activity status of each team member within the past week.
+      description: get the team's activity for the specified service within the past week
       access: public
       body:
         - set-repo-info_of_service_into_graphql:
