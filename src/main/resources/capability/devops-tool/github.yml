@@ -210,8 +210,6 @@ low_code:
         - toolkit-graphql-query:
             url: ${github_graphql_url}
             graphql: ${toolkit-string-replace}
-            accept: application/json
-            content_type: application/json
             authorization: ${github_authorization_bearer}
         - toolkit-json-parse:
             json: ${toolkit-graphql-query}
@@ -237,8 +235,6 @@ low_code:
         - toolkit-graphql-query:
             url: ${github_graphql_url}
             graphql: ${set-repo-info_of_service_into_graphql}
-            accept: application/json
-            content_type: application/json
             authorization: ${github_authorization_bearer}
         - toolkit-json-parse:
             json: ${toolkit-graphql-query}
@@ -265,8 +261,6 @@ low_code:
         - toolkit-graphql-query:
             url: ${github_graphql_url}
             graphql: ${toolkit-string-replace}
-            accept: application/json
-            content_type: application/json
             authorization: ${github_authorization_bearer}
         - toolkit-json-parse:
             json: ${toolkit-graphql-query}
@@ -350,8 +344,6 @@ low_code:
         - toolkit-graphql-query:
             url: ${github_graphql_url}
             graphql: ${toolkit-string-replace}
-            accept: application/json
-            content_type: application/json
             authorization: ${github_authorization_bearer}
         - toolkit-render-grafana:
             json: ${toolkit-graphql-query}
@@ -388,8 +380,6 @@ low_code:
         - toolkit-graphql-query:
             url: ${github_graphql_url}
             graphql: ${toolkit-string-replace}
-            accept: application/json
-            content_type: application/json
             authorization: ${github_authorization_bearer}
         - toolkit-json-parse:
             json: ${toolkit-graphql-query}
@@ -451,8 +441,6 @@ low_code:
         - toolkit-graphql-query:
             url: ${github_graphql_url}
             graphql: ${toolkit-string-replace}
-            accept: application/json
-            content_type: application/json
             authorization: ${github_authorization_bearer}
         - toolkit-json-parse:
             json: ${toolkit-graphql-query}

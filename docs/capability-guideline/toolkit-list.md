@@ -43,7 +43,7 @@ toolkit-time-one_week_ago: null
 ##### the result is `1.5`
 
 ```yml
-toolkit-number-calculate:
+toolkit-math-calculate:
   expression: <<e.g. 2 * 3 / 4>>
 ```
 
@@ -171,14 +171,14 @@ toolkit-flow-return:
   return: <<return value>>
 ```
 
-### execute a specific function periodically
+<!-- ### execute a specific function periodically
 
 ```yml
 toolkit-flow-subscribe:
   function: <<function name>>
   function_parameter_json: <<a JSON-formatted list of parameters>>
   cron: <<e.g. 0 9 * * 1 >>
-```
+``` -->
 
 ### send a GET request to a specific REST API
 
@@ -193,8 +193,6 @@ toolkit-restapi-get:
 toolkit-restapi-post:
   url: <<http_url>>
   body: <<a JSON-formatted request body>>
-  accept: <<e.g. application/json >>
-  content_type: <<e.g. application/json >>
   authorization: <<e.g. Bearer ... >>
 ```
 
@@ -204,8 +202,6 @@ toolkit-restapi-post:
 toolkit-graphql-query:
   url: <<http_url>>
   graphql: <<graphql>>
-  accept: <<e.g. application/json >>
-  content_type: <<e.g. application/json >>
   authorization: <<e.g. Bearer ... >>
 ```
 
@@ -216,12 +212,12 @@ toolkit-command-bash:
   command: <<e.g. docker run --rm -i grafana/k6 run <script.js -e TEST_URL=https://test-api.k6.io >>
 ```
 
-### visualize JSON data using Grafana
+<!-- ### visualize JSON data using Grafana
 
 ```yml
 toolkit-render-grafana:
   json: <<JSON>>
-```
+``` -->
 
 ### send a text message to the Discord channel
 

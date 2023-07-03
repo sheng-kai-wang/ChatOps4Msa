@@ -43,8 +43,6 @@ low_code:
         - toolkit-restapi-post:
             url: ${grafana_host_ip}:${grafana_host_port}${grafana_create_datasource_path}
             body: "{'name': '${system_name}', 'type': 'prometheus', 'url': '${prometheus_host_ip}:${prometheus_host_port}', 'access': 'proxy','basicAuth': false}"
-            accept: application/json
-            content_type: application/json
             authorization: ${grafana_authorization_bearer}
 
   operation:

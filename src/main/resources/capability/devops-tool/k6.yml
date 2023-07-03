@@ -52,8 +52,16 @@ low_code:
             true:
               - toolkit-discord-warning:
                   text: "[WARNING] sorry, the number of virtual user must be between 1 and 5."
-        - toolkit-command-bash:
-            command: docker run --rm -i grafana/k6 run --vus ${number_of_virtual_user} --duration 30s - <smokeTesting-All.js
+        - toolkit-info-get:
+            system: bookinfo
+            service: all_service
+            info: name
+        - toolkit-list-async:
+            list: ${toolkit-info-get}
+            element_name: service_name
+            todo:
+              - toolkit-command-bash:
+                  command: docker run --rm -i grafana/k6 run --vus ${number_of_virtual_user} --duration 30s - <smokeTesting-${service_name}.js
         - toolkit-discord-embed_thumbnail:
             title: The smoke testing of all service
             color: yellow

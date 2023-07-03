@@ -1,5 +1,5 @@
 # required parameters of all toolkit-functions
-toolkit-number-calculate:
+toolkit-math-calculate:
   - expression
 toolkit-string-replace:
   - string
@@ -31,23 +31,19 @@ toolkit-info-get:
   - info
 toolkit-flow-if:
   - condition
-toolkit-flow-subscribe:
-  - function
-  - function_parameter_json
-  - cron
+# toolkit-flow-subscribe:
+#   - function
+#   - function_parameter_json
+#   - cron
 toolkit-restapi-get:
   - url
 toolkit-restapi-post:
   - url
   - body
-  - accept
-  - content_type
   - authorization
 toolkit-graphql-query:
   - url
   - graphql
-  - accept
-  - content_type
   - authorization
 toolkit-command-bash:
   - command

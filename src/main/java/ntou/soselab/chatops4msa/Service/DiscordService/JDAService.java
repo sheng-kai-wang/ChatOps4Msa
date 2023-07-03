@@ -3,6 +3,7 @@ package ntou.soselab.chatops4msa.Service.DiscordService;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import ntou.soselab.chatops4msa.Exception.DiscordIdException;
@@ -68,7 +69,7 @@ public class JDAService {
         sendChatOpsChannelMessage("```\n" + message + "```");
     }
 
-    private void sendChatOpsChannelMessage(String message) {
+    public void sendChatOpsChannelMessage(String message) {
         try {
             Guild guild = jda.getGuildById(guildId);
             if (guild == null) {
@@ -83,6 +84,28 @@ public class JDAService {
             }
 
             channel.sendMessage(message).queue();
+
+        } catch (DiscordIdException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void sendChatOpsChannelEmbedMessage(MessageEmbed embedMessage) {
+        // TODO: to refactor
+        try {
+            Guild guild = jda.getGuildById(guildId);
+            if (guild == null) {
+                System.out.println("[ERROR] the guild ID is incorrect");
+                throw new DiscordIdException("the guild ID is incorrect");
+            }
+
+            TextChannel channel = guild.getTextChannelById(channelChatOpsId);
+            if (channel == null) {
+                System.out.println("[ERROR] the chatops channel ID is incorrect");
+                throw new DiscordIdException("the chatops channel ID is incorrect");
+            }
+
+            channel.sendMessageEmbeds(embedMessage).queue();
 
         } catch (DiscordIdException e) {
             throw new RuntimeException(e);

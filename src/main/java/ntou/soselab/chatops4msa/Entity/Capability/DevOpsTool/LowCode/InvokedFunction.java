@@ -188,4 +188,8 @@ public class InvokedFunction {
             }
         }
     }
+
+    public void invoke() {
+        // TODO: how to invoke...
+    }
 }
