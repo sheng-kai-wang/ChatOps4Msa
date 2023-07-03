@@ -30,9 +30,7 @@ public class ChatOpsQueryLanguageRegister {
 
         removeOriginalCommands();
         upsertNewCommands();
-        printAllCommands();
-
-        jdaService.sendChatOpsChannelInfoMessage("[INFO] All ChatOps Query Language has been registered");
+        checkCommandsStatusAndRestart(jdaService);
     }
 
     private void removeOriginalCommands() {
@@ -79,7 +77,7 @@ public class ChatOpsQueryLanguageRegister {
             SubcommandData subcommandData = new SubcommandData(subCommandName, subCommandDescription);
             for (Map.Entry<String, String> entry : declaredFunction.getParameterDescriptionMap().entrySet()) {
                 if ("service_name".equals(entry.getKey())) subcommandData.addOptions(generateServiceOption());
-                else subcommandData.addOption(OptionType.STRING, entry.getKey(), entry.getValue(), true, true);
+                else subcommandData.addOption(OptionType.STRING, entry.getKey(), entry.getValue(), true);
             }
 
             subCommandList.add(subcommandData);
@@ -109,7 +107,8 @@ public class ChatOpsQueryLanguageRegister {
         return serviceOption.addChoice("all_service", "all_service");
     }
 
-    private void printAllCommands() {
+    private void checkCommandsStatusAndRestart(JDAService jdaService) {
+
         try {
             jda.awaitReady();
             Thread.sleep(10000);
@@ -117,15 +116,35 @@ public class ChatOpsQueryLanguageRegister {
             throw new RuntimeException(e);
         }
 
+        String errorMessage = "[ERROR] Failed To Register ChatOps Query Language (Restarting...)";
+        String successMessage = "All ChatOps Query Language has been registered";
+
         jda.retrieveCommands().queue(commands -> {
+            System.out.println();
+
+            if (commands.isEmpty()) {
+                jdaService.sendChatOpsChannelErrorMessage(errorMessage);
+                System.out.println(errorMessage);
+                System.out.println();
+                upsertNewCommands();
+                checkCommandsStatusAndRestart(jdaService);
+                return;
+            }
+
+            jdaService.sendChatOpsChannelInfoMessage("[INFO] " + successMessage);
+            System.out.println("[DEBUG] " + successMessage);
+            System.out.println();
+
             System.out.println("[DEBUG] all slash command:");
             for (Command command : commands) {
                 for (Command.SubcommandGroup subcommandGroup : command.getSubcommandGroups()) {
                     for (Command.Subcommand subCommand : subcommandGroup.getSubcommands()) {
-                        System.out.println(subCommand.getFullCommandName());
+                        System.out.println("/" + subCommand.getFullCommandName());
                     }
                 }
             }
+
+            System.out.println();
         });
     }
 }

@@ -1,11 +1,21 @@
 package ntou.soselab.chatops4msa.Service;
 
+import org.springframework.stereotype.Service;
+
+import java.util.Map;
+
+@Service
 public class CapabilityOrchestrator {
 
 //        String methodName = "someMethod";
 //    SomeClass obj = new SomeClass();
 //    Method method = obj.getClass().getMethod(methodName);
 //    method.invoke(obj);
+
+    public String performTheCapability(String functionName, Map parameterMap) {
+        // TODO: perform the capability
+        return "ok";
+    }
 
     private String extractToolkitClassName(String functionName) {
         return "Toolkit" + functionName.split("-")[1];
