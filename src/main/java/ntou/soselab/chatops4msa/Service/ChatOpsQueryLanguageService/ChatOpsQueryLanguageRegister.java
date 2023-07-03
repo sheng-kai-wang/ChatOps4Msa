@@ -116,15 +116,15 @@ public class ChatOpsQueryLanguageRegister {
             throw new RuntimeException(e);
         }
 
-        String errorMessage = "[ERROR] Failed To Register ChatOps Query Language (Restarting...)";
+        String warningMessage = "[WARNING] Failed To Register ChatOps Query Language (Restarting...)";
         String successMessage = "All ChatOps Query Language has been registered";
 
         jda.retrieveCommands().queue(commands -> {
             System.out.println();
 
             if (commands.isEmpty()) {
-                jdaService.sendChatOpsChannelErrorMessage(errorMessage);
-                System.out.println(errorMessage);
+                jdaService.sendChatOpsChannelWarningMessage(warningMessage);
+                System.out.println(warningMessage);
                 System.out.println();
                 upsertNewCommands();
                 checkCommandsStatusAndRestart(jdaService);
