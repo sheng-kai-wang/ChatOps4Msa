@@ -185,10 +185,10 @@ public class CapabilityConfigLoader {
     private List<String> getAllDeclaredFunctionNameList() {
         List<String> allDeclaredFunctionNameList = new ArrayList<>();
         for (DevOpsTool devOpsTool : devOpsToolMap.values()) {
-            allDeclaredFunctionNameList.addAll(devOpsTool.getLowCode().getAllDeclaredFunctionNameList());
+            allDeclaredFunctionNameList.addAll(devOpsTool.getLowCode().getAllNonPrivateDeclaredFunctionNameList());
         }
         for (MessageDelivery messageDelivery : messageDeliveryMap.values()) {
-            allDeclaredFunctionNameList.addAll(messageDelivery.getLowCode().getAllDeclaredFunctionNameList());
+            allDeclaredFunctionNameList.addAll(messageDelivery.getLowCode().getAllNonPrivateDeclaredFunctionNameList());
         }
         return allDeclaredFunctionNameList;
     }
@@ -212,28 +212,6 @@ public class CapabilityConfigLoader {
         return sb.toString();
     }
 
-    /**
-     * in order to generate ChatOps Query Language
-     */
-    public List<String> getAllServiceNameList() {
-        List<String> allServiceNameList = new ArrayList<>();
-        for (MicroserviceSystem microserviceSystem : microserviceSystemMap.values()) {
-            allServiceNameList.addAll(microserviceSystem.getAllServiceNameList());
-        }
-        return allServiceNameList;
-    }
-
-    public List<DeclaredFunction> getAllDeclaredFunctionObjList() {
-        List<DeclaredFunction> allDeclaredFunctionObjList = new ArrayList<>();
-        for (DevOpsTool devOpsTool : devOpsToolMap.values()) {
-            allDeclaredFunctionObjList.addAll(devOpsTool.getLowCode().getAllDeclaredFunctionObjList());
-        }
-        for (MessageDelivery messageDelivery : messageDeliveryMap.values()) {
-            allDeclaredFunctionObjList.addAll(messageDelivery.getLowCode().getAllDeclaredFunctionObjList());
-        }
-        return allDeclaredFunctionObjList;
-    }
-
     private void checkVerifyMessage() throws IllegalCapabilityConfigException {
         String errorMessage = compactLineBreaks(errorMessageSb.toString());
         if (!errorMessage.isEmpty()) throw new IllegalCapabilityConfigException(errorMessage);
@@ -250,5 +228,30 @@ public class CapabilityConfigLoader {
             errorMessage = errorMessage.replaceAll("\n\n\n", "\n\n");
         }
         return errorMessage;
+    }
+
+    /**
+     * in order to generate ChatOps Query Language
+     */
+    public List<String> getAllServiceNameList() {
+        List<String> allServiceNameList = new ArrayList<>();
+        for (MicroserviceSystem microserviceSystem : microserviceSystemMap.values()) {
+            allServiceNameList.addAll(microserviceSystem.getAllServiceNameList());
+        }
+        return allServiceNameList;
+    }
+
+    /**
+     * in order to perform the capability
+     */
+    public Map<String, DeclaredFunction> getAllNonPrivateDeclaredFunctionMap() {
+        Map<String, DeclaredFunction> map = new HashMap<>();
+        for (DevOpsTool tool : devOpsToolMap.values()) {
+            map.putAll(tool.getLowCode().getAllNonPrivateDeclaredFunctionMap());
+        }
+        for (MessageDelivery messageDelivery : messageDeliveryMap.values()) {
+            map.putAll(messageDelivery.getLowCode().getAllNonPrivateDeclaredFunctionMap());
+        }
+        return map;
     }
 }

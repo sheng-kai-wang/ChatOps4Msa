@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * For ease of invocation by the CapabilityOrchestrator,
+ * parameters are using snake case, similar to low-code.
+ */
 public class ListToolkit extends ToolkitFunction {
 
     /**
@@ -26,14 +30,13 @@ public class ListToolkit extends ToolkitFunction {
     /**
      * execute the todo function synchronously
      *
-     * @param list        like ["service_1", "service_2", "service_3"]
-     * @param elementName like "service_name"
-     * @param todo        is a list of InvokedFunction
+     * @param list         like ["service_1", "service_2", "service_3"]
+     * @param element_name like "service_name"
+     * @param todoList     is a list of InvokedFunction
      */
-    public void toolkitListForeach(String[] list, String elementName, List<InvokedFunction> todo) {
+    public String toolkitListForeach(String[] list, String element_name, List<InvokedFunction> todoList) {
         for (String element : list) {
-            for (InvokedFunction function : todo) {
-                function.invoke();
+            for (InvokedFunction function : todoList) {
                 // TODO: how to pass the parameter
             }
         }
@@ -42,14 +45,14 @@ public class ListToolkit extends ToolkitFunction {
     /**
      * execute the todo function asynchronously
      *
-     * @param list        like ["service_1", "service_2", "service_3"]
-     * @param elementName like "service_name"
-     * @param todo        is a list of InvokedFunction
+     * @param list         like ["service_1", "service_2", "service_3"]
+     * @param element_name like "service_name"
+     * @param todoList     is a list of InvokedFunction
      */
-    public void toolkitListAsync(String[] list, String elementName, List<InvokedFunction> todo) {
+    public String toolkitListAsync(String[] list, String element_name, List<InvokedFunction> todoList) {
         ExecutorService executorService = Executors.newFixedThreadPool(4);
         for (String element : list) {
-            for (InvokedFunction function : todo) {
+            for (InvokedFunction function : todoList) {
                 // TODO: how to pass the parameter
                 executorService.submit(() -> function.invoke());
             }

@@ -33,12 +33,20 @@ public class DeclaredFunction {
         return this.description;
     }
 
+    public AccessPermission getAccess() {
+        return this.access;
+    }
+
     public boolean isPrivate() {
         return "private".equals(this.access.getAccess());
     }
 
     public List<InvokedFunction> getAllInvokedFunctionList() {
         return this.invokedFunctionList;
+    }
+
+    public Map<String, String> getLocalVariableMap() {
+        return this.localVariableMap;
     }
 
     public String verify() {

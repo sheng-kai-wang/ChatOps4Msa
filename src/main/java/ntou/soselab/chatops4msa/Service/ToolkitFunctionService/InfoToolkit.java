@@ -1,23 +1,34 @@
 package ntou.soselab.chatops4msa.Service.ToolkitFunctionService;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ntou.soselab.chatops4msa.Entity.Capability.MicroserviceSystem.MicroserviceSystem;
+import ntou.soselab.chatops4msa.Exception.ToolkitFunctionException;
 import ntou.soselab.chatops4msa.Service.LowCodeService.CapabilityConfigLoader;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-public class InfoToolkit extends ToolkitFunction implements ApplicationContextAware {
-    private CapabilityConfigLoader configLoader;
+@Service
+public class InfoToolkit extends ToolkitFunction {
+    private final CapabilityConfigLoader configLoader;
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.configLoader = applicationContext.getBean(CapabilityConfigLoader.class);
+    @Autowired
+    public InfoToolkit(CapabilityConfigLoader configLoader) {
+        this.configLoader = configLoader;
     }
 
-    public String[] toolkitInfoGet(String system, String service, String info) {
+    public String toolkitInfoGet(String system, String service, String info) throws ToolkitFunctionException {
         MicroserviceSystem microserviceSystem = configLoader.microserviceSystemMap.get(system);
         List<String> list = microserviceSystem.getProperty(service, info);
-        return list.toArray(new String[0]);
+        String json;
+        try {
+            json = new ObjectMapper().writeValueAsString(list);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new ToolkitFunctionException("toolkit-info-get error");
+        }
+        return json;
     }
 }

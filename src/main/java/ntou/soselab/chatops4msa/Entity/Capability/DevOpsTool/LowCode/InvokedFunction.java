@@ -9,13 +9,13 @@ import java.util.*;
 
 public class InvokedFunction {
     private String functionName;
-    private Map<String, String> parameterMap;
+    private Map<String, String> argumentMap;
     private String assign;
     private List<InvokedFunction> todoList;
     private List<InvokedFunction> trueList;
     private List<InvokedFunction> falseList;
 
-    private transient StringBuilder errorMessageSb = new StringBuilder();
+    private transient final StringBuilder errorMessageSb = new StringBuilder();
     private transient final Map<String, List<String>> toolkitVerifyConfigMap;
 
     // within the DeclaredFunction, it is shared with all InvokedFunction (object reference)
@@ -26,44 +26,44 @@ public class InvokedFunction {
     }
 
     @JsonAnySetter
-    public void setFunctionContentAndVerify(String functionName, Map<String, Object> parameterMap) {
+    public void setFunctionContentAndVerify(String functionName, Map<String, Object> argumentMap) {
         this.functionName = functionName;
-        this.parameterMap = new HashMap<>();
+        this.argumentMap = new HashMap<>();
 
-        if (parameterMap == null) return;
-        for (Map.Entry<String, Object> entry : parameterMap.entrySet()) {
-            String parameterName = entry.getKey();
-            Object parameterValue = entry.getValue();
-            if (parameterValue instanceof String) {
-                if ("assign".equals(parameterName)) this.assign = (String) parameterValue;
-                else this.parameterMap.put(parameterName, (String) parameterValue);
+        if (argumentMap == null) return;
+        for (Map.Entry<String, Object> entry : argumentMap.entrySet()) {
+            String argumentName = entry.getKey();
+            Object argumentValue = entry.getValue();
+            if (argumentValue instanceof String) {
+                if ("assign".equals(argumentName)) this.assign = (String) argumentValue;
+                else this.argumentMap.put(argumentName, (String) argumentValue);
 
-            } else if (parameterValue instanceof Integer) {
-                this.parameterMap.put(parameterName, parameterValue.toString());
+            } else if (argumentValue instanceof Integer) {
+                this.argumentMap.put(argumentName, argumentValue.toString());
 
-            } else if (parameterValue instanceof List<?> specialParameter) {
-                if (specialParameter.isEmpty()) appendParameterFormatErrorMessage(parameterName);
-                List<InvokedFunction> specialParameterFunctionList = new ArrayList<>();
+            } else if (argumentValue instanceof List<?> specialArgument) {
+                if (specialArgument.isEmpty()) appendArgumentFormatErrorMessage(argumentName);
+                List<InvokedFunction> specialargumentFunctionList = new ArrayList<>();
                 ObjectMapper mapper = new ObjectMapper();
-                for (Object obj : specialParameter) {
+                for (Object obj : specialArgument) {
                     InvokedFunction invokedFunction = mapper.convertValue(obj, InvokedFunction.class);
-                    specialParameterFunctionList.add(invokedFunction);
+                    specialargumentFunctionList.add(invokedFunction);
                 }
-                if ("todo".equals(parameterName)) this.todoList = specialParameterFunctionList;
-                else if ("true".equals(parameterName)) this.trueList = specialParameterFunctionList;
-                else if ("false".equals(parameterName)) this.falseList = specialParameterFunctionList;
-                else appendParameterFormatErrorMessage(parameterName);
+                if ("todo".equals(argumentName)) this.todoList = specialargumentFunctionList;
+                else if ("true".equals(argumentName)) this.trueList = specialargumentFunctionList;
+                else if ("false".equals(argumentName)) this.falseList = specialargumentFunctionList;
+                else appendArgumentFormatErrorMessage(argumentName);
 
             } else {
-                appendParameterFormatErrorMessage(parameterName);
+                appendArgumentFormatErrorMessage(argumentName);
             }
         }
     }
 
-    private void appendParameterFormatErrorMessage(String parameterName) {
+    private void appendArgumentFormatErrorMessage(String argumentName) {
         errorMessageSb
-                .append("          the parameter format [")
-                .append(parameterName)
+                .append("          the argument format [")
+                .append(argumentName)
                 .append("] is incorrect")
                 .append("\n");
     }
@@ -72,39 +72,55 @@ public class InvokedFunction {
         return this.functionName;
     }
 
-    public String getParameterString(String parameterName) {
-        return parameterMap.get(parameterName);
+    public Map<String, String> getArgumentMap() {
+        return this.argumentMap;
     }
 
-    public List<Map<String, String>> getAllParameterMapList() {
-        List<Map<String, String>> list = new ArrayList<>();
-
-        // add parameter
-        list.add(parameterMap);
-
-        // add todoList
-        if (todoList != null) {
-            for (InvokedFunction specialParameter : todoList) {
-                list.addAll(specialParameter.getAllParameterMapList());
-            }
-        }
-
-        // add trueList
-        if (trueList != null) {
-            for (InvokedFunction specialParameter : trueList) {
-                list.addAll(specialParameter.getAllParameterMapList());
-            }
-        }
-
-        // add falseList
-        if (falseList != null) {
-            for (InvokedFunction specialParameter : falseList) {
-                list.addAll(specialParameter.getAllParameterMapList());
-            }
-        }
-
-        return list;
+    public List<InvokedFunction> getTodoList() {
+        return this.todoList;
     }
+
+    public List<InvokedFunction> getTrueList() {
+        return this.trueList;
+    }
+
+    public List<InvokedFunction> getFalseList() {
+        return this.falseList;
+    }
+
+//    public String getArgumentString(String argumentName) {
+//        return argumentMap.get(argumentName);
+//    }
+//
+//    public List<Map<String, String>> getAllArgumentMapList() {
+//        List<Map<String, String>> list = new ArrayList<>();
+//
+//        // add argument
+//        list.add(argumentMap);
+//
+//        // add todoList
+//        if (todoList != null) {
+//            for (InvokedFunction specialArgument : todoList) {
+//                list.addAll(specialArgument.getAllArgumentMapList());
+//            }
+//        }
+//
+//        // add trueList
+//        if (trueList != null) {
+//            for (InvokedFunction specialArgument : trueList) {
+//                list.addAll(specialArgument.getAllArgumentMapList());
+//            }
+//        }
+//
+//        // add falseList
+//        if (falseList != null) {
+//            for (InvokedFunction specialArgument : falseList) {
+//                list.addAll(specialArgument.getAllArgumentMapList());
+//            }
+//        }
+//
+//        return list;
+//    }
 
     public String getAssign() {
         return this.assign;
@@ -114,37 +130,37 @@ public class InvokedFunction {
         // name verify
         if (functionName == null) errorMessageSb.append("          there is NO name").append("\n");
 
-        // parameter verify
+        // argument verify
         if (!toolkitVerifyConfigMap.containsKey(functionName)) return errorMessageSb.toString();
-        for (String requiredParameter : toolkitVerifyConfigMap.get(functionName)) {
-            if (!parameterMap.containsKey(requiredParameter)) {
-                if ("todo".equals(requiredParameter) && todoList != null) continue;
-                if ("true".equals(requiredParameter) && trueList != null) continue;
-                if ("false".equals(requiredParameter) && falseList != null) continue;
+        for (String requiredArgument : toolkitVerifyConfigMap.get(functionName)) {
+            if (!argumentMap.containsKey(requiredArgument)) {
+                if ("todo".equals(requiredArgument) && todoList != null) continue;
+                if ("true".equals(requiredArgument) && trueList != null) continue;
+                if ("false".equals(requiredArgument) && falseList != null) continue;
                 errorMessageSb
                         .append(indent)
-                        .append("        the parameter [")
-                        .append(requiredParameter)
+                        .append("        the argument [")
+                        .append(requiredArgument)
                         .append("] is missing in ")
                         .append(functionName)
                         .append("\n");
             }
         }
 
-        // special parameter verify
-        verifySpecialParameter("todo", todoList, indent);
-        verifySpecialParameter("true", trueList, indent);
-        verifySpecialParameter("false", falseList, indent);
+        // special argument verify
+        verifySpecialArgument("todo", todoList, indent);
+        verifySpecialArgument("true", trueList, indent);
+        verifySpecialArgument("false", falseList, indent);
 
         return errorMessageSb.toString();
     }
 
-    private void verifySpecialParameter(String parameterName, List<InvokedFunction> specialParameter, String indent) {
-        if (specialParameter == null) return;
-        for (InvokedFunction function : specialParameter) {
+    private void verifySpecialArgument(String argumentName, List<InvokedFunction> specialArgument, String indent) {
+        if (specialArgument == null) return;
+        for (InvokedFunction function : specialArgument) {
             String errorMessage = function.verify(indent + "  ");
             if (!errorMessage.isEmpty()) {
-                errorMessageSb.append(indent).append("        ").append(parameterName).append(" function error:").append("\n");
+                errorMessageSb.append(indent).append("        ").append(argumentName).append(" function error:").append("\n");
                 errorMessageSb.append(indent).append(errorMessage).append("\n");
             }
         }
@@ -156,40 +172,36 @@ public class InvokedFunction {
         // update the current variable map
         this.currentVariableMap = localVariableMap;
 
-        // verify the parameter
-        for (String parameterValue : parameterMap.values()) {
-            List<String> extractedVariableList = LowCodeVariableExtractor.extractVariableList(parameterValue);
+        // verify the argument
+        for (String argumentValue : argumentMap.values()) {
+            List<String> extractedVariableList = LowCodeVariableExtractor.extractVariableList(argumentValue);
             for (String extractedVariable : extractedVariableList) {
                 if (currentVariableMap.containsKey(extractedVariable)) continue;
                 sb.append(indent).append("        the variable[").append(extractedVariable).append("] has not been assigned").append("\n");
             }
         }
 
-        // special parameter verify
-        variableRetrievalVerifyOfSpecialParameter("todo", todoList, localVariableMap, sb, indent);
-        variableRetrievalVerifyOfSpecialParameter("true", trueList, localVariableMap, sb, indent);
-        variableRetrievalVerifyOfSpecialParameter("false", falseList, localVariableMap, sb, indent);
+        // special argument verify
+        variableRetrievalVerifyOfSpecialArgument("todo", todoList, localVariableMap, sb, indent);
+        variableRetrievalVerifyOfSpecialArgument("true", trueList, localVariableMap, sb, indent);
+        variableRetrievalVerifyOfSpecialArgument("false", falseList, localVariableMap, sb, indent);
 
         return sb.toString();
     }
 
-    private void variableRetrievalVerifyOfSpecialParameter(String parameterName,
-                                                           List<InvokedFunction> specialParameter,
-                                                           Map<String, String> currentVariableMap,
-                                                           StringBuilder sb,
-                                                           String indent) {
-        if (specialParameter == null) return;
-        if ("todo".equals(parameterName)) currentVariableMap.put(parameterMap.get("element_name"), null);
-        for (InvokedFunction function : specialParameter) {
+    private void variableRetrievalVerifyOfSpecialArgument(String argumentName,
+                                                          List<InvokedFunction> specialArgument,
+                                                          Map<String, String> currentVariableMap,
+                                                          StringBuilder sb,
+                                                          String indent) {
+        if (specialArgument == null) return;
+        if ("todo".equals(argumentName)) currentVariableMap.put(argumentMap.get("element_name"), null);
+        for (InvokedFunction function : specialArgument) {
             String errorMessage = function.variableRetrievalVerify(currentVariableMap, indent + "  ");
             if (!errorMessage.isEmpty()) {
-                sb.append(indent).append("        ").append(parameterName).append(" function error:").append("\n");
+                sb.append(indent).append("        ").append(argumentName).append(" function error:").append("\n");
                 sb.append(indent).append(errorMessage).append("\n");
             }
         }
-    }
-
-    public void invoke() {
-        // TODO: how to invoke...
     }
 }

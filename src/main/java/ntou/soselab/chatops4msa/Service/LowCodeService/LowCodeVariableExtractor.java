@@ -18,6 +18,17 @@ public class LowCodeVariableExtractor {
         return variableNameList;
     }
 
+    /**
+     * @param string        like "hello, ${name}"
+     * @param variableName  like "name"
+     * @param variableValue like "kermit"
+     * @return like "hello, kermit"
+     */
+    public static String assignVariable(String string, String variableName, String variableValue) {
+        String variablePattern = "\\$\\{" + variableName + "}";
+        return string.replaceAll(variablePattern, variableValue);
+    }
+
     public static boolean hasVariable(String parameterValue) {
         return Pattern.compile(VARIABLE_REGEX).matcher(parameterValue).find();
     }

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 public class AccessPermission {
-    private String access;
+    private final String access;
     @JsonProperty("protected")
     private List<String> protectedAccess;
 
@@ -20,6 +20,10 @@ public class AccessPermission {
 
     public String getAccess() {
         return this.access;
+    }
+
+    public List<String> getProtectedAccess() {
+        return this.protectedAccess;
     }
 
     public String verify() {

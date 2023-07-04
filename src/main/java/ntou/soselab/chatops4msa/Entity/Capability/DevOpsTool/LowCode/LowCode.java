@@ -36,38 +36,6 @@ public class LowCode {
         this.onMessageMap = functionListToMapAndVerify("constructor", onMessageList);
     }
 
-    public List<String> getAllDeclaredFunctionNameList() {
-        List<String> list = new ArrayList<>();
-        list.addAll(getAllDeclaredFunctionNameList(constructorMap));
-        list.addAll(getAllDeclaredFunctionNameList(operationMap));
-        list.addAll(getAllDeclaredFunctionNameList(onMessageMap));
-        return list;
-    }
-
-    private List<String> getAllDeclaredFunctionNameList(Map<String, DeclaredFunction> functionMap) {
-        List<String> list = new ArrayList<>();
-        if (functionMap == null || functionMap.isEmpty()) return list;
-        for (DeclaredFunction function : functionMap.values()) {
-            list.add(function.getName());
-        }
-        return list;
-    }
-
-    public List<DeclaredFunction> getAllDeclaredFunctionObjList() {
-        List<DeclaredFunction> list = new ArrayList<>();
-        list.addAll(getAllDeclaredFunctionObjList(constructorMap));
-        list.addAll(getAllDeclaredFunctionObjList(operationMap));
-        list.addAll(getAllDeclaredFunctionObjList(onMessageMap));
-        return list;
-    }
-
-    private List<DeclaredFunction> getAllDeclaredFunctionObjList(Map<String, DeclaredFunction> functionMap) {
-        List<DeclaredFunction> list = new ArrayList<>();
-        if (functionMap == null || functionMap.isEmpty()) return list;
-        list.addAll(functionMap.values());
-        return list;
-    }
-
     private Map<String, DeclaredFunction> functionListToMapAndVerify(String functionType, List<DeclaredFunction> functionList) {
         if (functionList == null || functionList.isEmpty()) {
             errorMessageSb.append("    ").append(functionType).append(" error:").append("\n");
@@ -84,6 +52,42 @@ public class LowCode {
                 errorMessageSb.append(functionErrorMessage).append("\n");
             }
             map.put(currentFunction.getName(), currentFunction);
+        }
+        return map;
+    }
+
+    public List<String> getAllNonPrivateDeclaredFunctionNameList() {
+        List<String> list = new ArrayList<>();
+        list.addAll(getAllNonPrivateDeclaredFunctionNameList(constructorMap));
+        list.addAll(getAllNonPrivateDeclaredFunctionNameList(operationMap));
+        list.addAll(getAllNonPrivateDeclaredFunctionNameList(onMessageMap));
+        return list;
+    }
+
+    private List<String> getAllNonPrivateDeclaredFunctionNameList(Map<String, DeclaredFunction> functionMap) {
+        List<String> list = new ArrayList<>();
+        if (functionMap == null || functionMap.isEmpty()) return list;
+        for (DeclaredFunction function : functionMap.values()) {
+            if (function.isPrivate()) continue;
+            list.add(function.getName());
+        }
+        return list;
+    }
+
+    public Map<String, DeclaredFunction> getAllNonPrivateDeclaredFunctionMap() {
+        Map<String, DeclaredFunction> map = new HashMap<>();
+        map.putAll(getAllNonPrivateDeclaredFunctionMap(constructorMap));
+        map.putAll(getAllNonPrivateDeclaredFunctionMap(operationMap));
+        map.putAll(getAllNonPrivateDeclaredFunctionMap(onMessageMap));
+        return map;
+    }
+
+    private Map<String, DeclaredFunction> getAllNonPrivateDeclaredFunctionMap(Map<String, DeclaredFunction> functionMap) {
+        Map<String, DeclaredFunction> map = new HashMap<>();
+        if (functionMap == null || functionMap.isEmpty()) return map;
+        for (DeclaredFunction function : functionMap.values()) {
+            if (function.isPrivate()) continue;
+            map.put(function.getName(), function);
         }
         return map;
     }

@@ -1,15 +1,20 @@
 package ntou.soselab.chatops4msa.Service.ToolkitFunctionService;
 
 import ntou.soselab.chatops4msa.Service.DiscordService.JDAService;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public class DiscordToolkit extends ToolkitFunction implements ApplicationContextAware {
-    private JDAService jdaService;
+/**
+ * For ease of invocation by the CapabilityOrchestrator,
+ * parameters are using snake case, similar to low-code.
+ */
+@Service
+public class DiscordToolkit extends ToolkitFunction {
+    private final JDAService jdaService;
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.jdaService = applicationContext.getBean(JDAService.class);
+    @Autowired
+    public DiscordToolkit(JDAService jdaService) {
+        this.jdaService = jdaService;
     }
 
     /**
@@ -50,14 +55,14 @@ public class DiscordToolkit extends ToolkitFunction implements ApplicationContex
     /**
      * embed message
      */
-    public void toolkitDiscordEmbed(String title, String color, String fieldJson) {
-        // TODO: to finish
+    public void toolkitDiscordEmbed(String title, String color, String field_json) {
+        // TODO: to finish this function
     }
 
     /**
      * embed message with thumbnail
      */
-    public void toolkitDiscordEmbed(String title, String color, String fieldJson, String thumbnail) {
-        // TODO: to finish
+    public void toolkitDiscordEmbed(String title, String color, String field_json, String thumbnail) {
+        // TODO: to finish this function
     }
 }
