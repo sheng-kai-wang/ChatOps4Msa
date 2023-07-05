@@ -2,21 +2,19 @@ package ntou.soselab.chatops4msa.Service.DiscordService;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.hooks.SubscribeEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import ntou.soselab.chatops4msa.Service.CapabilityOrchestrator;
+import ntou.soselab.chatops4msa.Service.CapabilityOrchestratorService.CapabilityOrchestrator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service
 public class DiscordSlashCommandListener extends ListenerAdapter {
 
-    @Autowired
-    private CapabilityOrchestrator orchestrator;
+//    @Autowired
+//    private CapabilityOrchestrator orchestrator;
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {

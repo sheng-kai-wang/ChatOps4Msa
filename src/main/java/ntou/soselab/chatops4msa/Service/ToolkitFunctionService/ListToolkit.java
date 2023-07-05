@@ -2,16 +2,28 @@ package ntou.soselab.chatops4msa.Service.ToolkitFunctionService;
 
 import ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.LowCode.InvokedFunction;
 import ntou.soselab.chatops4msa.Exception.ToolkitFunctionException;
+import ntou.soselab.chatops4msa.Service.CapabilityOrchestratorService.CapabilityOrchestrator;
+import ntou.soselab.chatops4msa.Service.DiscordService.JDAService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
  * For ease of invocation by the CapabilityOrchestrator,
- * parameters are using snake case, similar to low-code.
+ * the parameters are using snake case, similar to low-code.
  */
+@Service
 public class ListToolkit extends ToolkitFunction {
+    private final CapabilityOrchestrator orchestrator;
+    private final JDAService jdaService;
+
+    public ListToolkit(CapabilityOrchestrator orchestrator, JDAService jdaService) {
+        this.orchestrator = orchestrator;
+        this.jdaService = jdaService;
+    }
 
     /**
      * @param list  like ["https:", "", "github", "com", "sheng-kai-wang", "ChatOps4Msa-Sample-Bookinfo", "git"]
@@ -28,35 +40,65 @@ public class ListToolkit extends ToolkitFunction {
     }
 
     /**
-     * execute the todo function synchronously
+     * execute the todo_function synchronously
      *
-     * @param list         like ["service_1", "service_2", "service_3"]
-     * @param element_name like "service_name"
-     * @param todoList     is a list of InvokedFunction
+     * @param list             like ["service_1", "service_2", "service_3"]
+     * @param element_name     like "service_name"
+     * @param todoList         is a list of InvokedFunction
+     * @param localVariableMap come from declaredFunction
      */
-    public String toolkitListForeach(String[] list, String element_name, List<InvokedFunction> todoList) {
+    public void toolkitListForeach(String[] list,
+                                   String element_name,
+                                   List<InvokedFunction> todoList,
+                                   Map<String, String> localVariableMap) throws ToolkitFunctionException {
+
+        // temporary storage of local variable with the same name
+        String localVariableTemp = localVariableMap.get(element_name);
+
         for (String element : list) {
-            for (InvokedFunction function : todoList) {
-                // TODO: how to pass the parameter
-            }
+            // put the element from foreach list
+            localVariableMap.put(element_name, element);
+            // invoke all the todo_function
+            orchestrator.invokeSpecialParameter(todoList, localVariableMap);
         }
+
+        // restore the local variable
+        localVariableMap.put(element_name, localVariableTemp);
     }
 
     /**
-     * execute the todo function asynchronously
+     * execute the todo_function asynchronously
      *
-     * @param list         like ["service_1", "service_2", "service_3"]
-     * @param element_name like "service_name"
-     * @param todoList     is a list of InvokedFunction
+     * @param list             like ["service_1", "service_2", "service_3"]
+     * @param element_name     like "service_name"
+     * @param todoList         is a list of InvokedFunction
+     * @param localVariableMap come from declaredFunction
      */
-    public String toolkitListAsync(String[] list, String element_name, List<InvokedFunction> todoList) {
+    public void toolkitListAsync(String[] list,
+                                 String element_name,
+                                 List<InvokedFunction> todoList,
+                                 Map<String, String> localVariableMap) {
+
+        // temporary storage of local variable with the same name
+        String localVariableTemp = localVariableMap.get(element_name);
+
+        // there are 4 microservices for Bookinfo (4 threads)
         ExecutorService executorService = Executors.newFixedThreadPool(4);
         for (String element : list) {
-            for (InvokedFunction function : todoList) {
-                // TODO: how to pass the parameter
-                executorService.submit(() -> function.invoke());
-            }
+            executorService.submit(() -> {
+                // put the element from async list
+                localVariableMap.put(element_name, element);
+                // invoke all the todo_function
+                try {
+                    orchestrator.invokeSpecialParameter(todoList, localVariableMap);
+                } catch (ToolkitFunctionException e) {
+                    jdaService.sendChatOpsChannelErrorMessage("[ERROR] " + e.getMessage() + " (" + element + ")");
+                }
+            });
         }
         executorService.shutdown();
+
+        // restore the local variable
+        localVariableMap.put(element_name, localVariableTemp);
     }
 }

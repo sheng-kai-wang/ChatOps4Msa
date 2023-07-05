@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * For ease of invocation by the CapabilityOrchestrator,
- * parameters are using snake case, similar to low-code.
+ * the parameters are using snake case, similar to low-code.
  */
 @Service
 public class DiscordToolkit extends ToolkitFunction {
