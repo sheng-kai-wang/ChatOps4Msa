@@ -1,5 +1,6 @@
 package ntou.soselab.chatops4msa.Service.DiscordService;
 
+import jakarta.annotation.PostConstruct;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -16,7 +17,8 @@ public class JDAService {
 
     private final JDA jda;
     private final String guildId;
-    private final String channelChatOpsId;
+    private final String chatOpsChannelId;
+    private TextChannel chatOpsChannel;
 
     @Autowired
     public JDAService(Environment env,
@@ -42,11 +44,33 @@ public class JDAService {
         }
 
         this.guildId = env.getProperty("discord.guild.id");
-        this.channelChatOpsId = env.getProperty("discord.channel.chatops.id");
+        this.chatOpsChannelId = env.getProperty("discord.channel.chatops.id");
 
         System.out.println();
         System.out.println("[DEBUG] JDA START!");
         System.out.println();
+    }
+
+    @PostConstruct
+    public void loadChatOpsChannel() {
+        try {
+            Guild guild = jda.getGuildById(guildId);
+            if (guild == null) {
+                System.out.println("[ERROR] the guild ID is incorrect");
+                throw new DiscordIdException("the guild ID is incorrect");
+            }
+
+            TextChannel channel = guild.getTextChannelById(chatOpsChannelId);
+            if (channel == null) {
+                System.out.println("[ERROR] the chatops channel ID is incorrect");
+                throw new DiscordIdException("the chatops channel ID is incorrect");
+            }
+
+            this.chatOpsChannel = channel;
+
+        } catch (DiscordIdException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public JDA getJDA() {
@@ -70,45 +94,10 @@ public class JDAService {
     }
 
     public void sendChatOpsChannelMessage(String message) {
-        try {
-            Guild guild = jda.getGuildById(guildId);
-            if (guild == null) {
-                System.out.println("[ERROR] the guild ID is incorrect");
-                throw new DiscordIdException("the guild ID is incorrect");
-            }
-
-            TextChannel channel = guild.getTextChannelById(channelChatOpsId);
-            if (channel == null) {
-                System.out.println("[ERROR] the chatops channel ID is incorrect");
-                throw new DiscordIdException("the chatops channel ID is incorrect");
-            }
-
-            channel.sendMessage(message).queue();
-
-        } catch (DiscordIdException e) {
-            throw new RuntimeException(e);
-        }
+        chatOpsChannel.sendMessage(message).queue();
     }
 
     public void sendChatOpsChannelEmbedMessage(MessageEmbed embedMessage) {
-        // TODO: to refactor
-        try {
-            Guild guild = jda.getGuildById(guildId);
-            if (guild == null) {
-                System.out.println("[ERROR] the guild ID is incorrect");
-                throw new DiscordIdException("the guild ID is incorrect");
-            }
-
-            TextChannel channel = guild.getTextChannelById(channelChatOpsId);
-            if (channel == null) {
-                System.out.println("[ERROR] the chatops channel ID is incorrect");
-                throw new DiscordIdException("the chatops channel ID is incorrect");
-            }
-
-            channel.sendMessageEmbeds(embedMessage).queue();
-
-        } catch (DiscordIdException e) {
-            throw new RuntimeException(e);
-        }
+        chatOpsChannel.sendMessageEmbeds(embedMessage).queue();
     }
 }

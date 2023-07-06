@@ -18,24 +18,27 @@ public class StringToolkit extends ToolkitFunction {
      * @return like "hello world2"
      */
     public String toolkitStringReplace(String string, String original, String replace) {
+        System.err.println("====== string: " + string);
+        System.err.println("====== original: " + original);
+        System.err.println("====== replace: " + replace);
         return string.replaceAll(original, replace);
     }
 
     /**
-     * @param string    like "https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo.git"
-     * @param separator like "/|\\."
-     * @return like ["https:", "", "github", "com", "sheng-kai-wang", "ChatOps4Msa-Sample-Bookinfo", "git"]
+     * @param string    like "https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo"
+     * @param separator like "/"
+     * @return like ["https:", "", "github.com", "sheng-kai-wang", "ChatOps4Msa-Sample-Bookinfo"]
      */
     public String toolkitStringSplit(String string, String separator) throws ToolkitFunctionException {
-        String json;
+        ObjectMapper objectMapper = new ObjectMapper();
+        String[] array;
         try {
-            String[] split = string.split(separator);
-            json = new ObjectMapper().writeValueAsString(split);
+            array = objectMapper.readValue(string, String[].class);
+            String[] split = array[0].split(separator);
+            return objectMapper.writeValueAsString(split);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            throw new ToolkitFunctionException("toolkit-string-split error");
+            throw new RuntimeException(e);
         }
-        return json;
     }
 
     /**

@@ -20,12 +20,12 @@ public class FlowToolkit extends ToolkitFunction {
         this.orchestrator = orchestrator;
     }
 
-    public void toolkitFlowIf(boolean condition,
-                                List<InvokedFunction> trueList,
-                                List<InvokedFunction> falseList,
-                                Map<String, String> localVariableMap) throws ToolkitFunctionException {
+    public void toolkitFlowIf(String condition,
+                              List<InvokedFunction> trueList,
+                              List<InvokedFunction> falseList,
+                              Map<String, String> localVariableMap) throws ToolkitFunctionException {
 
-        if (condition) orchestrator.invokeSpecialParameter(trueList, localVariableMap);
+        if ("true".equals(condition)) orchestrator.invokeSpecialParameter(trueList, localVariableMap);
         else orchestrator.invokeSpecialParameter(falseList, localVariableMap);
     }
 }

@@ -14,6 +14,8 @@ info:
 low_code:
   property:
     system_name: bookinfo
+    github_restapi_url: https://api.github.com
+    github_access_token: ${secret.github_access_token}
     github_graphql_url: https://api.github.com/graphql
     github_authorization_bearer: ${secret.github_authorization_bearer}
     get_github_service_recent_activity_graphql: |
@@ -172,12 +174,12 @@ low_code:
       access: public
       body:
         - toolkit-string-pattern:
-            string: number_of_activity
-            regex: ^(?!(?:[1-9]|10)$)\d+$
-            assign: is_out_of_range
+            string: ${number_of_activity}
+            regex: ^[1-9]|10$
+            assign: in_range
         - toolkit-flow-if:
-            condition: ${is_out_of_range}
-            true:
+            condition: ${in_range}
+            false:
               - toolkit-discord-warning:
                   text: "[WARNING] sorry, the number of activities must be between 1 and 10."
         - toolkit-info-get:
@@ -195,25 +197,15 @@ low_code:
             list: ${toolkit-string-split}
             index: 4
             assign: github_repository
-        - toolkit-string-replace:
-            string: ${get_github_service_recent_activity_graphql}
-            original: $owner
-            replace: ${github_username}
-        - toolkit-string-replace:
-            string: ${toolkit-string-replace}
-            original: $name
-            replace: ${github_repository}
-        - toolkit-string-replace:
-            string: ${toolkit-string-replace}
-            original: $first
-            replace: ${number_of_activity}
-        - toolkit-graphql-query:
-            url: ${github_graphql_url}
-            graphql: ${toolkit-string-replace}
-            authorization: ${github_authorization_bearer}
+        - toolkit-restapi-get:
+            url: ${github_restapi_url}/repos/${github_username}/${github_repository}/events
+            assign: response
+        - toolkit-math-calculate:
+            expression: ${number_of_activity}-1
+            assign: index
         - toolkit-json-parse:
-            json: ${toolkit-graphql-query}
-            jsonpath: .......
+            json: ${response}
+            jsonpath: "$.[0:${index}].{author: payload.commits[*].author.name, message: payload.commits[*].message, url: payload.commits[*].url, created_at: created_at}"
         - toolkit-discord-embed:
             title: The recent activity of ${service_name}
             color: yellow
@@ -256,7 +248,7 @@ low_code:
         - toolkit-time-one_week_ago: null
         - toolkit-string-replace:
             string: ${set-repo-info_of_service_into_graphql}
-            original: $weekAgo
+            original: \\$weekAgo
             replace: ${toolkit-time-one_week_ago}
         - toolkit-graphql-query:
             url: ${github_graphql_url}
@@ -284,12 +276,8 @@ low_code:
             system: bookinfo
             service: ${service_name}
             info: repository
-        - toolkit-string-replace:
-            string: ${toolkit-info-get}
-            original: ".git"
-            replace: ""
         - toolkit-discord-text:
-            text: ${toolkit-string-replace}${get-github-contribution_of_team_member_path}
+            text: ${toolkit-info-get}${get-github-contribution_of_team_member_path}
 
     # - name: get-github-all_service_dependency_risk_past_week
     #   parameter: null
@@ -339,7 +327,7 @@ low_code:
             graphql: ${get_github_issue_graphql}
         - toolkit-string-replace:
             string: ${set-repo-info_of_service_into_graphql}
-            original: $first
+            original: \\$first
             replace: ${number_of_issue}
         - toolkit-graphql-query:
             url: ${github_graphql_url}
@@ -371,11 +359,11 @@ low_code:
             graphql: ${create_github_issue_graphql}
         - toolkit-string-replace:
             string: ${set-repo-info_of_service_into_graphql}
-            original: $title
+            original: \\$title
             replace: ${issue_title}
         - toolkit-string-replace:
             string: ${toolkit-string-replace}
-            original: $body
+            original: \\$body
             replace: ${issue_message}
         - toolkit-graphql-query:
             url: ${github_graphql_url}
@@ -414,11 +402,11 @@ low_code:
             assign: github_repository
         - toolkit-string-replace:
             string: ${graphql}
-            original: $owner
+            original: \\$owner
             replace: ${github_username}
         - toolkit-string-replace:
             string: ${toolkit-string-replace}
-            original: $name
+            original: \\$name
             replace: ${github_repository}
         - toolkit-flow-return:
             return: ${toolkit-string-replace}
@@ -436,7 +424,7 @@ low_code:
         - toolkit-time-one_week_ago: null
         - toolkit-string-replace:
             string: ${set-repo-info_of_service_into_graphql}
-            original: $weekAgo
+            original: \\$weekAgo
             replace: ${toolkit-time-one_week_ago}
         - toolkit-graphql-query:
             url: ${github_graphql_url}

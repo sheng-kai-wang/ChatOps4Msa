@@ -12,22 +12,22 @@ info:
 service:
   - name: productpage
     url: http://localhost:3000
-    repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo.git
+    repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo
     description: This is the product page microservice.
 
   - name: reviews
     url: http://localhost:3001
-    repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo.git
+    repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo
     description: This is the reviews microservice.
       
   - name: details
     url: http://localhost:3002
-    repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo.git
+    repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo
     description: This is the details microservice.
 
   - name: ratings
     url: http://localhost:3003
-    repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo.git
+    repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo
     description: This is the ratings microservice.
 
 capability:

@@ -116,7 +116,6 @@ public class CapabilityConfigLoader {
 
     private <T extends Configs> Map<String, T> loadConfig(String configType, Class<T> configClass, String classpath) {
         System.out.println("[DEBUG] start to load " + configType + " configs");
-        System.out.println();
 
         HashMap<String, T> configObjMap = new HashMap<>();
         ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
@@ -140,8 +139,8 @@ public class CapabilityConfigLoader {
                 System.out.println("[DEBUG] try to load " + fileName);
                 T configObj = objectMapper.readValue(resource.getInputStream(), configClass);
 
-                System.out.println("[DEBUG] the content of " + fileName + ": ");
-                System.out.println(gson.toJson(configObj));
+//                System.out.println("[DEBUG] the content of " + fileName + ": ");
+//                System.out.println(gson.toJson(configObj));
                 System.out.println();
 
                 String errorMessage = configObj.verify();

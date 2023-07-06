@@ -1,5 +1,7 @@
 package ntou.soselab.chatops4msa.Service.ToolkitFunctionService;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.LowCode.InvokedFunction;
 import ntou.soselab.chatops4msa.Exception.ToolkitFunctionException;
 import ntou.soselab.chatops4msa.Service.CapabilityOrchestratorService.CapabilityOrchestrator;
@@ -30,12 +32,15 @@ public class ListToolkit extends ToolkitFunction {
      * @param index like 5
      * @return like "ChatOps4Msa-Sample-Bookinfo"
      */
-    public String toolkitListGet(String[] list, String index) throws ToolkitFunctionException {
+    public String toolkitListGet(String list, String index) throws ToolkitFunctionException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String[] array;
         try {
-            return list[Integer.parseInt(index)];
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ToolkitFunctionException("toolkit-list-get error");
+            array = objectMapper.readValue(list, String[].class);
+            int i = Integer.parseInt(index);
+            return array[i];
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
 

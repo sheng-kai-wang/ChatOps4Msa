@@ -11,9 +11,9 @@ public class InvokedFunction {
     private String functionName;
     private Map<String, String> argumentMap;
     private String assign;
-    private List<InvokedFunction> todoList;
-    private List<InvokedFunction> trueList;
-    private List<InvokedFunction> falseList;
+    private List<InvokedFunction> todoList = new ArrayList<>();
+    private List<InvokedFunction> trueList = new ArrayList<>();
+    private List<InvokedFunction> falseList = new ArrayList<>();
 
     private transient final StringBuilder errorMessageSb = new StringBuilder();
     private transient final Map<String, List<String>> toolkitVerifyConfigMap;
@@ -86,6 +86,14 @@ public class InvokedFunction {
 
     public List<InvokedFunction> getTrueList() {
         return this.trueList;
+    }
+
+    public boolean hasTrueList() {
+        return !trueList.isEmpty();
+    }
+
+    public boolean hasFalseList() {
+        return !falseList.isEmpty();
     }
 
     public List<InvokedFunction> getFalseList() {

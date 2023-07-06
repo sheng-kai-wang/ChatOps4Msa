@@ -73,10 +73,19 @@ public class CapabilityOrchestrator {
 
         for (InvokedFunction function : functionList) {
             String functionName = function.getName();
-            DeclaredFunction functionData = capabilityMap.get(functionName);
+            System.out.println("---[Function] " + functionName);
+
+            // update the arguments
+            Map<String, String> argumentMap = function.copyArgumentMap();
+            updateInvokedFunctionArguments(argumentMap, localVariableMap);
+            System.out.println("---[Arguments] " + argumentMap);
+
+            // update the local variable of the function list
+            functionListLocalVariableMap.putAll(argumentMap);
 
             // custom-function
             if (!functionName.startsWith("toolkit")) {
+                DeclaredFunction functionData = capabilityMap.get(functionName);
                 String returnValue = invokeCustomFunction(functionData, functionListLocalVariableMap);
 
                 // assign the return value to the functionListLocalVariableMap
@@ -100,27 +109,26 @@ public class CapabilityOrchestrator {
         // invoke all the functions in the body
         List<InvokedFunction> allInvokedFunctionList = functionData.getAllInvokedFunctionList();
         for (InvokedFunction invokedFunction : allInvokedFunctionList) {
-            Map<String, String> subArgumentMap = invokedFunction.copyArgumentMap();
+
+            String invokedFunctionName = invokedFunction.getName();
+            System.out.println("---[Function] " + invokedFunctionName);
 
             // update the arguments
-            for (Map.Entry<String, String> entry : subArgumentMap.entrySet()) {
-                String argumentName = entry.getKey();
-                String argumentValue = entry.getValue();
-                argumentValue = assignVariableToDefaultArgument(argumentValue, localVariableMap);
-                subArgumentMap.put(argumentName, argumentValue);
-            }
+            Map<String, String> subArgumentMap = invokedFunction.copyArgumentMap();
+            updateInvokedFunctionArguments(subArgumentMap, localVariableMap);
+            System.out.println("---[Arguments] " + subArgumentMap);
 
             // update the local variable
             localVariableMap.putAll(subArgumentMap);
 
             // custom-function or toolkit-function
-            String invokedFunctionName = invokedFunction.getName();
             if (!invokedFunctionName.startsWith("toolkit")) {
 
                 // custom-function
                 // invoke
                 DeclaredFunction invokedFunctionData = capabilityMap.get(invokedFunctionName);
                 String returnValue = invokeCustomFunction(invokedFunctionData, subArgumentMap);
+                System.out.println("---[Return] " + returnValue);
 
                 // assign the return value to the localVariableMap
                 String assignName = invokedFunction.getAssign();
@@ -142,15 +150,16 @@ public class CapabilityOrchestrator {
                 try {
                     invokeToolkitFunction(invokedFunction, localVariableMap);
                 } catch (ToolkitFunctionException e) {
+                    e.printStackTrace();
                     throw new ToolkitFunctionException(functionData.getName() + " > " + e.getMessage());
                 }
 
                 // decide whether to continue invoking the body function
                 if ("toolkit-flow-if".equals(invokedFunctionName)) {
                     if ("true".equals(subArgumentMap.get("condition"))) {
-                        if (subArgumentMap.containsKey("true")) break;
+                        if (invokedFunction.hasTrueList()) break;
                     } else {
-                        if (subArgumentMap.containsKey("false")) break;
+                        if (invokedFunction.hasFalseList()) break;
                     }
                 }
             }
@@ -160,6 +169,15 @@ public class CapabilityOrchestrator {
         localVariableMap.clear();
 
         return null;
+    }
+
+    private void updateInvokedFunctionArguments(Map<String, String> argumentMap, Map<String, String> localVariableMap) {
+        for (Map.Entry<String, String> entry : argumentMap.entrySet()) {
+            String argumentName = entry.getKey();
+            String argumentValue = entry.getValue();
+            argumentValue = assignVariableToDefaultArgument(argumentValue, localVariableMap);
+            argumentMap.put(argumentName, argumentValue);
+        }
     }
 
     private String assignVariableToDefaultArgument(String defaultArgument, Map<String, String> localVariableMap) {
@@ -195,6 +213,7 @@ public class CapabilityOrchestrator {
             // invoke the toolkit-function
             Object toolkitClass = appContext.getBean(clazz);
             String returnValue = (String) method.invoke(toolkitClass, arguments);
+            System.out.println("---[Return] " + returnValue);
 
             // assign the return value to the localVariableMap
             String assignName = functionData.getAssign();
@@ -261,14 +280,16 @@ public class CapabilityOrchestrator {
                 arguments[index] = todoList;
 
             } else if ("trueList".equals(requiredParameterName)) {
-                List<InvokedFunction> trueList = functionData.getTrueList();
-                if (trueList == null) throw new ToolkitFunctionException("true is null");
-                arguments[index] = trueList;
+//                List<InvokedFunction> trueList = functionData.getTrueList();
+//                if (trueList == null) throw new ToolkitFunctionException("true is null");
+//                arguments[index] = trueList;
+                arguments[index] = functionData.getTrueList();
 
             } else if ("falseList".equals(requiredParameterName)) {
-                List<InvokedFunction> falseList = functionData.getFalseList();
-                if (falseList == null) throw new ToolkitFunctionException("false is null");
-                arguments[index] = falseList;
+//                List<InvokedFunction> falseList = functionData.getFalseList();
+//                if (falseList == null) throw new ToolkitFunctionException("false is null");
+//                arguments[index] = falseList;
+                arguments[index] = functionData.getFalseList();
 
             } else {
                 throw new ToolkitFunctionException(requiredParameterName + " is null");

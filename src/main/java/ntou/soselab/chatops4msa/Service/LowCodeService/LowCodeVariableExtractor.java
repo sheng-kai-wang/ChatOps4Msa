@@ -25,8 +25,8 @@ public class LowCodeVariableExtractor {
      * @return like "hello, kermit"
      */
     public static String assignVariable(String string, String variableName, String variableValue) {
-        String variablePattern = "\\$\\{" + variableName + "}";
-        return string.replaceAll(variablePattern, variableValue);
+        String variablePattern = "\\$\\{" + Pattern.quote(variableName) + "}";
+        return string.replaceAll(variablePattern, Matcher.quoteReplacement(variableValue));
     }
 
     public static boolean hasVariable(String parameterValue) {

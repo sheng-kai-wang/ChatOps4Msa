@@ -64,18 +64,22 @@ public class DiscordSlashCommandListener extends ListenerAdapter {
             orchestrator.performTheCapability(declaredFunctionName, optionMap, roleNameList);
 
         } catch (CapabilityRoleException e) {
+            e.printStackTrace();
             String warningMessage = "[WARNING] " + e.getMessage();
             System.out.println(warningMessage);
             jdaService.sendChatOpsChannelWarningMessage(warningMessage);
 
         } catch (ToolkitFunctionException e) {
+            e.printStackTrace();
             String errorMessage = "[ERROR] " + e.getMessage();
             System.out.println(errorMessage);
             jdaService.sendChatOpsChannelErrorMessage(errorMessage);
+
+        } finally {
+            // reply
+            event.reply("got it\n").queue();
         }
 
-        // reply
-        event.reply("ok\n").queue();
 
         System.out.println("<<< end of current slash command event");
         System.out.println();
