@@ -140,10 +140,11 @@ public class CapabilityOrchestrator {
                 // toolkit-function
                 // return and stop the body function
                 if ("toolkit-flow-return".equals(invokedFunctionName)) {
-                    String returnValue = subArgumentMap.get("return");
+//                    String returnValue = subArgumentMap.get("return");
                     // free up memory
-                    localVariableMap.clear();
-                    return returnValue;
+//                    localVariableMap.clear();
+//                    return returnValue;
+                    return subArgumentMap.get("return");
                 }
 
                 // invoke
@@ -166,7 +167,7 @@ public class CapabilityOrchestrator {
         }
 
         // free up memory
-        localVariableMap.clear();
+//        localVariableMap.clear();
 
         return null;
     }

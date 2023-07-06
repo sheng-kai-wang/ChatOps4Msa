@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.awt.*;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -64,17 +65,39 @@ public class DiscordToolkit extends ToolkitFunction {
      * embed message
      */
     public void toolkitDiscordEmbed(String title, String color, String field_json) throws ToolkitFunctionException {
-        Color colorObj = Color.GRAY;
-        if ("green".equals(color)) colorObj = Color.GREEN;
-        if ("yellow".equals(color)) colorObj = Color.YELLOW;
-        if ("red".equals(color)) colorObj = Color.RED;
 
-        EmbedBuilder eb = new EmbedBuilder().setTitle(title).setColor(colorObj);
+        Color colorObj = parseColor(color);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Map<String, String>> list;
+        try {
+            list = objectMapper.readValue(field_json, new TypeReference<List<Map<String, String>>>() {
+            });
+        } catch (JsonProcessingException e) {
+            throw new ToolkitFunctionException(e.getMessage());
+        }
+
+        for (Map<String, String> map : list) {
+            EmbedBuilder eb = new EmbedBuilder().setTitle(title).setColor(colorObj);
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                eb.addField(entry.getKey(), entry.getValue(), false);
+            }
+            jdaService.sendChatOpsChannelEmbedMessage(eb.build());
+        }
+    }
+
+    /**
+     * embed message with thumbnail
+     */
+    public void toolkitDiscordEmbedThumbnail(String title, String color, String field_json, String thumbnail) throws ToolkitFunctionException {
+
+        EmbedBuilder eb = new EmbedBuilder().setTitle(title).setColor(parseColor(color)).setThumbnail(thumbnail);
 
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> map;
         try {
-            map = objectMapper.readValue(field_json, new TypeReference<Map<String, String>>() {});
+            map = objectMapper.readValue(field_json, new TypeReference<Map<String, String>>() {
+            });
         } catch (JsonProcessingException e) {
             throw new ToolkitFunctionException(e.getMessage());
         }
@@ -85,10 +108,11 @@ public class DiscordToolkit extends ToolkitFunction {
         jdaService.sendChatOpsChannelEmbedMessage(eb.build());
     }
 
-    /**
-     * embed message with thumbnail
-     */
-    public void toolkitDiscordEmbed(String title, String color, String field_json, String thumbnail) {
-        // TODO: to finish this function
+    private Color parseColor(String colorName) {
+        Color colorObj = Color.GRAY;
+        if ("green".equals(colorName)) colorObj = Color.GREEN;
+        if ("yellow".equals(colorName)) colorObj = Color.YELLOW;
+        if ("red".equals(colorName)) colorObj = Color.RED;
+        return colorObj;
     }
 }

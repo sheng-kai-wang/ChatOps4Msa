@@ -27,6 +27,8 @@ toolkit-list-async:
 toolkit-json-parse:
   - json
   - jsonpath
+toolkit-json-parse_github_embed:
+  - json
 toolkit-info-get:
   - system
   - service

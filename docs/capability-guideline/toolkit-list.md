@@ -133,6 +133,14 @@ toolkit-json-parse:
   jsonpath: $.data.alerts[*].alertname
 ```
 
+### parse the content of JSON for embed message
+##### the result is a list
+
+```yml
+toolkit-json-parse_github_embed:
+  json: <<the JSON to be parsed>>
+```
+
 ### get information from the microservice-system configs
 ##### the result is `https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo.git`
 

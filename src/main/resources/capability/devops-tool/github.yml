@@ -168,20 +168,20 @@ low_code:
     - name: get-github-service_recent_activity
       parameter:
         service_name: service name
-        number_of_activity: 1 <= n <= 10
+        number_of_activity: 1 <= n <= 5
       description: |
         Retrieve recent activities of a service's repo.
       access: public
       body:
         - toolkit-string-pattern:
             string: ${number_of_activity}
-            regex: ^[1-9]|10$
+            regex: ^[1-5]$
             assign: in_range
         - toolkit-flow-if:
             condition: ${in_range}
             false:
               - toolkit-discord-warning:
-                  text: "[WARNING] sorry, the number of activities must be between 1 and 10."
+                  text: "[WARNING] sorry, the number of activities must be between 1 and 5."
         - toolkit-info-get:
             system: bookinfo
             service: ${service_name}
@@ -200,16 +200,13 @@ low_code:
         - toolkit-restapi-get:
             url: ${github_restapi_url}/repos/${github_username}/${github_repository}/events
             assign: response
-        - toolkit-math-calculate:
-            expression: ${number_of_activity}-1
-            assign: index
-        - toolkit-json-parse:
+        - toolkit-json-parse_github_embed:
             json: ${response}
-            jsonpath: "$.[0:${index}].{author: payload.commits[*].author.name, message: payload.commits[*].message, url: payload.commits[*].url, created_at: created_at}"
+            first: ${number_of_activity}
         - toolkit-discord-embed:
             title: The recent activity of ${service_name}
             color: yellow
-            field_json: ${toolkit-json-parse}
+            field_json: ${toolkit-json-parse_github_embed}
 
     - name: get-github-service_latest_commit_report
       parameter:
