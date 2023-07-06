@@ -22,8 +22,8 @@ low_code:
         Perform stress testing on a specific service.
       access:
         protected:
-          - supervisor
-          - team_member
+          - Supervisor
+          - Team_Member
       body:
         - toolkit-command-bash:
             command: docker run --rm -i grafana/k6 run <stressTesting-${service_name}.js -e TEST_URL=https://test-api.k6.io
@@ -40,8 +40,8 @@ low_code:
         Perform smoke testing on all service.
       access:
         protected:
-          - supervisor
-          - team_member
+          - Supervisor
+          - Team_Member
       body:
         - toolkit-string-pattern:
             string: number_of_virtual_user

@@ -226,8 +226,8 @@ low_code:
         Get the check report of the newest commit in the service's repo.
       access:
         protected:
-          - supervisor
-          - team_member
+          - Supervisor
+          - Team_Member
       body:
         - set-repo-info_of_service_into_graphql:
             service_name: ${service_name}
@@ -277,8 +277,8 @@ low_code:
         Get the contribution analysis of team members.
       access:
         protected:
-          - supervisor
-          - team_member
+          - Supervisor
+          - Team_Member
       body:
         - toolkit-info-get:
             system: bookinfo
@@ -297,8 +297,8 @@ low_code:
     #     Get the dependency risks of all services' repositories in the past week.
     #   access:
     #     protected:
-    #       - supervisor
-    #       - team_member
+    #       - Supervisor
+    #       - Team_Member
     #   body:
     #     - toolkit-info-get:
     #         system: bookinfo
@@ -318,8 +318,8 @@ low_code:
 #        Subscribe to the dependency risk of all service's repo in the past week and execute it every Friday.
 #      access:
 #        protected:
-#          - supervisor
-#          - team_member
+#          - Supervisor
+#          - Team_Member
 #      body:
 #        - toolkit-flow-subscribe:
 #            operation: get-github-all_service_dependency_risk_past_week
@@ -363,8 +363,8 @@ low_code:
         Create issues in the repo of services with dependency risks.
       access:
         protected:
-          - supervisor
-          - team_member
+          - Supervisor
+          - Team_Member
       body:
         - set-repo-info_of_service_into_graphql:
             service_name: ${service_name}

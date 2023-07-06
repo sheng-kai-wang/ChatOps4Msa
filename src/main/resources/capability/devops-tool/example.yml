@@ -1,6 +1,5 @@
 # 簡單範例
 
-
 info:
   version: 1.0.0
   title: example
@@ -17,21 +16,18 @@ low_code:
       access: public # all users can execute the operation
       body:
         - toolkit-discord-text: # return to Discord
-            text: ${message}
+            text: you say `${message}`
             assign: custom_variable # Declare a new variable
 
-    - name: get-example-cube_of_given_number
+    - name: get-example-math_calculate
       parameter:
-        given_number: a given number # 4
+        expression: like 2 * 3 / 4
       description: |
-        Get the cube of the given number.
+        Perform calculations using the given mathematical expression.
       access: public
       body:
-        - toolkit-math-multiply:
-            multiplicand: ${given_number} # 4
-            multiplier: ${given_number} # 4
-        - toolkit-math-multiply:
-            multiplicand: ${toolkit-math-multiply} # 16
-            multiplier: ${given_number} # 4
+        - toolkit-math-calculate:
+            expression: ${expression}
+            assign: answer
         - toolkit-discord-text:
-            text: the cube is ${toolkit-math-multiply} # 64
+            text: the answer of `${expression}` is `${answer}`

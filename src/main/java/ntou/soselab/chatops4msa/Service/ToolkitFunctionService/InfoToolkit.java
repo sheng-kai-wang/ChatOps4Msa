@@ -6,11 +6,11 @@ import ntou.soselab.chatops4msa.Entity.Capability.MicroserviceSystem.Microservic
 import ntou.soselab.chatops4msa.Exception.ToolkitFunctionException;
 import ntou.soselab.chatops4msa.Service.LowCodeService.CapabilityConfigLoader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Service
+@Component
 public class InfoToolkit extends ToolkitFunction {
     private final CapabilityConfigLoader configLoader;
 

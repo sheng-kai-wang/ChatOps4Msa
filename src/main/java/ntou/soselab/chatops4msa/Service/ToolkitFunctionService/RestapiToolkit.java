@@ -1,8 +1,10 @@
 package ntou.soselab.chatops4msa.Service.ToolkitFunctionService;
 
 import org.springframework.http.*;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+@Component
 public class RestapiToolkit extends ToolkitFunction {
     public String toolkitRestapiGet(String url) {
         RestTemplate restTemplate = new RestTemplate();

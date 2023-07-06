@@ -3,10 +3,12 @@ package ntou.soselab.chatops4msa.Service.ToolkitFunctionService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ntou.soselab.chatops4msa.Exception.ToolkitFunctionException;
+import org.springframework.stereotype.Component;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Component
 public class StringToolkit extends ToolkitFunction {
 
     /**

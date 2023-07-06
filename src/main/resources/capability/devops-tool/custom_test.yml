@@ -18,7 +18,7 @@ low_code:
       # only supervisor can execute
       access:
         protected:
-          - supervisor
+          - Supervisor
       # the following functions are declared in other configs
       body:
         # declared in prometheus.yml

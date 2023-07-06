@@ -1,11 +1,13 @@
 package ntou.soselab.chatops4msa.Service.ToolkitFunctionService;
 
 import ntou.soselab.chatops4msa.Exception.ToolkitFunctionException;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+@Component
 public class CommandToolkit extends ToolkitFunction {
     public void toolkitCommandBash(String command) throws ToolkitFunctionException {
         System.out.println("[DEBUG] try to execute the bash command:");

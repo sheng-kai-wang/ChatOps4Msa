@@ -2,13 +2,13 @@ package ntou.soselab.chatops4msa.Service.ToolkitFunctionService;
 
 import ntou.soselab.chatops4msa.Service.DiscordService.JDAService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 /**
  * For ease of invocation by the CapabilityOrchestrator,
  * the parameters are using snake case, similar to low-code.
  */
-@Service
+@Component
 public class DiscordToolkit extends ToolkitFunction {
     private final JDAService jdaService;
 

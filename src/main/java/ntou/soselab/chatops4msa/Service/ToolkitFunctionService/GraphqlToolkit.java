@@ -1,10 +1,12 @@
 package ntou.soselab.chatops4msa.Service.ToolkitFunctionService;
 
 import org.springframework.http.*;
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+@Component
 public class GraphqlToolkit extends ToolkitFunction {
     public String toolkitGraphqlQuery(String url, String graphql, String authorization) {
         RestTemplate restTemplate = new RestTemplate();

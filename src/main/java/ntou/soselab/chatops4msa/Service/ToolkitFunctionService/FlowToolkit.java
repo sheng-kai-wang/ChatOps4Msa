@@ -3,6 +3,7 @@ package ntou.soselab.chatops4msa.Service.ToolkitFunctionService;
 import ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.LowCode.InvokedFunction;
 import ntou.soselab.chatops4msa.Exception.ToolkitFunctionException;
 import ntou.soselab.chatops4msa.Service.CapabilityOrchestratorService.CapabilityOrchestrator;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import java.util.Map;
  * Rename certain parameters to avoid conflicts with reserved keywords.
  * Implement toolkit-flow-return inside CapabilityOrchestrator.
  */
+@Component
 public class FlowToolkit extends ToolkitFunction {
     private final CapabilityOrchestrator orchestrator;
 

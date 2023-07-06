@@ -4,7 +4,7 @@ import ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.LowCode.InvokedFunc
 import ntou.soselab.chatops4msa.Exception.ToolkitFunctionException;
 import ntou.soselab.chatops4msa.Service.CapabilityOrchestratorService.CapabilityOrchestrator;
 import ntou.soselab.chatops4msa.Service.DiscordService.JDAService;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
  * For ease of invocation by the CapabilityOrchestrator,
  * the parameters are using snake case, similar to low-code.
  */
-@Service
+@Component
 public class ListToolkit extends ToolkitFunction {
     private final CapabilityOrchestrator orchestrator;
     private final JDAService jdaService;

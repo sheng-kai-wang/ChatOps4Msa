@@ -1,8 +1,11 @@
 package ntou.soselab.chatops4msa.Service.ToolkitFunctionService;
 
+import org.springframework.stereotype.Component;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+@Component
 public class TimeToolkit extends ToolkitFunction {
 
     /**

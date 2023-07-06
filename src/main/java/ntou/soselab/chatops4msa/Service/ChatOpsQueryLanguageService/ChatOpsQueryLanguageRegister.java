@@ -28,9 +28,9 @@ public class ChatOpsQueryLanguageRegister {
         this.jda = jdaService.getJDA();
         this.configLoader = configLoader;
 
-        removeOriginalCommands();
-        upsertNewCommands();
-        checkCommandsStatusAndRestart(jdaService);
+//        removeOriginalCommands();
+//        upsertNewCommands();
+//        checkCommandsStatusAndRestart(jdaService);
     }
 
     private void removeOriginalCommands() {
@@ -47,7 +47,7 @@ public class ChatOpsQueryLanguageRegister {
      * like             /create github issue
      */
     private void upsertNewCommands() {
-        System.out.println("[DEBUG] upsert new commands");
+        System.out.println("[DEBUG] upsert new commands...");
         for (Map.Entry<String, Map<String, List<SubcommandData>>> topEntry : generateCommandMap().entrySet()) {
             String topCommandName = topEntry.getKey();
             CommandCreateAction commandCreateAction = jda.upsertCommand(topCommandName, topCommandName);

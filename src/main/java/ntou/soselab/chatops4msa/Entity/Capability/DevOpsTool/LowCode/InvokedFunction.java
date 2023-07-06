@@ -72,8 +72,12 @@ public class InvokedFunction {
         return this.functionName;
     }
 
-    public Map<String, String> getArgumentMap() {
-        return this.argumentMap;
+    public Map<String, String> copyArgumentMap() {
+        return new HashMap<>(argumentMap);
+    }
+
+    public String getAssign() {
+        return this.assign;
     }
 
     public List<InvokedFunction> getTodoList() {
@@ -86,44 +90,6 @@ public class InvokedFunction {
 
     public List<InvokedFunction> getFalseList() {
         return this.falseList;
-    }
-
-//    public String getArgumentString(String argumentName) {
-//        return argumentMap.get(argumentName);
-//    }
-//
-//    public List<Map<String, String>> getAllArgumentMapList() {
-//        List<Map<String, String>> list = new ArrayList<>();
-//
-//        // add argument
-//        list.add(argumentMap);
-//
-//        // add todoList
-//        if (todoList != null) {
-//            for (InvokedFunction specialArgument : todoList) {
-//                list.addAll(specialArgument.getAllArgumentMapList());
-//            }
-//        }
-//
-//        // add trueList
-//        if (trueList != null) {
-//            for (InvokedFunction specialArgument : trueList) {
-//                list.addAll(specialArgument.getAllArgumentMapList());
-//            }
-//        }
-//
-//        // add falseList
-//        if (falseList != null) {
-//            for (InvokedFunction specialArgument : falseList) {
-//                list.addAll(specialArgument.getAllArgumentMapList());
-//            }
-//        }
-//
-//        return list;
-//    }
-
-    public String getAssign() {
-        return this.assign;
     }
 
     public String verify(String indent) {

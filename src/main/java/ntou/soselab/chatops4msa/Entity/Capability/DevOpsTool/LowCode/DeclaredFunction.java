@@ -18,7 +18,7 @@ public class DeclaredFunction {
     @JsonProperty("body")
     private List<InvokedFunction> invokedFunctionList;
 
-    private Map<String, String> localVariableMap;
+    private Map<String, String> localVariableMap = new HashMap<>();
 
     public String getName() {
         return this.name;

@@ -8,6 +8,8 @@ import ntou.soselab.chatops4msa.Exception.ToolkitFunctionException;
 import ntou.soselab.chatops4msa.Service.LowCodeService.CapabilityConfigLoader;
 import ntou.soselab.chatops4msa.Service.LowCodeService.LowCodeVariableExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
@@ -20,19 +22,22 @@ import java.util.Map;
 @Service
 public class CapabilityOrchestrator {
     private final Map<String, DeclaredFunction> capabilityMap;
+    private final ApplicationContext appContext;
+    private final String TOOLKIT_CLASSPATH;
 
     @Autowired
-    public CapabilityOrchestrator(CapabilityConfigLoader configLoader) {
-        this.capabilityMap = configLoader.getAllNonPrivateDeclaredFunctionMap();
-    }
+    public CapabilityOrchestrator(CapabilityConfigLoader configLoader,
+                                  ApplicationContext appContext,
+                                  Environment env) {
 
-    public Map<String, DeclaredFunction> getCapabilityMap() {
-        return this.capabilityMap;
+        this.capabilityMap = configLoader.getAllNonPrivateDeclaredFunctionMap();
+        this.appContext = appContext;
+        this.TOOLKIT_CLASSPATH = env.getProperty("toolkit.classpath.prefix");
     }
 
     public void performTheCapability(String functionName,
                                      Map<String, String> argumentMap,
-                                     String roleName) throws CapabilityRoleException, ToolkitFunctionException {
+                                     List<String> roleNameList) throws CapabilityRoleException, ToolkitFunctionException {
         // get function data
         DeclaredFunction functionData = capabilityMap.get(functionName);
 
@@ -41,10 +46,10 @@ public class CapabilityOrchestrator {
         String accessType = access.getAccess();
         if ("protected".equals(accessType)) {
             List<String> protectedAccess = access.getProtectedAccess();
-            if (!protectedAccess.contains(roleName)) {
-                String warningMessage = "[WARNING] Sorry, Only The " + protectedAccess + " Can Perform This Capability." +
+            if (!hasPermission(roleNameList, protectedAccess)) {
+                String warningMessage = "Sorry, Only The " + protectedAccess + " Can Perform This Capability." +
                         "\n" +
-                        "You Are " + roleName + ".";
+                        "You Are " + roleNameList + ".";
                 throw new CapabilityRoleException(warningMessage);
             }
         }
@@ -53,10 +58,17 @@ public class CapabilityOrchestrator {
         invokeCustomFunction(functionData, argumentMap);
     }
 
+    private boolean hasPermission(List<String> roleNameList, List<String> protectedAccess) {
+        for (String roleName : roleNameList) {
+            if (protectedAccess.contains(roleName)) return true;
+        }
+        return false;
+    }
+
     public void invokeSpecialParameter(List<InvokedFunction> functionList,
                                        Map<String, String> localVariableMap) throws ToolkitFunctionException {
 
-        // local variable in todo_function, true_function or false_function
+        // local variable in todo_function, true_function or false_function (deep copy)
         Map<String, String> functionListLocalVariableMap = new HashMap<>(localVariableMap);
 
         for (InvokedFunction function : functionList) {
@@ -68,13 +80,9 @@ public class CapabilityOrchestrator {
                 String returnValue = invokeCustomFunction(functionData, functionListLocalVariableMap);
 
                 // assign the return value to the functionListLocalVariableMap
-                Map<String, String> argumentMap = function.getArgumentMap();
-                if (argumentMap.containsKey("assign")) {
-                    String assignName = argumentMap.get("assign");
-                    functionListLocalVariableMap.put(assignName, returnValue);
-                } else {
-                    functionListLocalVariableMap.put(functionName, returnValue);
-                }
+                String assignName = function.getAssign();
+                if (assignName != null && !assignName.isEmpty()) localVariableMap.put(assignName, returnValue);
+                else localVariableMap.put(functionName, returnValue);
             }
 
             // toolkit-function
@@ -92,15 +100,18 @@ public class CapabilityOrchestrator {
         // invoke all the functions in the body
         List<InvokedFunction> allInvokedFunctionList = functionData.getAllInvokedFunctionList();
         for (InvokedFunction invokedFunction : allInvokedFunctionList) {
-            Map<String, String> subArgumentMap = invokedFunction.getArgumentMap();
+            Map<String, String> subArgumentMap = invokedFunction.copyArgumentMap();
 
             // update the arguments
             for (Map.Entry<String, String> entry : subArgumentMap.entrySet()) {
-                String parameterName = entry.getKey();
-                String parameterValue = entry.getValue();
-                parameterValue = assignVariableToDefaultArgument(parameterValue, localVariableMap);
-                subArgumentMap.put(parameterName, parameterValue);
+                String argumentName = entry.getKey();
+                String argumentValue = entry.getValue();
+                argumentValue = assignVariableToDefaultArgument(argumentValue, localVariableMap);
+                subArgumentMap.put(argumentName, argumentValue);
             }
+
+            // update the local variable
+            localVariableMap.putAll(subArgumentMap);
 
             // custom-function or toolkit-function
             String invokedFunctionName = invokedFunction.getName();
@@ -112,38 +123,56 @@ public class CapabilityOrchestrator {
                 String returnValue = invokeCustomFunction(invokedFunctionData, subArgumentMap);
 
                 // assign the return value to the localVariableMap
-                if (argumentMap.containsKey("assign")) {
-                    String assignName = argumentMap.get("assign");
-                    localVariableMap.put(assignName, returnValue);
-                } else {
-                    localVariableMap.put(functionData.getName(), returnValue);
-                }
+                String assignName = invokedFunction.getAssign();
+                if (assignName != null && !assignName.isEmpty()) localVariableMap.put(assignName, returnValue);
+                else localVariableMap.put(invokedFunctionName, returnValue);
 
             } else {
 
                 // toolkit-function
                 // return and stop the body function
                 if ("toolkit-flow-return".equals(invokedFunctionName)) {
-                    String returnValue = invokedFunction.getArgumentMap().get("return");
-                    return assignVariableToDefaultArgument(returnValue, localVariableMap);
+                    String returnValue = subArgumentMap.get("return");
+                    // free up memory
+                    localVariableMap.clear();
+                    return returnValue;
                 }
 
                 // invoke
-                invokeToolkitFunction(invokedFunction, localVariableMap);
+                try {
+                    invokeToolkitFunction(invokedFunction, localVariableMap);
+                } catch (ToolkitFunctionException e) {
+                    throw new ToolkitFunctionException(functionData.getName() + " > " + e.getMessage());
+                }
 
                 // decide whether to continue invoking the body function
                 if ("toolkit-flow-if".equals(invokedFunctionName)) {
                     if ("true".equals(subArgumentMap.get("condition"))) {
                         if (subArgumentMap.containsKey("true")) break;
-                    }
-                    else {
+                    } else {
                         if (subArgumentMap.containsKey("false")) break;
                     }
                 }
             }
         }
 
+        // free up memory
+        localVariableMap.clear();
+
         return null;
+    }
+
+    private String assignVariableToDefaultArgument(String defaultArgument, Map<String, String> localVariableMap) {
+        String actualArgument = defaultArgument;
+
+        // if the defaultArgument contains variables
+        for (String variableName : LowCodeVariableExtractor.extractVariableList(defaultArgument)) {
+            String localVariable = localVariableMap.get(variableName);
+            if (localVariable == null) localVariable = "";
+            actualArgument = LowCodeVariableExtractor.assignVariable(actualArgument, variableName, localVariable);
+        }
+
+        return actualArgument;
     }
 
     private void invokeToolkitFunction(InvokedFunction functionData,
@@ -156,39 +185,36 @@ public class CapabilityOrchestrator {
         try {
             // prepare the arguments
             Class<?> clazz = Class.forName(toolkitClassName);
-            Method method = clazz.getMethod(toolkitFunctionName);
+            Method method = null;
+            for (Method m : clazz.getDeclaredMethods()) {
+                if (m.getName().equals(toolkitFunctionName)) method = m;
+            }
+            assert method != null;
             Object[] arguments = generateArgumentsArray(method.getParameters(), functionData, localVariableMap);
 
             // invoke the toolkit-function
-            Object toolkitClass = clazz.getDeclaredConstructor().newInstance();
+            Object toolkitClass = appContext.getBean(clazz);
             String returnValue = (String) method.invoke(toolkitClass, arguments);
 
             // assign the return value to the localVariableMap
-            Map<String, String> parameterMap = functionData.getArgumentMap();
-            if (parameterMap.containsKey("assign")) {
-                String assignName = parameterMap.get("assign");
-                localVariableMap.put(assignName, returnValue);
-            } else {
-                localVariableMap.put(functionName, returnValue);
-            }
+            String assignName = functionData.getAssign();
+            if (assignName != null && !assignName.isEmpty()) localVariableMap.put(assignName, returnValue);
+            else localVariableMap.put(functionName, returnValue);
 
-        } catch (ClassNotFoundException |
-                 InstantiationException |
-                 IllegalAccessException |
-                 InvocationTargetException |
-                 NoSuchMethodException e) {
-            throw new RuntimeException(e);
+        } catch (ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+            throw new ToolkitFunctionException(functionName + " > " + e.getClass().getName() + ": " + e.getMessage());
         }
     }
 
     /**
      * @param functionName like  toolkit-discord-info
-     * @return like              DiscordToolkit
+     * @return like              ntou.soselab.chatops4msa.Service.ToolkitFunctionService.DiscordToolkit
      */
     private String extractToolkitClassName(String functionName) {
         String functionType = functionName.split("-")[1];
         String capitalizedFunctionType = functionType.substring(0, 1).toUpperCase() + functionType.substring(1);
-        return capitalizedFunctionType + "Toolkit";
+        return TOOLKIT_CLASSPATH + capitalizedFunctionType + "Toolkit";
     }
 
     /**
@@ -221,16 +247,13 @@ public class CapabilityOrchestrator {
         int index = 0;
         for (Parameter parameter : parameters) {
             String requiredParameterName = parameter.getName();
-            Map<String, String> defaultArgumentMap = functionData.getArgumentMap();
 
             if ("localVariableMap".equals(requiredParameterName)) {
                 // in order to special parameter (function list)
                 arguments[index] = localVariableMap;
 
-            } else if (defaultArgumentMap.containsKey(requiredParameterName)) {
-                String defaultArgument = defaultArgumentMap.get(requiredParameterName);
-                defaultArgument = assignVariableToDefaultArgument(defaultArgument, localVariableMap);
-                arguments[index] = defaultArgument;
+            } else if (localVariableMap.containsKey(requiredParameterName)) {
+                arguments[index] = localVariableMap.get(requiredParameterName);
 
             } else if ("todoList".equals(requiredParameterName)) {
                 List<InvokedFunction> todoList = functionData.getTodoList();
@@ -255,17 +278,5 @@ public class CapabilityOrchestrator {
         }
 
         return arguments;
-    }
-
-    private String assignVariableToDefaultArgument(String defaultArgument, Map<String, String> localVariableMap) {
-        String actualArgument = defaultArgument;
-
-        // if the defaultArgument contains variables
-        for (String variableName : LowCodeVariableExtractor.extractVariableList(defaultArgument)) {
-            String localVariable = localVariableMap.get(variableName);
-            actualArgument = LowCodeVariableExtractor.assignVariable(defaultArgument, variableName, localVariable);
-        }
-
-        return actualArgument;
     }
 }

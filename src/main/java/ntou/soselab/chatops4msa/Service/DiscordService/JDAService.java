@@ -14,14 +14,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class JDAService {
 
-    private JDA jda;
-    private String guildId;
-    private String channelChatOpsId;
+    private final JDA jda;
+    private final String guildId;
+    private final String channelChatOpsId;
 
     @Autowired
     public JDAService(Environment env,
                       DiscordGeneralListener generalListener,
-                      DiscordSlashCommandListener slashCommandListener,
+//                      DiscordSlashCommandListener slashCommandListener,
                       DiscordMessageListener messageListener,
                       DiscordButtonListener buttonListener) {
 
@@ -31,7 +31,7 @@ public class JDAService {
                     .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                     .enableIntents(GatewayIntent.GUILD_MEMBERS)
                     .addEventListeners(generalListener)
-                    .addEventListeners(slashCommandListener)
+//                    .addEventListeners(slashCommandListener)
                     .addEventListeners(messageListener)
                     .addEventListeners(buttonListener)
                     .build()

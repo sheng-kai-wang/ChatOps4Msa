@@ -80,8 +80,8 @@ low_code:
         Edit alert rules through the Prometheus UI, allowing for subscription to monitoring alerts.
       access:
         protected:
-          - supervisor
-          - team_member
+          - Supervisor
+          - Team_Member
       body:
         - toolkit-discord-embed:
             title: Edit alert rules
@@ -122,8 +122,8 @@ low_code:
       description: monitor the dependency relationships between microservices and return the link to the Grafana.
       access:
         protected:
-          - supervisor
-          - team_member
+          - Supervisor
+          - Team_Member
       body:
         - toolkit-discord-embed:
             title: The dependency relationships between all service
