@@ -1,10 +1,13 @@
 package ntou.soselab.chatops4msa.Service.ToolkitFunctionService;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ntou.soselab.chatops4msa.Exception.ToolkitFunctionException;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,15 +30,30 @@ public class StringToolkit extends ToolkitFunction {
      * @return like ["https:", "", "github.com", "sheng-kai-wang", "ChatOps4Msa-Sample-Bookinfo"]
      */
     public String toolkitStringSplit(String string, String separator) throws ToolkitFunctionException {
+        string = string.replaceAll("\\[\"", "").replaceAll("\"]", "");
         ObjectMapper objectMapper = new ObjectMapper();
-        String[] array;
         try {
-            array = objectMapper.readValue(string, String[].class);
-            String[] split = array[0].split(separator);
+            String[] split = string.split(separator);
             return objectMapper.writeValueAsString(split);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * from ["content"] to content
+     */
+    public String toolkitStringToString(String json) throws ToolkitFunctionException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Object> listObj;
+        try {
+            listObj = objectMapper.readValue(json, new TypeReference<List<Object>>() {
+            });
+        } catch (JsonProcessingException e) {
+            throw new ToolkitFunctionException(e.getMessage());
+        }
+        if (listObj.size() == 1) return json.replaceAll("\\[\"", "").replaceAll("\"]", "");
+        return json;
     }
 
     /**

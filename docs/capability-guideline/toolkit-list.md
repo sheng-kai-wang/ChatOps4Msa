@@ -73,6 +73,14 @@ toolkit-string-split:
   separator: <<e.g. use / and . like /|\\. >>
 ```
 
+### convert list json to string (must be single element)
+##### from `["element"]` to `element`
+
+```yml
+toolkit-string-to_string:
+  json: <<json>>
+```
+
 ### determine if a string matches a specific pattern (return true or false)
 ##### the result is `true`
 
@@ -92,6 +100,7 @@ toolkit-list-get:
 ```
 
 ### process the elements in a list in batch
+##### you can use ${i} to get the index of the element
 
 ```yml
 toolkit-list-foreach:
@@ -111,6 +120,7 @@ toolkit-list-foreach:
 <!-- todo: for loop by index (get the element from multiple list) -->
 
 ### asynchronously process all elements in a list
+##### you can use ${i} to get the index of the element
 ##### using Docker technology, concurrently execute the same operation on multiple services
 
 ```yml

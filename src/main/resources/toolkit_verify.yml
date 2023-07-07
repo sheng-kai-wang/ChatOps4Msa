@@ -1,6 +1,8 @@
 
 # required parameters of all toolkit-functions
 
+toolkit-time-convert_to_taiwan:
+  - time
 toolkit-math-calculate:
   - expression
 toolkit-string-replace:
@@ -10,6 +12,8 @@ toolkit-string-replace:
 toolkit-string-split:
   - string
   - separator
+toolkit-string-to_string:
+  - json
 toolkit-string-pattern:
   - string
   - regex
@@ -29,8 +33,10 @@ toolkit-json-parse:
   - jsonpath
 toolkit-json-parse_github_commit:
   - json
+  - first
 toolkit-json-parse_github_issue:
   - json
+  - first
 toolkit-info-get:
   - system
   - service

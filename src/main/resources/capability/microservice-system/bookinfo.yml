@@ -12,23 +12,27 @@ info:
 service:
   - name: productpage
     url: http://localhost:3000
-    repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo
+    repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo-Productpage
     description: This is the product page microservice.
+    scan_run_id: 5485657111
 
   - name: reviews
     url: http://localhost:3001
-    repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo
+    repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo-Reviews
     description: This is the reviews microservice.
+    scan_run_id: 5485661053
       
   - name: details
     url: http://localhost:3002
-    repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo
+    repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo-Details
     description: This is the details microservice.
+    scan_run_id: 5485654427
 
   - name: ratings
     url: http://localhost:3003
-    repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo
+    repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo-Ratings
     description: This is the ratings microservice.
+    scan_run_id: 5485659100
 
 capability:
   - get-example-echo_message

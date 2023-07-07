@@ -79,25 +79,22 @@ public class DiscordToolkit extends ToolkitFunction {
         Color colorObj = parseColor(color);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        List<Map<String, String>> list;
+        Map<String, String> map;
         try {
-            list = objectMapper.readValue(field_json, new TypeReference<List<Map<String, String>>>() {
+            map = objectMapper.readValue(field_json, new TypeReference<Map<String, String>>() {
             });
         } catch (JsonProcessingException e) {
             throw new ToolkitFunctionException(e.getMessage());
         }
 
-        for (int i = 0; i < list.size(); i++) {
-            Map<String, String> map = list.get(i);
-            EmbedBuilder eb = new EmbedBuilder().setTitle("[" + (i + 1) + "] " + title).setColor(colorObj);
-            if (thumbnail != null) {
-                eb.setThumbnail(thumbnail);
-            }
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                eb.addField(entry.getKey(), entry.getValue(), false);
-            }
-            jdaService.sendChatOpsChannelEmbedMessage(eb.build());
+        EmbedBuilder eb = new EmbedBuilder().setTitle(title).setColor(colorObj);
+        if (thumbnail != null) {
+            eb.setThumbnail(thumbnail);
         }
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            eb.addField(entry.getKey(), entry.getValue(), false);
+        }
+        jdaService.sendChatOpsChannelEmbedMessage(eb.build());
     }
 
     private Color parseColor(String colorName) {

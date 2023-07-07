@@ -2,8 +2,6 @@ package ntou.soselab.chatops4msa.Service.ToolkitFunctionService;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonArray;
-import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import ntou.soselab.chatops4msa.Exception.ToolkitFunctionException;
@@ -11,15 +9,22 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class JsonToolkit extends ToolkitFunction {
     public String toolkitJsonParse(String json, String jsonpath) {
-        return JsonPath.parse(json).read(jsonpath).toString();
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonString = null;
+        try {
+            Object jsonpathResult = JsonPath.parse(json).read(jsonpath);
+            jsonString = objectMapper.writeValueAsString(jsonpathResult);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        if (jsonString == null) return "";
+        if (jsonString.startsWith("\"")) jsonString = jsonString.replaceAll("\"", "");
+        return jsonString;
     }
 
     /**
@@ -60,17 +65,19 @@ public class JsonToolkit extends ToolkitFunction {
             List<String> htmlUrl = JsonPath.parse(json).read("$[0:" + length + "].html_url");
             List<String> author = JsonPath.parse(json).read("$[0:" + length + "].user.login");
             List<String> createdAt = JsonPath.parse(json).read("$[0:" + length + "].created_at");
+            List<String> title = JsonPath.parse(json).read("$[0:" + length + "].title");
             List<String> body = JsonPath.parse(json).read("$[0:" + length + "].body");
-            List<String> event = JsonPath.parse(json).read("$[0:" + length + "].event");
+            List<String> state = JsonPath.parse(json).read("$[0:" + length + "].state");
 
             JSONArray array = new JSONArray();
             for (int i = 0; i < author.size(); i++) {
                 JSONObject object = new JSONObject();
-                object.put("html url", htmlUrl.get(i));
+                object.put("html_url", htmlUrl.get(i));
                 object.put("author", author.get(i));
-                object.put("created at", createdAt.get(i));
+                object.put("created_at", createdAt.get(i));
+                object.put("title", title.get(i));
                 object.put("body", body.get(i));
-                object.put("event", event.get(i));
+                object.put("state", state.get(i));
                 array.put(object);
             }
 

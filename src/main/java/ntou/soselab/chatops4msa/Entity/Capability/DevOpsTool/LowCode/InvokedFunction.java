@@ -151,6 +151,8 @@ public class InvokedFunction {
             List<String> extractedVariableList = LowCodeVariableExtractor.extractVariableList(argumentValue);
             for (String extractedVariable : extractedVariableList) {
                 if (currentVariableMap.containsKey(extractedVariable)) continue;
+                // ignore the index
+                if ("i".equals(extractedVariable)) continue;
                 sb.append(indent).append("        the variable[").append(extractedVariable).append("] has not been assigned").append("\n");
             }
         }

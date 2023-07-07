@@ -8,6 +8,7 @@ import org.springframework.web.client.RestTemplate;
 public class RestapiToolkit extends ToolkitFunction {
     public String toolkitRestapiGet(String url) {
         RestTemplate restTemplate = new RestTemplate();
+        url = url.replaceAll("\"", "");
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
         return responseEntity.getBody();
     }
