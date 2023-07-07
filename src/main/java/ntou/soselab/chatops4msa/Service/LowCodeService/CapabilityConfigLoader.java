@@ -230,7 +230,7 @@ public class CapabilityConfigLoader {
     }
 
     /**
-     * in order to generate ChatOps Query Language
+     * in order to generate the ChatOps Query Language (service options)
      */
     public List<String> getAllServiceNameList() {
         List<String> allServiceNameList = new ArrayList<>();
@@ -241,7 +241,7 @@ public class CapabilityConfigLoader {
     }
 
     /**
-     * in order to perform the capability
+     * in order to generate the ChatOps Query Language (command name)
      */
     public Map<String, DeclaredFunction> getAllNonPrivateDeclaredFunctionMap() {
         Map<String, DeclaredFunction> map = new HashMap<>();
@@ -250,6 +250,20 @@ public class CapabilityConfigLoader {
         }
         for (MessageDelivery messageDelivery : messageDeliveryMap.values()) {
             map.putAll(messageDelivery.getLowCode().getAllNonPrivateDeclaredFunctionMap());
+        }
+        return map;
+    }
+
+    /**
+     * in order to perform the capability
+     */
+    public Map<String, DeclaredFunction> getAllDeclaredFunctionMap() {
+        Map<String, DeclaredFunction> map = new HashMap<>();
+        for (DevOpsTool tool : devOpsToolMap.values()) {
+            map.putAll(tool.getLowCode().getAllDeclaredFunctionMap());
+        }
+        for (MessageDelivery messageDelivery : messageDeliveryMap.values()) {
+            map.putAll(messageDelivery.getLowCode().getAllDeclaredFunctionMap());
         }
         return map;
     }

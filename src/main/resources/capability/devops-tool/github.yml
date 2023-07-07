@@ -1,6 +1,3 @@
-# 跑在雲端
-# rest api 指令
-# GraphQL
 # assign, return, if, foreach
 
 
@@ -198,15 +195,15 @@ low_code:
             index: 4
             assign: github_repository
         - toolkit-restapi-get:
-            url: ${github_restapi_url}/repos/${github_username}/${github_repository}/events
+            url: ${github_restapi_url}/repos/${github_username}/${github_repository}/commits
             assign: response
-        - toolkit-json-parse_github_embed:
+        - toolkit-json-parse_github_commit:
             json: ${response}
             first: ${number_of_activity}
         - toolkit-discord-embed:
             title: The recent activity of ${service_name}
-            color: yellow
-            field_json: ${toolkit-json-parse_github_embed}
+            color: green
+            field_json: ${toolkit-json-parse_github_commit}
 
     - name: get-github-service_latest_commit_report
       parameter:
@@ -218,20 +215,26 @@ low_code:
           - Supervisor
           - Team_Member
       body:
-        - set-repo-info_of_service_into_graphql:
+        - set-repo-info_of_service_into_url:
             service_name: ${service_name}
-            graphql: ${get_github_service_latest_commit_report_graphql}
-        - toolkit-graphql-query:
-            url: ${github_graphql_url}
-            graphql: ${set-repo-info_of_service_into_graphql}
-            authorization: ${github_authorization_bearer}
-        - toolkit-json-parse:
-            json: ${toolkit-graphql-query}
-            jsonpath: .......
+            url: https://api.github.com/repos/<<username>>/<<repo>>/actions/runs/5481460319/rerun
+            assign: run_url
+        - set-repo-info_of_service_into_url:
+            service_name: ${service_name}
+            url: https://github.com/<<username>>/<<repo>>/actions/runs/5481460319
+            assign: process_url
+        - set-repo-info_of_service_into_url:
+            service_name: ${service_name}
+            url: https://github.com/<<username>>/<<repo>>/security/code-scanning
+            assign: result_url
+        - toolkit-restapi-post:
+            url: ${run_url}
+            body: "{}"
+            authorization: ${github_access_token}
         - toolkit-discord-embed:
-            title: The newest check report of ${service_name}
-            color: yellow
-            field_json: ${toolkit-json-parse}
+            title: Get the newest check report of ${service_name}
+            color: orange
+            field_json: "[{\"process\": \"${process_url}\", \"code scanning\": \"${result_url}\"}]"
 
     - name: get-github-service_past_week_team_activity
       parameter:
@@ -239,25 +242,32 @@ low_code:
       description: get the team's activity for the specified service within the past week
       access: public
       body:
-        - set-repo-info_of_service_into_graphql:
+        - set-repo-info_of_service_into_url:
             service_name: ${service_name}
-            graphql: ${get_github_service_team_activity_past_week_graphql}
+            url: https://api.github.com/repos/<<username>>/<<repo>>/commits?since=<<start>>&until=<<end>>
+            assign: url
         - toolkit-time-one_week_ago: null
+        - toolkit-time-now: null
         - toolkit-string-replace:
-            string: ${set-repo-info_of_service_into_graphql}
-            original: \\$weekAgo
+            string: ${url}
+            original: <<start>>
             replace: ${toolkit-time-one_week_ago}
-        - toolkit-graphql-query:
-            url: ${github_graphql_url}
-            graphql: ${toolkit-string-replace}
-            authorization: ${github_authorization_bearer}
-        - toolkit-json-parse:
-            json: ${toolkit-graphql-query}
-            jsonpath: .......
+            assign: url
+        - toolkit-string-replace:
+            string: ${url}
+            original: <<end>>
+            replace: ${toolkit-time-now}
+            assign: url
+        - toolkit-restapi-get:
+            url: ${url}
+            assign: response
+        - toolkit-json-parse_github_commit:
+            json: ${response}
+            first: 10
         - toolkit-discord-embed:
             title: The activity status of each team member within the past week of ${service_name}
-            color: yellow
-            field_json: ${toolkit-json-parse}
+            color: green
+            field_json: ${toolkit-json-parse_github_commit}
 
     - name: get-github-contribution_of_team_member
       parameter:
@@ -269,12 +279,15 @@ low_code:
           - Supervisor
           - Team_Member
       body:
-        - toolkit-info-get:
-            system: bookinfo
-            service: ${service_name}
-            info: repository
-        - toolkit-discord-text:
-            text: ${toolkit-info-get}${get-github-contribution_of_team_member_path}
+        - set-repo-info_of_service_into_url:
+            service_name: ${service_name}
+            url: https://github.com/<<username>>/<<repo>>/graphs/contributors
+            assign: url
+        - toolkit-discord-embed_thumbnail:
+            title: This is the contribution analysis of the ${service_name} service.
+            color: green
+            field_json: "[{\"link\": \"${url}\"}]"
+            thumbnail: https://avatars.githubusercontent.com/u/76858274?v=4
 
     # - name: get-github-all_service_dependency_risk_past_week
     #   parameter: null
@@ -316,29 +329,35 @@ low_code:
         service_name: service name
         number_of_issue: number of issue
       description: |
-        Plot the progress of the issue on a timeline.
+        Describe the progress of the issue with a timeline.
       access: public
       body:
-        - set-repo-info_of_service_into_graphql:
+        - set-repo-info_of_service_into_url:
             service_name: ${service_name}
-            graphql: ${get_github_issue_graphql}
-        - toolkit-string-replace:
-            string: ${set-repo-info_of_service_into_graphql}
-            original: \\$first
-            replace: ${number_of_issue}
-        - toolkit-graphql-query:
-            url: ${github_graphql_url}
-            graphql: ${toolkit-string-replace}
-            authorization: ${github_authorization_bearer}
-        - toolkit-render-grafana:
-            json: ${toolkit-graphql-query}
-        - toolkit-discord-embed_thumbnail:
-            title: the progress of the issue
-            color: orange
-            field_json: .....
-            thumbnail: .....
+            url: https://api.github.com/repos/<<username>>/<<repo>>/issues
+            assign: get_issue_list_url
+        - toolkit-restapi-get:
+            url: ${get_issue_list_url}
+            assign: response
+        - toolkit-json-parse:
+            json: ${response}
+            jsonpath: $[0:${number_of_issue}].timeline_url
+            assign: issue_url_list
+        - toolkit-list-foreach:
+            list: ${issue_url_list}
+            element_name: issue_url
+            todo:
+              - toolkit-restapi-get:
+                  url: ${issue_url}
+                  assign: response
+              - toolkit-json-parse_github_issue:
+                  json: ${response}
+                  first: 5
+              - toolkit-discord-embed:
+                  title: the progress of the issue
+                  color: orange
+                  field_json: ${toolkit-json-parse_github_issue}
 
-# 也許回傳建立 Issue 的 GitHub 網頁即可
     - name: create-github-issue
       parameter: 
         service_name: service name
@@ -351,35 +370,30 @@ low_code:
           - Supervisor
           - Team_Member
       body:
-        - set-repo-info_of_service_into_graphql:
+        - set-repo-info_of_service_into_url:
             service_name: ${service_name}
-            graphql: ${create_github_issue_graphql}
-        - toolkit-string-replace:
-            string: ${set-repo-info_of_service_into_graphql}
-            original: \\$title
-            replace: ${issue_title}
-        - toolkit-string-replace:
-            string: ${toolkit-string-replace}
-            original: \\$body
-            replace: ${issue_message}
-        - toolkit-graphql-query:
-            url: ${github_graphql_url}
-            graphql: ${toolkit-string-replace}
-            authorization: ${github_authorization_bearer}
+            url: https://api.github.com/repos/<<username>>/<<repo>>/issues
+            assign: url
+        - toolkit-restapi-post:
+            url: ${url}
+            body: "{\"title\": \"${issue_title}\", \"body\": \"${issue_message}\""
+            authorization: ${github_access_token}
+            assign: response
         - toolkit-json-parse:
-            json: ${toolkit-graphql-query}
-            jsonpath: .......
+            json: ${response}
+            jsonpath: $.html_url
+            assign: html_url
         - toolkit-discord-embed:
             title: Create a new issue of ${service_name}
-            color: yellow
-            field_json: ${toolkit-json-parse}
+            color: green
+            field_json: "[{\"title\": \"${issue_title}\", \"message\": \"${issue_message}\", \"link\": \"${html_url}\"}]"
 
-    - name: set-repo-info_of_service_into_graphql
+    - name: set-repo-info_of_service_into_url
       parameter:
         service_name: null
-        graphql: null
+        url: null
       description: |
-        Put the repository information of a certain service into GraphQL string.
+        Put the repository information of a certain service into url string.
       access: private
       body:
         - toolkit-info-get:
@@ -392,19 +406,19 @@ low_code:
         - toolkit-list-get:
             list: ${toolkit-string-split}
             index: 3
-            assign: github_username
+            assign: username
         - toolkit-list-get:
             list: ${toolkit-string-split}
             index: 4
-            assign: github_repository
+            assign: repository
         - toolkit-string-replace:
-            string: ${graphql}
-            original: \\$owner
-            replace: ${github_username}
+            string: ${url}
+            original: <<username>>
+            replace: ${username}
         - toolkit-string-replace:
             string: ${toolkit-string-replace}
-            original: \\$name
-            replace: ${github_repository}
+            original: <<repo>>
+            replace: ${repository}
         - toolkit-flow-return:
             return: ${toolkit-string-replace}
 
@@ -415,12 +429,12 @@ low_code:
         Get the dependency risks of the services' repositories in the past week.
       access: private
       body:
-        - set-repo-info_of_service_into_graphql:
+        - set-repo-info_of_service_into_url:
             service_name: ${service_name}
             graphql: ${get_github_all_service_dependency_risk_past_week_graphql}
         - toolkit-time-one_week_ago: null
         - toolkit-string-replace:
-            string: ${set-repo-info_of_service_into_graphql}
+            string: ${set-repo-info_of_service_into_url}
             original: \\$weekAgo
             replace: ${toolkit-time-one_week_ago}
         - toolkit-graphql-query:

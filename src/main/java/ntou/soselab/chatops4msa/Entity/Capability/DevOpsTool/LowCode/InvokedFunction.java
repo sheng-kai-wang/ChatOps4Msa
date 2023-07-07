@@ -171,6 +171,14 @@ public class InvokedFunction {
         if (specialArgument == null) return;
         if ("todo".equals(argumentName)) currentVariableMap.put(argumentMap.get("element_name"), null);
         for (InvokedFunction function : specialArgument) {
+
+            // initial the intermediate variables of invoked function
+            String functionName = function.getName();
+            if (functionName != null && !functionName.isEmpty()) currentVariableMap.put(functionName, null);
+            String functionAssign = function.getAssign();
+            if (functionAssign != null && !functionAssign.isEmpty()) currentVariableMap.put(functionAssign, null);
+
+            // verify
             String errorMessage = function.variableRetrievalVerify(currentVariableMap, indent + "  ");
             if (!errorMessage.isEmpty()) {
                 sb.append(indent).append("        ").append(argumentName).append(" function error:").append("\n");

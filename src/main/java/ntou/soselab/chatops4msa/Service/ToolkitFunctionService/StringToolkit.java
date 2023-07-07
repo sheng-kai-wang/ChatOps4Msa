@@ -18,9 +18,6 @@ public class StringToolkit extends ToolkitFunction {
      * @return like "hello world2"
      */
     public String toolkitStringReplace(String string, String original, String replace) {
-        System.err.println("====== string: " + string);
-        System.err.println("====== original: " + original);
-        System.err.println("====== replace: " + replace);
         return string.replaceAll(original, replace);
     }
 

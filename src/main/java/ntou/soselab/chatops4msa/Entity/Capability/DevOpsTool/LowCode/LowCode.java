@@ -92,6 +92,23 @@ public class LowCode {
         return map;
     }
 
+    public Map<String, DeclaredFunction> getAllDeclaredFunctionMap() {
+        Map<String, DeclaredFunction> map = new HashMap<>();
+        map.putAll(getAllDeclaredFunctionMap(constructorMap));
+        map.putAll(getAllDeclaredFunctionMap(operationMap));
+        map.putAll(getAllDeclaredFunctionMap(onMessageMap));
+        return map;
+    }
+
+    private Map<String, DeclaredFunction> getAllDeclaredFunctionMap(Map<String, DeclaredFunction> functionMap) {
+        Map<String, DeclaredFunction> map = new HashMap<>();
+        if (functionMap == null || functionMap.isEmpty()) return map;
+        for (DeclaredFunction function : functionMap.values()) {
+            map.put(function.getName(), function);
+        }
+        return map;
+    }
+
     public String verify() {
         return errorMessageSb.toString();
     }

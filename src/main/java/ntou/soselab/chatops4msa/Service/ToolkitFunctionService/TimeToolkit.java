@@ -11,6 +11,15 @@ public class TimeToolkit extends ToolkitFunction {
     /**
      * @return format "yyyy-MM-dd"
      */
+    public String toolkitTimeNow() {
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+        return today.format(formatter);
+    }
+
+    /**
+     * @return format "yyyy-MM-dd"
+     */
     public String toolkitTimeOneWeekAgo() {
         LocalDate today = LocalDate.now();
         LocalDate oneWeekAgo = today.minusWeeks(1);

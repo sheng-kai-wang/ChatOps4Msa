@@ -1,6 +1,7 @@
 package ntou.soselab.chatops4msa.Service.ToolkitFunctionService;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.LowCode.InvokedFunction;
 import ntou.soselab.chatops4msa.Exception.ToolkitFunctionException;
@@ -52,15 +53,24 @@ public class ListToolkit extends ToolkitFunction {
      * @param todoList         is a list of InvokedFunction
      * @param localVariableMap come from declaredFunction
      */
-    public void toolkitListForeach(String[] list,
+    public void toolkitListForeach(String list,
                                    String element_name,
                                    List<InvokedFunction> todoList,
                                    Map<String, String> localVariableMap) throws ToolkitFunctionException {
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<String> listObj;
+        try {
+            listObj = objectMapper.readValue(list, new TypeReference<List<String>>() {
+            });
+        } catch (JsonProcessingException e) {
+            throw new ToolkitFunctionException(e.getMessage());
+        }
+
         // temporary storage of local variable with the same name
         String localVariableTemp = localVariableMap.get(element_name);
 
-        for (String element : list) {
+        for (String element : listObj) {
             // put the element from foreach list
             localVariableMap.put(element_name, element);
             // invoke all the todo_function

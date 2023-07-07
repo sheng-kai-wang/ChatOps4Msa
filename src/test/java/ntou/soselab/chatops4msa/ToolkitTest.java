@@ -552,7 +552,6 @@ public class ToolkitTest {
 
         try {
             String s = jsonToolkit.toolkitJsonParseGithubEmbed(json, "5");
-            System.err.println("s: " + s);
         } catch (ToolkitFunctionException e) {
             throw new RuntimeException(e);
         }

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * For ease of invocation by the CapabilityOrchestrator,
+ * For ease of invocation by the Capability Orchestrator,
  * the parameters are using snake case, similar to low-code.
  */
 @Component
@@ -62,10 +62,20 @@ public class DiscordToolkit extends ToolkitFunction {
     }
 
     /**
-     * embed message
+     * Embed message
      */
     public void toolkitDiscordEmbed(String title, String color, String field_json) throws ToolkitFunctionException {
+        processToolkitDiscordEmbed(title, color, field_json, null);
+    }
 
+    /**
+     * Embed message with thumbnail
+     */
+    public void toolkitDiscordEmbedThumbnail(String title, String color, String field_json, String thumbnail) throws ToolkitFunctionException {
+        processToolkitDiscordEmbed(title, color, field_json, thumbnail);
+    }
+
+    private void processToolkitDiscordEmbed(String title, String color, String field_json, String thumbnail) throws ToolkitFunctionException {
         Color colorObj = parseColor(color);
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -77,8 +87,12 @@ public class DiscordToolkit extends ToolkitFunction {
             throw new ToolkitFunctionException(e.getMessage());
         }
 
-        for (Map<String, String> map : list) {
-            EmbedBuilder eb = new EmbedBuilder().setTitle(title).setColor(colorObj);
+        for (int i = 0; i < list.size(); i++) {
+            Map<String, String> map = list.get(i);
+            EmbedBuilder eb = new EmbedBuilder().setTitle("[" + (i + 1) + "] " + title).setColor(colorObj);
+            if (thumbnail != null) {
+                eb.setThumbnail(thumbnail);
+            }
             for (Map.Entry<String, String> entry : map.entrySet()) {
                 eb.addField(entry.getKey(), entry.getValue(), false);
             }
@@ -86,32 +100,10 @@ public class DiscordToolkit extends ToolkitFunction {
         }
     }
 
-    /**
-     * embed message with thumbnail
-     */
-    public void toolkitDiscordEmbedThumbnail(String title, String color, String field_json, String thumbnail) throws ToolkitFunctionException {
-
-        EmbedBuilder eb = new EmbedBuilder().setTitle(title).setColor(parseColor(color)).setThumbnail(thumbnail);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, String> map;
-        try {
-            map = objectMapper.readValue(field_json, new TypeReference<Map<String, String>>() {
-            });
-        } catch (JsonProcessingException e) {
-            throw new ToolkitFunctionException(e.getMessage());
-        }
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            eb.addField(entry.getKey(), entry.getValue(), false);
-        }
-
-        jdaService.sendChatOpsChannelEmbedMessage(eb.build());
-    }
-
     private Color parseColor(String colorName) {
         Color colorObj = Color.GRAY;
         if ("green".equals(colorName)) colorObj = Color.GREEN;
-        if ("yellow".equals(colorName)) colorObj = Color.YELLOW;
+        if ("orange".equals(colorName)) colorObj = Color.ORANGE;
         if ("red".equals(colorName)) colorObj = Color.RED;
         return colorObj;
     }

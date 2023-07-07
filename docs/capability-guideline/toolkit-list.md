@@ -39,6 +39,13 @@
 toolkit-time-one_week_ago: null
 ```
 
+### get the time from one week ago
+##### the result is formatted as `Sat Jun 10 13:59:34 CST 2023`
+
+```yml
+toolkit-time-now: null
+```
+
 ### execute mathematical calculations using mathematical expressions
 ##### the result is `1.5`
 
@@ -101,6 +108,8 @@ toolkit-list-foreach:
         service_name: ${service_name}
 ```
 
+<!-- todo: for loop by index (get the element from multiple list) -->
+
 ### asynchronously process all elements in a list
 ##### using Docker technology, concurrently execute the same operation on multiple services
 
@@ -133,11 +142,19 @@ toolkit-json-parse:
   jsonpath: $.data.alerts[*].alertname
 ```
 
-### parse the content of JSON for embed message
+### parse the content of JSON for GitHub commits
 ##### the result is a list
 
 ```yml
-toolkit-json-parse_github_embed:
+toolkit-json-parse_github_commit:
+  json: <<the JSON to be parsed>>
+```
+
+### parse the content of JSON for GitHub issues
+##### the result is a list
+
+```yml
+toolkit-json-parse_github_issue:
   json: <<the JSON to be parsed>>
 ```
 
@@ -263,6 +280,7 @@ toolkit-discord-blocks:
 ```
 
 ### send the embed message to the Discord channel (no thumbnail)
+##### the color can be green, orange, red or default(gray)
 
 ```yml
 toolkit-discord-embed:
@@ -272,6 +290,7 @@ toolkit-discord-embed:
 ```
 
 ### send the embed message to the Discord channel (with thumbnail)
+##### the color can be green, orange, red or default(gray)
 
 ```yml
 toolkit-discord-embed_thumbnail:

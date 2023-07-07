@@ -30,7 +30,7 @@ public class CapabilityOrchestrator {
                                   ApplicationContext appContext,
                                   Environment env) {
 
-        this.capabilityMap = configLoader.getAllNonPrivateDeclaredFunctionMap();
+        this.capabilityMap = configLoader.getAllDeclaredFunctionMap();
         this.appContext = appContext;
         this.TOOLKIT_CLASSPATH = env.getProperty("toolkit.classpath.prefix");
     }
@@ -77,8 +77,8 @@ public class CapabilityOrchestrator {
 
             // update the arguments
             Map<String, String> argumentMap = function.copyArgumentMap();
-            updateInvokedFunctionArguments(argumentMap, localVariableMap);
-            System.out.println("---[Arguments] " + argumentMap);
+            updateInvokedFunctionArguments(argumentMap, functionListLocalVariableMap);
+            System.out.println("------[Arguments] " + argumentMap);
 
             // update the local variable of the function list
             functionListLocalVariableMap.putAll(argumentMap);
@@ -90,8 +90,8 @@ public class CapabilityOrchestrator {
 
                 // assign the return value to the functionListLocalVariableMap
                 String assignName = function.getAssign();
-                if (assignName != null && !assignName.isEmpty()) localVariableMap.put(assignName, returnValue);
-                else localVariableMap.put(functionName, returnValue);
+                if (assignName != null && !assignName.isEmpty()) functionListLocalVariableMap.put(assignName, returnValue);
+                else functionListLocalVariableMap.put(functionName, returnValue);
             }
 
             // toolkit-function
@@ -116,7 +116,7 @@ public class CapabilityOrchestrator {
             // update the arguments
             Map<String, String> subArgumentMap = invokedFunction.copyArgumentMap();
             updateInvokedFunctionArguments(subArgumentMap, localVariableMap);
-            System.out.println("---[Arguments] " + subArgumentMap);
+            System.out.println("------[Arguments] " + subArgumentMap);
 
             // update the local variable
             localVariableMap.putAll(subArgumentMap);
@@ -128,7 +128,7 @@ public class CapabilityOrchestrator {
                 // invoke
                 DeclaredFunction invokedFunctionData = capabilityMap.get(invokedFunctionName);
                 String returnValue = invokeCustomFunction(invokedFunctionData, subArgumentMap);
-                System.out.println("---[Return] " + returnValue);
+                System.out.println("------[Return] " + returnValue);
 
                 // assign the return value to the localVariableMap
                 String assignName = invokedFunction.getAssign();
@@ -214,7 +214,7 @@ public class CapabilityOrchestrator {
             // invoke the toolkit-function
             Object toolkitClass = appContext.getBean(clazz);
             String returnValue = (String) method.invoke(toolkitClass, arguments);
-            System.out.println("---[Return] " + returnValue);
+            System.out.println("------[Return] " + returnValue);
 
             // assign the return value to the localVariableMap
             String assignName = functionData.getAssign();
