@@ -1,4 +1,4 @@
-package ntou.soselab.chatops4msa.Service.ToolkitFunctionService;
+package ntou.soselab.chatops4msa.Entity.ToolkitFunction;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.awt.*;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -84,7 +83,7 @@ public class DiscordToolkit extends ToolkitFunction {
             map = objectMapper.readValue(field_json, new TypeReference<Map<String, String>>() {
             });
         } catch (JsonProcessingException e) {
-            throw new ToolkitFunctionException(e.getMessage());
+            throw new ToolkitFunctionException(e.getCause().getMessage());
         }
 
         EmbedBuilder eb = new EmbedBuilder().setTitle(title).setColor(colorObj);

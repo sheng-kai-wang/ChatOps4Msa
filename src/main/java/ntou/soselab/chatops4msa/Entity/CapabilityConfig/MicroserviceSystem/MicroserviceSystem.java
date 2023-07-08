@@ -1,8 +1,8 @@
-package ntou.soselab.chatops4msa.Entity.Capability.MicroserviceSystem;
+package ntou.soselab.chatops4msa.Entity.CapabilityConfig.MicroserviceSystem;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import ntou.soselab.chatops4msa.Entity.Capability.Configs;
-import ntou.soselab.chatops4msa.Entity.Capability.Info;
+import ntou.soselab.chatops4msa.Entity.CapabilityConfig.Configs;
+import ntou.soselab.chatops4msa.Entity.CapabilityConfig.Info;
 
 import java.util.ArrayList;
 import java.util.HashMap;

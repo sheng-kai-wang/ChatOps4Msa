@@ -1,9 +1,9 @@
-package ntou.soselab.chatops4msa.Service.ToolkitFunctionService;
+package ntou.soselab.chatops4msa.Entity.ToolkitFunction;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.LowCode.InvokedFunction;
+import ntou.soselab.chatops4msa.Entity.CapabilityConfig.DevOpsTool.LowCode.InvokedFunction;
 import ntou.soselab.chatops4msa.Exception.ToolkitFunctionException;
 import ntou.soselab.chatops4msa.Service.CapabilityOrchestratorService.CapabilityOrchestrator;
 import ntou.soselab.chatops4msa.Service.DiscordService.JDAService;
@@ -23,10 +23,26 @@ import java.util.concurrent.Executors;
 public class ListToolkit extends ToolkitFunction {
     private final CapabilityOrchestrator orchestrator;
     private final JDAService jdaService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public ListToolkit(CapabilityOrchestrator orchestrator, JDAService jdaService) {
         this.orchestrator = orchestrator;
         this.jdaService = jdaService;
+    }
+
+    /**
+     * from ["content"] to content
+     */
+    public String toolkitListToString(String list) throws ToolkitFunctionException {
+        List<String> listObj;
+        try {
+            listObj = objectMapper.readValue(list, new TypeReference<List<String>>() {
+            });
+        } catch (JsonProcessingException e) {
+            throw new ToolkitFunctionException(e.getCause().getMessage());
+        }
+        if (listObj.size() == 1) return list.replaceAll("\\[\"", "").replaceAll("\"]", "");
+        return list;
     }
 
     /**
@@ -35,7 +51,6 @@ public class ListToolkit extends ToolkitFunction {
      * @return like "ChatOps4Msa-Sample-Bookinfo"
      */
     public String toolkitListGet(String list, String index) throws ToolkitFunctionException {
-        ObjectMapper objectMapper = new ObjectMapper();
         String[] array;
         try {
             array = objectMapper.readValue(list, String[].class);
@@ -58,8 +73,6 @@ public class ListToolkit extends ToolkitFunction {
                                    String element_name,
                                    List<InvokedFunction> todoList,
                                    Map<String, String> localVariableMap) throws ToolkitFunctionException {
-
-        ObjectMapper objectMapper = new ObjectMapper();
         List<Object> listObj;
         try {
             listObj = objectMapper.readValue(list, new TypeReference<List<Object>>() {
@@ -73,7 +86,7 @@ public class ListToolkit extends ToolkitFunction {
                 String json = objectMapper.writeValueAsString(listObj.get(i));
                 // from "content" to content
                 if (json.startsWith("\"")) json = json.replaceAll("\"", "");
-                localVariableMap.put(element_name,  json);
+                localVariableMap.put(element_name, json);
                 // put the index into local variable
                 localVariableMap.put("i", String.valueOf(i));
                 // invoke all the todo_function
@@ -84,7 +97,7 @@ public class ListToolkit extends ToolkitFunction {
             localVariableMap.put(element_name, localVariableTemp);
 
         } catch (JsonProcessingException e) {
-            throw new ToolkitFunctionException(e.getMessage());
+            throw new ToolkitFunctionException(e.getCause().getMessage());
         }
     }
 
@@ -104,13 +117,12 @@ public class ListToolkit extends ToolkitFunction {
         // there are 4 microservices for Bookinfo (4 threads)
         ExecutorService executorService = Executors.newFixedThreadPool(4);
 
-        ObjectMapper objectMapper = new ObjectMapper();
         List<String> listObj;
         try {
             listObj = objectMapper.readValue(list, new TypeReference<List<String>>() {
             });
         } catch (JsonProcessingException e) {
-            throw new ToolkitFunctionException(e.getMessage());
+            throw new ToolkitFunctionException(e.getCause().getMessage());
         }
 
         // temporary storage of local variable with the same name
@@ -118,7 +130,6 @@ public class ListToolkit extends ToolkitFunction {
 
 
         for (int i = 0; i < listObj.size(); i++) {
-
             String element = listObj.get(i);
             int finalIndex = i;
             executorService.submit(() -> {
@@ -134,32 +145,10 @@ public class ListToolkit extends ToolkitFunction {
                     functionList.add(function);
                     orchestrator.invokeSpecialParameter(functionList, localVariableMap);
                 } catch (ToolkitFunctionException e) {
-                    jdaService.sendChatOpsChannelErrorMessage("[ERROR] " + e.getMessage() + " (" + element + ")");
+                    jdaService.sendChatOpsChannelErrorMessage("[ERROR] " + e.getCause().getMessage() + " (" + element + ")");
                 }
             });
-
-
-//            // put the element from foreach list
-//            localVariableMap.put(element_name, listObj.get(i));
-//            // put the index into local variable
-//            localVariableMap.put("i", String.valueOf(i));
-//            // invoke all the todo_function
-//            orchestrator.invokeSpecialParameter(todoList, localVariableMap);
         }
-
-
-//        for (String element : list) {
-//            executorService.submit(() -> {
-//                // put the element from async list
-//                localVariableMap.put(element_name, element);
-//                // invoke all the todo_function
-//                try {
-//                    orchestrator.invokeSpecialParameter(todoList, localVariableMap);
-//                } catch (ToolkitFunctionException e) {
-//                    jdaService.sendChatOpsChannelErrorMessage("[ERROR] " + e.getMessage() + " (" + element + ")");
-//                }
-//            });
-//        }
         executorService.shutdown();
 
         // restore the local variable

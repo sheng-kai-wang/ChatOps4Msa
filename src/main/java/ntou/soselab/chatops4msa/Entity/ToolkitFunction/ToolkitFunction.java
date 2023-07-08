@@ -1,4 +1,4 @@
-package ntou.soselab.chatops4msa.Service.ToolkitFunctionService;
+package ntou.soselab.chatops4msa.Entity.ToolkitFunction;
 
 public class ToolkitFunction {
     String generateFunctionErrorMessage() {

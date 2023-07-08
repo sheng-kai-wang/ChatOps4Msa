@@ -12,11 +12,11 @@ toolkit-string-replace:
 toolkit-string-split:
   - string
   - separator
-toolkit-string-to_string:
-  - json
 toolkit-string-pattern:
   - string
   - regex
+toolkit-list-to_string:
+  - list
 toolkit-list-get:
   - list
   - index

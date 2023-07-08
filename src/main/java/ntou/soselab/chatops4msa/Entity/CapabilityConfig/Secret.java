@@ -1,4 +1,4 @@
-package ntou.soselab.chatops4msa.Entity.Capability;
+package ntou.soselab.chatops4msa.Entity.CapabilityConfig;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 

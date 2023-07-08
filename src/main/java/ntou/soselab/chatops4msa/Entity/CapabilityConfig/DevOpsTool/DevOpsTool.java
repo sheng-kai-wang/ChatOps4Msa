@@ -1,9 +1,9 @@
-package ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool;
+package ntou.soselab.chatops4msa.Entity.CapabilityConfig.DevOpsTool;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import ntou.soselab.chatops4msa.Entity.Capability.Configs;
-import ntou.soselab.chatops4msa.Entity.Capability.Info;
-import ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.LowCode.LowCode;
+import ntou.soselab.chatops4msa.Entity.CapabilityConfig.Configs;
+import ntou.soselab.chatops4msa.Entity.CapabilityConfig.Info;
+import ntou.soselab.chatops4msa.Entity.CapabilityConfig.DevOpsTool.LowCode.LowCode;
 
 public class DevOpsTool implements Configs {
 

@@ -1,4 +1,4 @@
-package ntou.soselab.chatops4msa.Service.ToolkitFunctionService;
+package ntou.soselab.chatops4msa.Entity.ToolkitFunction;
 
 import org.springframework.stereotype.Component;
 
@@ -42,6 +42,6 @@ public class TimeToolkit extends ToolkitFunction {
         ZonedDateTime targetDateTime = utcDateTime.withZoneSameInstant(targetZone);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm");
-        return targetDateTime.format(formatter) + " (Taiwan)";
+        return targetDateTime.format(formatter);
     }
 }

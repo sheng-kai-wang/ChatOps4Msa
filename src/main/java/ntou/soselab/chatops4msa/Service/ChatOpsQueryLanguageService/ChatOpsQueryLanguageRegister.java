@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
 import net.dv8tion.jda.api.requests.restaction.CommandCreateAction;
-import ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.LowCode.DeclaredFunction;
+import ntou.soselab.chatops4msa.Entity.CapabilityConfig.DevOpsTool.LowCode.DeclaredFunction;
 import ntou.soselab.chatops4msa.Service.DiscordService.JDAService;
 import ntou.soselab.chatops4msa.Service.LowCodeService.CapabilityConfigLoader;
 import org.springframework.beans.factory.annotation.Autowired;

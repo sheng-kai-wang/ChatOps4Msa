@@ -1,8 +1,8 @@
-package ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.LowCode;
+package ntou.soselab.chatops4msa.Entity.CapabilityConfig.DevOpsTool.LowCode;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import ntou.soselab.chatops4msa.Entity.Capability.Secret;
+import ntou.soselab.chatops4msa.Entity.CapabilityConfig.Secret;
 import ntou.soselab.chatops4msa.Service.LowCodeService.LowCodeVariableExtractor;
 import org.springframework.stereotype.Component;
 

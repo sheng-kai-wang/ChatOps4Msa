@@ -1,13 +1,10 @@
-package ntou.soselab.chatops4msa.Service.ToolkitFunctionService;
+package ntou.soselab.chatops4msa.Entity.ToolkitFunction;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ntou.soselab.chatops4msa.Exception.ToolkitFunctionException;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,22 +35,6 @@ public class StringToolkit extends ToolkitFunction {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * from ["content"] to content
-     */
-    public String toolkitStringToString(String json) throws ToolkitFunctionException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<Object> listObj;
-        try {
-            listObj = objectMapper.readValue(json, new TypeReference<List<Object>>() {
-            });
-        } catch (JsonProcessingException e) {
-            throw new ToolkitFunctionException(e.getMessage());
-        }
-        if (listObj.size() == 1) return json.replaceAll("\\[\"", "").replaceAll("\"]", "");
-        return json;
     }
 
     /**

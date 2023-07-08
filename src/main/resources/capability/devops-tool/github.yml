@@ -238,8 +238,8 @@ low_code:
                   system: bookinfo
                   service: ${service_name}
                   info: scan_run_id
-              - toolkit-string-to_string:
-                  json: ${toolkit-info-get}
+              - toolkit-list-to_string:
+                  list: ${toolkit-info-get}
                   assign: scan_id
               - set-repo-info_of_service_into_url:
                   service_name: ${service_name}
@@ -376,11 +376,12 @@ low_code:
     - name: get-github-issue_progress_timeline
       parameter:
         service_name: service name
-        number_of_issue: number of issue
+        number_of_issue: 1 <= n <= 5
       description: |
         Describe the progress of the issue with a timeline.
       access: public
       body:
+        # all service
         - toolkit-info-get:
             system: bookinfo
             service: ${service_name}
@@ -388,79 +389,82 @@ low_code:
             assign: service_name_list
         - toolkit-list-foreach:
             list: ${service_name_list}
-            element_name: service
+            element_name: service_name
             todo:
+              # service loop
               - set-repo-info_of_service_into_url:
-                  service_name: ${service}
-                  url: https://api.github.com/repos/<<username>>/<<repo>>/issues
+                  service_name: ${service_name}
+                  url: https://api.github.com/repos/<<username>>/<<repo>>/issues?per_page=${number_of_issue}
                   assign: get_issue_list_url
               - toolkit-restapi-get:
                   url: ${get_issue_list_url}
               - toolkit-list-foreach:
                   list: ${toolkit-restapi-get}
-                  element_name: issue
+                  element_name: issue_json
                   todo:
-                    - toolkit-json-parse_github_issue:
-                        json: ${issue}
-                        first: 5
-                        assign: issue_json_list
+                    # issue loop (single service)
+                    - toolkit-json-parse:
+                        json: ${issue_json}
+                        jsonpath: $.html_url
+                        assign: html_url
+                    - toolkit-json-parse:
+                        json: ${issue_json}
+                        jsonpath: $.user.login
+                        assign: author
+                    - toolkit-json-parse:
+                        json: ${issue_json}
+                        jsonpath: $.created_at
+                        assign: created_at
+                    - toolkit-time-convert_to_taiwan:
+                        time: ${created_at}
+                        assign: created_at
+                    - toolkit-json-parse:
+                        json: ${issue_json}
+                        jsonpath: $.title
+                        assign: title
+                    - toolkit-json-parse:
+                        json: ${issue_json}
+                        jsonpath: $.body
+                        assign: body
+                    - toolkit-json-parse:
+                        json: ${issue_json}
+                        jsonpath: $.state
+                        assign: state
+                    - toolkit-discord-embed:
+                        title: ${title} (${state})
+                        color: orange
+                        field_json: "{\"content\":\"${body}\", \"created_at\": \"${created_at} (Taiwan)\", \"author\":\"${author}\", \"html_url\":\"${html_url}\"}"
+                    # print timeline
+                    - toolkit-json-parse:
+                        json: ${issue_json}
+                        jsonpath: $.timeline_url
+                        assign: get_timeline_url
+                    - toolkit-restapi-get:
+                        url: ${get_timeline_url}
+                        assign: timeline_list
                     - toolkit-list-foreach:
-                        list: ${issue_json_list}
-                        element_name: issue_json
+                        list: ${timeline_list}
+                        element_name: timeline_json
                         todo:
                           - toolkit-json-parse:
-                              json: ${issue_json}
-                              jsonpath: $.html_url
-                              assign: html_url
-                          - toolkit-json-parse:
-                              json: ${issue_json}
-                              jsonpath: $.author
-                              assign: author
-                          - toolkit-json-parse:
-                              json: ${issue_json}
+                              json: ${timeline_json}
                               jsonpath: $.created_at
                               assign: created_at
-                          - toolkit-json-parse:
-                              json: ${issue_json}
-                              jsonpath: $.title
-                              assign: title
-                          - toolkit-json-parse:
-                              json: ${issue_json}
-                              jsonpath: $.body
-                              assign: body
-                          - toolkit-json-parse:
-                              json: ${issue_json}
-                              jsonpath: $.state
-                              assign: state
                           - toolkit-time-convert_to_taiwan:
                               time: ${created_at}
                               assign: created_at
-                          - toolkit-discord-embed:
-                              title: ${created_at}
-                              color: orange
-                              field_json: "{\"html_url\":\"${html_url}\", \"author\":\"${author}\", \"title\":\"${title}\", \"body\":\"${body}\", \"state\":\"${state}\"}"
-                    - toolkit-discord-text:
-                        text: === Detailed information about the timeline is shown above ===
-                    - toolkit-list-foreach:
-                        list: ${issue_json_list}
-                        element_name: issue_json
-                        todo:
                           - toolkit-json-parse:
-                              json: ${issue_json}
-                              jsonpath: $.[${i}].created_at
-                              assign: time
-                          - toolkit-time-convert_to_taiwan:
-                              time: ${time}
+                              json: ${timeline_json}
+                              jsonpath: $.actor.login
+                              assign: author
                           - toolkit-json-parse:
-                              json: ${issue_json}
-                              jsonpath: $.[${i}].title
-                              assign: title
-                          - toolkit-json-parse:
-                              json: ${issue_json}
-                              jsonpath: $.[${i}].state
-                              assign: state
+                              json: ${timeline_json}
+                              jsonpath: $.event
+                              assign: event
                           - toolkit-discord-blocks:
-                              text: "[${toolkit-time-convert_to_taiwan}] ${title} ${state}"
+                              text: "[${created_at}] ${event} by ${author}"
+              - toolkit-discord-text:
+                  text: ===================================================
 
     - name: create-github-issue
       parameter: 

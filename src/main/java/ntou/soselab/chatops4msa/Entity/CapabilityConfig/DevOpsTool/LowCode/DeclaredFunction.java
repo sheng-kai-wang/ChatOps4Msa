@@ -1,4 +1,4 @@
-package ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.LowCode;
+package ntou.soselab.chatops4msa.Entity.CapabilityConfig.DevOpsTool.LowCode;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

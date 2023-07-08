@@ -1,4 +1,4 @@
-package ntou.soselab.chatops4msa.Service.ToolkitFunctionService;
+package ntou.soselab.chatops4msa.Entity.ToolkitFunction;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,6 +13,7 @@ import java.util.List;
 
 @Component
 public class JsonToolkit extends ToolkitFunction {
+
     public String toolkitJsonParse(String json, String jsonpath) {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = null;
@@ -33,7 +34,7 @@ public class JsonToolkit extends ToolkitFunction {
     public String toolkitJsonParseGithubCommit(String json, String first) throws ToolkitFunctionException {
         try {
             int length = Integer.parseInt(first) + 1;
-            List<String> author = JsonPath.parse(json).read("$[0:" + length + "].commit.author.name");
+            List<String> author = JsonPath.parse(json).read("$[0:d" + length + "].commit.author.name");
             List<String> message = JsonPath.parse(json).read("$[0:" + length + "].commit.message");
             List<String> url = JsonPath.parse(json).read("$[0:" + length + "].html_url");
             List<String> date = JsonPath.parse(json).read("$[0:" + length + "].commit.author.date");
@@ -52,40 +53,7 @@ public class JsonToolkit extends ToolkitFunction {
 
         } catch (PathNotFoundException e) {
             e.printStackTrace();
-            throw new ToolkitFunctionException(e.getMessage());
-        }
-    }
-
-    /**
-     * Writing "Github" intentionally instead of "GitHub" is for the convenience of function name conversion.
-     */
-    public String toolkitJsonParseGithubIssue(String json, String first) throws ToolkitFunctionException {
-        try {
-            int length = Integer.parseInt(first) + 1;
-            List<String> htmlUrl = JsonPath.parse(json).read("$[0:" + length + "].html_url");
-            List<String> author = JsonPath.parse(json).read("$[0:" + length + "].user.login");
-            List<String> createdAt = JsonPath.parse(json).read("$[0:" + length + "].created_at");
-            List<String> title = JsonPath.parse(json).read("$[0:" + length + "].title");
-            List<String> body = JsonPath.parse(json).read("$[0:" + length + "].body");
-            List<String> state = JsonPath.parse(json).read("$[0:" + length + "].state");
-
-            JSONArray array = new JSONArray();
-            for (int i = 0; i < author.size(); i++) {
-                JSONObject object = new JSONObject();
-                object.put("html_url", htmlUrl.get(i));
-                object.put("author", author.get(i));
-                object.put("created_at", createdAt.get(i));
-                object.put("title", title.get(i));
-                object.put("body", body.get(i));
-                object.put("state", state.get(i));
-                array.put(object);
-            }
-
-            return array.toString();
-
-        } catch (PathNotFoundException e) {
-            e.printStackTrace();
-            throw new ToolkitFunctionException(e.getMessage());
+            throw new ToolkitFunctionException(e.getCause().getMessage());
         }
     }
 }

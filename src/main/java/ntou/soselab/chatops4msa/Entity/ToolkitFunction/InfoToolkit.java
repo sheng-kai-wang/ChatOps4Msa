@@ -1,8 +1,8 @@
-package ntou.soselab.chatops4msa.Service.ToolkitFunctionService;
+package ntou.soselab.chatops4msa.Entity.ToolkitFunction;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ntou.soselab.chatops4msa.Entity.Capability.MicroserviceSystem.MicroserviceSystem;
+import ntou.soselab.chatops4msa.Entity.CapabilityConfig.MicroserviceSystem.MicroserviceSystem;
 import ntou.soselab.chatops4msa.Exception.ToolkitFunctionException;
 import ntou.soselab.chatops4msa.Service.LowCodeService.CapabilityConfigLoader;
 import org.springframework.beans.factory.annotation.Autowired;

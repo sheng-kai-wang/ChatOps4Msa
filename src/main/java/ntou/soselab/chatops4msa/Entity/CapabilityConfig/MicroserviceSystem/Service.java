@@ -1,4 +1,4 @@
-package ntou.soselab.chatops4msa.Entity.Capability.MicroserviceSystem;
+package ntou.soselab.chatops4msa.Entity.CapabilityConfig.MicroserviceSystem;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;

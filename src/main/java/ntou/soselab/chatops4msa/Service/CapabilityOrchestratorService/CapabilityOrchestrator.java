@@ -1,8 +1,8 @@
 package ntou.soselab.chatops4msa.Service.CapabilityOrchestratorService;
 
-import ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.LowCode.AccessPermission;
-import ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.LowCode.DeclaredFunction;
-import ntou.soselab.chatops4msa.Entity.Capability.DevOpsTool.LowCode.InvokedFunction;
+import ntou.soselab.chatops4msa.Entity.CapabilityConfig.DevOpsTool.LowCode.AccessPermission;
+import ntou.soselab.chatops4msa.Entity.CapabilityConfig.DevOpsTool.LowCode.DeclaredFunction;
+import ntou.soselab.chatops4msa.Entity.CapabilityConfig.DevOpsTool.LowCode.InvokedFunction;
 import ntou.soselab.chatops4msa.Exception.CapabilityRoleException;
 import ntou.soselab.chatops4msa.Exception.ToolkitFunctionException;
 import ntou.soselab.chatops4msa.Service.LowCodeService.CapabilityConfigLoader;
