@@ -34,7 +34,7 @@ public class JsonToolkit extends ToolkitFunction {
     public String toolkitJsonParseGithubCommit(String json, String first) throws ToolkitFunctionException {
         try {
             int length = Integer.parseInt(first) + 1;
-            List<String> author = JsonPath.parse(json).read("$[0:d" + length + "].commit.author.name");
+            List<String> author = JsonPath.parse(json).read("$[0:" + length + "].commit.author.name");
             List<String> message = JsonPath.parse(json).read("$[0:" + length + "].commit.message");
             List<String> url = JsonPath.parse(json).read("$[0:" + length + "].html_url");
             List<String> date = JsonPath.parse(json).read("$[0:" + length + "].commit.author.date");
@@ -53,7 +53,7 @@ public class JsonToolkit extends ToolkitFunction {
 
         } catch (PathNotFoundException e) {
             e.printStackTrace();
-            throw new ToolkitFunctionException(e.getCause().getMessage());
+            throw new ToolkitFunctionException(e.getLocalizedMessage());
         }
     }
 }

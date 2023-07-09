@@ -3,7 +3,7 @@
 > Here are the currently available toolkit-functions
 
 1. All input values and return values are string type.
-2. all functions (including custom-functions) can use the "assign" parameter to store the return value in a local variable.
+2. Except for `toolkit-flow-return`, all functions (including custom-functions) can use the "assign" parameter to store the return value in a local variable.
 3. ${custom_variable_name} can get the value of the local variable named custom_variable_name.
 
 ### invoke format
@@ -241,10 +241,17 @@ toolkit-graphql-query:
 ```
 
 ### execute terminal commands using Bash
+##### this is `asynchronous`
 
 ```yml
 toolkit-command-bash:
-  command: <<e.g. docker run --rm -i grafana/k6 run <script.js -e TEST_URL=https://test-api.k6.io >>
+  command: <<command>>
+  input_stream: <<input_stream>>
+
+# example
+toolkit-command-bash:
+  command: docker run --rm -i grafana/k6 run - -e TEST_URL=https://test-api.k6.io
+  input_stream: /path/to/script.js
 ```
 
 <!-- ### visualize JSON data using Grafana
@@ -289,6 +296,13 @@ toolkit-discord-blocks:
   text: <<text>>
 ```
 
+### send a JSON message to the Discord channel
+
+```yml
+toolkit-discord-json:
+  json: <<json>>
+```
+
 ### send the embed message to the Discord channel (no thumbnail)
 ##### the color can be green, orange, red or default(gray)
 
@@ -308,4 +322,15 @@ toolkit-discord-embed_thumbnail:
   color: <<embed color>>
   field_json: <<embed content in JSON format>>
   thumbnail: <<thumbnail url>>
+```
+
+### send the embed message to the Discord channel (with image)
+##### the color can be green, orange, red or default(gray)
+
+```yml
+toolkit-discord-embed_image:
+  title: <<embed title>>
+  color: <<embed color>>
+  field_json: <<embed content in JSON format>>
+  thumbnail: <<image url>>
 ```

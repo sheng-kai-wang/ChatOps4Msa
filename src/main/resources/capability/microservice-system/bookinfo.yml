@@ -11,25 +11,25 @@ info:
 
 service:
   - name: productpage
-    url: http://localhost:3000
+    url: http://192.168.100.45:9080
     repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo-Productpage
     description: This is the product page microservice.
     scan_run_id: 5485657111
 
   - name: reviews
-    url: http://localhost:3001
+    url: http://192.168.100.45:9083
     repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo-Reviews
     description: This is the reviews microservice.
     scan_run_id: 5485661053
       
   - name: details
-    url: http://localhost:3002
+    url: http://192.168.100.45:9081
     repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo-Details
     description: This is the details microservice.
     scan_run_id: 5485654427
 
   - name: ratings
-    url: http://localhost:3003
+    url: http://192.168.100.45:9082
     repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo-Ratings
     description: This is the ratings microservice.
     scan_run_id: 5485659100
@@ -42,12 +42,12 @@ capability:
   - get-github-service_past_week_team_activity
   - get-github-contribution_of_team_member
   - get-github-issue_progress_timeline
-  - create-github-issue
-  - set-prometheus-edit_alert_rules
-  - monitor-prometheus-health
-  - monitor-prometheus-overview
-  - monitor-prometheus-all_service_alert
-  - monitor-prometheus-all_service_yesterday_report
+  - set-github-issue # create-github-issue
+  - get-prometheus-alert_rule # set-prometheus-edit_alert_rules
+  - monitor-prometheus-service_health # monitor-prometheus-health
+  - monitor-prometheus-grafana_overview # monitor-prometheus-overview
+  - monitor-prometheus-promql_overview # monitor-prometheus-all_service_alert
+  - monitor-prometheus-all_service_yesterday_status # monitor-prometheus-all_service_yesterday_report
   - monitor-prometheus-service_dependency
   - test-k6-stress_testing
   - test-k6-smoke_testing_all_service

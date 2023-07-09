@@ -39,10 +39,18 @@ public class ListToolkit extends ToolkitFunction {
             listObj = objectMapper.readValue(list, new TypeReference<List<String>>() {
             });
         } catch (JsonProcessingException e) {
-            throw new ToolkitFunctionException(e.getCause().getMessage());
+            throw new ToolkitFunctionException(e.getOriginalMessage());
         }
         if (listObj.size() == 1) return list.replaceAll("\\[\"", "").replaceAll("\"]", "");
         return list;
+    }
+
+    /**
+     * [] is an empty list
+     */
+    public String toolkitListIsEmpty(String list) {
+        if ("[]".equals(list)) return "true";
+        return "false";
     }
 
     /**
@@ -57,7 +65,7 @@ public class ListToolkit extends ToolkitFunction {
             int i = Integer.parseInt(index);
             return array[i];
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new ToolkitFunctionException(e.getOriginalMessage());
         }
     }
 
@@ -90,14 +98,15 @@ public class ListToolkit extends ToolkitFunction {
                 // put the index into local variable
                 localVariableMap.put("i", String.valueOf(i));
                 // invoke all the todo_function
-                orchestrator.invokeSpecialParameter(todoList, localVariableMap);
+                String returnSignal = orchestrator.invokeSpecialParameter(todoList, localVariableMap);
+                if (returnSignal != null) break;
             }
 
             // restore the local variable
             localVariableMap.put(element_name, localVariableTemp);
 
         } catch (JsonProcessingException e) {
-            throw new ToolkitFunctionException(e.getCause().getMessage());
+            throw new ToolkitFunctionException(e.getOriginalMessage());
         }
     }
 
@@ -122,7 +131,7 @@ public class ListToolkit extends ToolkitFunction {
             listObj = objectMapper.readValue(list, new TypeReference<List<String>>() {
             });
         } catch (JsonProcessingException e) {
-            throw new ToolkitFunctionException(e.getCause().getMessage());
+            throw new ToolkitFunctionException(e.getOriginalMessage());
         }
 
         // temporary storage of local variable with the same name
@@ -145,7 +154,7 @@ public class ListToolkit extends ToolkitFunction {
                     functionList.add(function);
                     orchestrator.invokeSpecialParameter(functionList, localVariableMap);
                 } catch (ToolkitFunctionException e) {
-                    jdaService.sendChatOpsChannelErrorMessage("[ERROR] " + e.getCause().getMessage() + " (" + element + ")");
+                    jdaService.sendChatOpsChannelErrorMessage("[ERROR] " + e.getLocalizedMessage() + " (" + element + ")");
                 }
             });
         }

@@ -17,6 +17,8 @@ toolkit-string-pattern:
   - regex
 toolkit-list-to_string:
   - list
+toolkit-list-is_empty:
+  - list
 toolkit-list-get:
   - list
   - index
@@ -34,6 +36,7 @@ toolkit-json-parse:
 toolkit-json-parse_github_commit:
   - json
   - first
+# useless
 toolkit-json-parse_github_issue:
   - json
   - first
@@ -59,6 +62,7 @@ toolkit-graphql-query:
   - authorization
 toolkit-command-bash:
   - command
+  - input_stream
 toolkit-render-grafana:
   - json
 toolkit-discord-text:
@@ -71,6 +75,8 @@ toolkit-discord-error:
   - text
 toolkit-discord-blocks:
   - text
+toolkit-discord-json:
+  - text
 toolkit-discord-embed:
   - title
   - color
@@ -80,3 +86,8 @@ toolkit-discord-embed_thumbnail:
   - color
   - field_json
   - thumbnail
+toolkit-discord-embed_image:
+  - title
+  - color
+  - field_json
+  - image

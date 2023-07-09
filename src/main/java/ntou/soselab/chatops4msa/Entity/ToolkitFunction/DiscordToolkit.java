@@ -3,6 +3,9 @@ package ntou.soselab.chatops4msa.Entity.ToolkitFunction;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParser;
 import net.dv8tion.jda.api.EmbedBuilder;
 import ntou.soselab.chatops4msa.Exception.ToolkitFunctionException;
 import ntou.soselab.chatops4msa.Service.DiscordService.JDAService;
@@ -61,20 +64,51 @@ public class DiscordToolkit extends ToolkitFunction {
     }
 
     /**
+     * JSON message
+     */
+    public void toolkitDiscordJson(String text) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String formattedJson = gson.toJson(JsonParser.parseString(text));
+        jdaService.sendChatOpsChannelBlocksMessage(formattedJson);
+    }
+
+    /**
      * Embed message
      */
-    public void toolkitDiscordEmbed(String title, String color, String field_json) throws ToolkitFunctionException {
-        processToolkitDiscordEmbed(title, color, field_json, null);
+    public void toolkitDiscordEmbed(String title,
+                                    String color,
+                                    String field_json) throws ToolkitFunctionException {
+
+        processToolkitDiscordEmbed(title, color, field_json, null, null);
     }
 
     /**
      * Embed message with thumbnail
      */
-    public void toolkitDiscordEmbedThumbnail(String title, String color, String field_json, String thumbnail) throws ToolkitFunctionException {
-        processToolkitDiscordEmbed(title, color, field_json, thumbnail);
+    public void toolkitDiscordEmbedThumbnail(String title,
+                                             String color,
+                                             String field_json,
+                                             String thumbnail) throws ToolkitFunctionException {
+
+        processToolkitDiscordEmbed(title, color, field_json, thumbnail, null);
     }
 
-    private void processToolkitDiscordEmbed(String title, String color, String field_json, String thumbnail) throws ToolkitFunctionException {
+    /**
+     * Embed message with image
+     */
+    public void toolkitDiscordEmbedImage(String title,
+                                         String color,
+                                         String field_json,
+                                         String image) throws ToolkitFunctionException {
+
+        processToolkitDiscordEmbed(title, color, field_json, null, image);
+    }
+
+    private void processToolkitDiscordEmbed(String title,
+                                            String color,
+                                            String field_json,
+                                            String thumbnail,
+                                            String image) throws ToolkitFunctionException {
         Color colorObj = parseColor(color);
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -83,13 +117,12 @@ public class DiscordToolkit extends ToolkitFunction {
             map = objectMapper.readValue(field_json, new TypeReference<Map<String, String>>() {
             });
         } catch (JsonProcessingException e) {
-            throw new ToolkitFunctionException(e.getCause().getMessage());
+            throw new ToolkitFunctionException(e.getOriginalMessage());
         }
 
         EmbedBuilder eb = new EmbedBuilder().setTitle(title).setColor(colorObj);
-        if (thumbnail != null) {
-            eb.setThumbnail(thumbnail);
-        }
+        if (thumbnail != null) eb.setThumbnail(thumbnail);
+        if (image != null) eb.setImage(image);
         for (Map.Entry<String, String> entry : map.entrySet()) {
             eb.addField(entry.getKey(), entry.getValue(), false);
         }

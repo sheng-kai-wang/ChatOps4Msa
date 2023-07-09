@@ -65,8 +65,8 @@ public class CapabilityOrchestrator {
         return false;
     }
 
-    public void invokeSpecialParameter(List<InvokedFunction> functionList,
-                                       Map<String, String> localVariableMap) throws ToolkitFunctionException {
+    public String invokeSpecialParameter(List<InvokedFunction> functionList,
+                                         Map<String, String> localVariableMap) throws ToolkitFunctionException {
 
         // local variable in todo_function, true_function or false_function (deep copy)
         Map<String, String> functionListLocalVariableMap = new HashMap<>(localVariableMap);
@@ -90,13 +90,22 @@ public class CapabilityOrchestrator {
 
                 // assign the return value to the functionListLocalVariableMap
                 String assignName = function.getAssign();
-                if (assignName != null && !assignName.isEmpty()) functionListLocalVariableMap.put(assignName, returnValue);
+                if (assignName != null && !assignName.isEmpty())
+                    functionListLocalVariableMap.put(assignName, returnValue);
                 else functionListLocalVariableMap.put(functionName, returnValue);
             }
 
             // toolkit-function
-            else invokeToolkitFunction(function, functionListLocalVariableMap);
+            else {
+                if ("toolkit-flow-return".equals(functionName)) {
+                    localVariableMap.put("SPECIAL_RETURN", functionListLocalVariableMap.get("return"));
+                    return "RETURN_SIGNAL";
+                }
+                invokeToolkitFunction(function, functionListLocalVariableMap);
+            }
         }
+
+        return null;
     }
 
     private String invokeCustomFunction(DeclaredFunction functionData,
@@ -155,6 +164,10 @@ public class CapabilityOrchestrator {
                     throw new ToolkitFunctionException(functionData.getName() + " > " + e.getMessage());
                 }
 
+                // special return of todo_list, true_list or false_list function
+                String returnValueOfSpecialParameter = localVariableMap.get("SPECIAL_RETURN");
+                if (returnValueOfSpecialParameter != null) return returnValueOfSpecialParameter;
+
                 // decide whether to continue invoking the body function
                 if ("toolkit-flow-if".equals(invokedFunctionName)) {
                     if ("true".equals(subArgumentMap.get("condition"))) {
@@ -197,6 +210,7 @@ public class CapabilityOrchestrator {
     private void invokeToolkitFunction(InvokedFunction functionData,
                                        Map<String, String> localVariableMap) throws ToolkitFunctionException {
 
+
         String functionName = functionData.getName();
         String toolkitClassName = extractToolkitClassName(functionName);
         String toolkitFunctionName = extractToolkitFunctionName(functionName);
@@ -223,7 +237,7 @@ public class CapabilityOrchestrator {
 
         } catch (ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
-            throw new ToolkitFunctionException(functionName + " > " + e.getClass().getName() + ": " + e.getMessage());
+            throw new ToolkitFunctionException(functionName + " > " + e.getClass().getName() + ": " + e.getCause());
         }
     }
 

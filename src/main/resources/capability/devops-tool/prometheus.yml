@@ -13,119 +13,160 @@ info:
 low_code:
   property:
     system_name: bookinfo
+    prometheus_host_url: ${secret.prometheus_host_url}
     prometheus_host_ip: ${secret.prometheus_host_ip}
     prometheus_host_port: ${secret.prometheus_host_port}
     prometheus_monitor_health_path: /api/v1/query
     prometheus_edit_alert_rules_path: /alerting/rules
     prometheus_get_alert_status_path: /api/v1/alerts
+    grafana_url: ${secret.grafana_url}
     grafana_host_ip: ${secret.grafana_host_ip}
     grafana_host_port: ${secret.grafana_host_port}
     grafana_authorization_bearer: ${secret.grafana_authorization_bearer}
     grafana_create_datasource_path: /api/datasources
     grafana_monitor_datasource_path: /api/datasources/name
   
-  constructor:
-    - name: set-prometheus-all_service
-      parameter: null
-      description: |
-        Automatically execute on startup and register all services to Prometheus.
-      access: private
-      body:
-        - toolkit-command-bash:
-            command: prometheus --config.file=/etc/prometheus/prometheus-file-sd.yml --storage.tsdb.path=/data/prometheus
+  # constructor:
+    # - name: set-prometheus-all_service
+    #   parameter: null
+    #   description: |
+    #     Automatically execute on startup and register all services to Prometheus.
+    #   access: private
+    #   body:
+    #     - toolkit-command-bash:
+    #         command: prometheus --config.file=/etc/prometheus/prometheus-file-sd.yml --storage.tsdb.path=/data/prometheus
 
-    - name: set-prometheus-link_grafana
-      parameter: null
-      description: |
-        Add Prometheus data source to Grafana through API.
-      access: private
-      body:
-        - toolkit-restapi-post:
-            url: ${grafana_host_ip}:${grafana_host_port}${grafana_create_datasource_path}
-            body: "{'name': '${system_name}', 'type': 'prometheus', 'url': '${prometheus_host_ip}:${prometheus_host_port}', 'access': 'proxy','basicAuth': false}"
-            authorization: ${grafana_authorization_bearer}
+    # - name: set-prometheus-link_grafana
+    #   parameter: null
+    #   description: |
+    #     Add Prometheus data source to Grafana through API.
+    #   access: private
+    #   body:
+    #     - toolkit-restapi-post:
+    #         url: ${grafana_host_ip}:${grafana_host_port}${grafana_create_datasource_path}
+    #         body: "{'name': '${system_name}', 'type': 'prometheus', 'url': '${prometheus_host_ip}:${prometheus_host_port}', 'access': 'proxy','basicAuth': false}"
+    #         authorization: ${grafana_authorization_bearer}
 
   operation:
-    - name: monitor-prometheus-health
-      parameter:
-        service_name: service name
+    - name: get-prometheus-alert_rule
+      parameter: null
       description: |
-        Monitor the health status of a certain service.
+        View the alert rules through the Prometheus UI.
+      access:
+        protected:
+          - Supervisor
+          - Team_Member
+      body:
+        - toolkit-discord-text:
+            text: View the alert rules through the Prometheus UI.
+        - toolkit-discord-embed:
+            title: Prometheus Alert Rules
+            color: default
+            field_json: "{\"Link\":\"${prometheus_host_url}/rules\"}"
+
+    - name: monitor-prometheus-service_health
+      parameter: null
+      description: |
+        Monitor the health status of all the services.
       access: public
       body:
         - toolkit-restapi-get:
-            url: ${prometheus_host_ip}:${prometheus_host_port}${prometheus_monitor_health_path}?query=up{instance="${service_name}"}
+            url: ${prometheus_host_url}/api/v1/alerts
         - toolkit-json-parse:
             json: ${toolkit-restapi-get}
-            jsonpath: .....
-        - toolkit-discord-embed:
-            title: The health status of ${service_name}
-            color: yellow
-            field_json: ${toolkit-json-parse}
+            jsonpath: $.data.alerts
+            assign: alerts_list
+        - toolkit-list-is_empty:
+            list: ${alerts_list}
+            assign: is_success
+        - toolkit-flow-if:
+            condition: ${is_success}
+            true:
+              - toolkit-discord-embed:
+                  title: The health status of all the services
+                  color: green
+                  field_json: "{\"status\":\"Inactive\"}"
+            false:
+              - toolkit-discord-embed:
+                  title: The health status of all the services
+                  color: red
+                  field_json: "{\"status\":\"Firing\"}"
+              - toolkit-discord-json:
+                  text: ${alerts_list}
+              - toolkit-discord-return:
+                  return: ${alerts_list}
 
-    - name: monitor-prometheus-overview
+    # - name: judge-service-status_color
+    #   parameter:
+    #     status: null
+    #   description: judge the color of service status.
+    #   access: private
+    #   body:
+    #     - toolkit-string-pattern:
+    #         string: ${status}
+    #         regex: ^(success|resolved)$
+    #         assign: is_success
+    #     - toolkit-flow-if:
+    #         condition: ${is_success}
+    #         true:
+    #           - toolkit-flow-return:
+    #               return: green
+    #     - toolkit-string-pattern:
+    #         string: ${status}
+    #         regex: firing
+    #         assign: is_firing
+    #     - toolkit-flow-if:
+    #         condition: ${is_firing}
+    #         true:
+    #           - toolkit-flow-return:
+    #               return: red
+    #         false:
+    #           - toolkit-flow-return:
+    #               return: orange
+
+    - name: monitor-prometheus-grafana_overview
       parameter: null
       description: |
-        Monitor the overview of all service by GUI.
+        Monitor the overall status of all services using a graphical user interface (GUI).
       access: public
       body:
         - toolkit-discord-embed:
             title: The overview of all service
-            color: yellow
-            field_json: "{'Grafana Link': '${grafana_host_ip}:${grafana_host_port}${grafana_monitor_datasource_path}/${system_name}'}"
+            color: default
+            field_json: "{\"Grafana Link\": \"${grafana_url}\"}"
 
-    - name: set-prometheus-edit_alert_rules
+    - name: monitor-prometheus-promql_overview
       parameter: null
       description: |
-        Edit alert rules through the Prometheus UI, allowing for subscription to monitoring alerts.
-      access:
-        protected:
-          - Supervisor
-          - Team_Member
-      body:
-        - toolkit-discord-embed:
-            title: Edit alert rules
-            color: yellow
-            field_json: "{'Prometheus Link': '${prometheus_host_ip}:${prometheus_host_port}${prometheus_edit_alert_rules_path}'}"
-
-    - name: monitor-prometheus-all_service_alert
-      parameter: null
-      description: |
-        Monitor the alert status of all services.
-      access: public
-      body:
-        - toolkit-restapi-get:
-            url: ${prometheus_host_ip}:${prometheus_host_port}${prometheus_get_alert_status_path}
-        - toolkit-json-parse:
-            json: ${toolkit-restapi-get}
-            jsonpath: .....
-        - toolkit-discord-embed:
-            title: The services that trigger alerts
-            color: yellow
-            field_json: ${toolkit-json-parse}
-        - toolkit-flow-return:
-            return: ${toolkit-restapi-get}
-
-    - name: monitor-prometheus-all_service_yesterday_report
-      parameter: null
-      description: |
-        Retrieve yesterday's microservice operational report and return the Grafana web interface link.
+        Monitor all service metrics using PromQL.
       access: public
       body:
         - toolkit-discord-embed:
-            title: Reports of the operational status of all microservices yesterday
-            color: yellow
-            field_json: "{'Grafana Link': .....}"
+            title: The overview of all service
+            color: default
+            field_json: "{\"Prometheus Link\": \"${prometheus_host_url}\"}"
+
+    - name: monitor-prometheus-all_service_yesterday_status
+      parameter: null
+      description: |
+        Retrieve yesterday's microservice operational status using PromQL.
+      access: public
+      body:
+        - toolkit-discord-embed:
+            title: The operational status of the microservices from yesterday.
+            color: default
+            field_json: "{\"Prometheus Link\": \"${prometheus_host_url}/graph?g0.expr=rate(container_last_seen%5B1d%5D)&g0.tab=0&g0.stacked=0&g0.show_exemplars=0&g0.range_input=1d\"}"
 
     - name: monitor-prometheus-service_dependency
       parameter: null
-      description: monitor the dependency relationships between microservices and return the link to the Grafana.
+      description: monitor the dependency relationships between microservices.
       access:
         protected:
           - Supervisor
           - Team_Member
       body:
-        - toolkit-discord-embed:
+        - toolkit-discord-embed_image:
             title: The dependency relationships between all service
-            color: yellow
-            field_json: "{'Grafana Link': .....}"
+            color: default
+            field_json: "{\"it just a demo\": \"https://grafana.com/grafana/plugins/novatec-sdg-panel/\"}"
+            image: https://cdn.discordapp.com/attachments/1127409934695419915/1127410019059630231/service-dependency-graph-panel.gif

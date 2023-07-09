@@ -466,7 +466,7 @@ low_code:
               - toolkit-discord-text:
                   text: ===================================================
 
-    - name: create-github-issue
+    - name: set-github-issue
       parameter: 
         service_name: service name
         issue_title: issue title

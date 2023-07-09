@@ -1,31 +1,60 @@
 package ntou.soselab.chatops4msa.Entity.ToolkitFunction;
 
 import ntou.soselab.chatops4msa.Exception.ToolkitFunctionException;
+import ntou.soselab.chatops4msa.Service.DiscordService.JDAService;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.concurrent.Executors;
 
 @Component
 public class CommandToolkit extends ToolkitFunction {
-    public void toolkitCommandBash(String command) throws ToolkitFunctionException {
-        System.out.println("[DEBUG] try to execute the bash command:");
-        System.out.println("[Command] " + command);
+    private final JDAService jdaService;
 
-        try {
-            ProcessBuilder processBuilder = new ProcessBuilder(command);
-            Process process = processBuilder.start();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
+    public CommandToolkit(JDAService jdaService) {
+        this.jdaService = jdaService;
+    }
+
+    public void toolkitCommandBash(String command, String input_stream) {
+        String[] commands = command.split(" ");
+
+        CommandToolkit.executeInBackground(() -> {
+            try {
+                ProcessBuilder processBuilder = new ProcessBuilder(commands);
+                processBuilder.redirectInput(new File(input_stream));
+                Process process = processBuilder.start();
+
+                // testing started
+                jdaService.sendChatOpsChannelMessage("=============== COMMAND START ===============\n");
+
+                // success output
+                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                    if (line.contains("..:")) jdaService.sendChatOpsChannelMessage(line);
+                }
+
+                // error output
+                reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+
+                // testing completed
+                jdaService.sendChatOpsChannelMessage("\n=============== COMMAND END ===============");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                jdaService.sendChatOpsChannelErrorMessage("[ERROR] " + e.getLocalizedMessage());
             }
-            System.out.println("[Exit Code] " + process.waitFor());
+        });
+    }
 
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-            throw new ToolkitFunctionException("toolkit-command-bash error");
-        }
+    private static void executeInBackground(Runnable task) {
+        Executors.newSingleThreadExecutor().execute(task);
     }
 }

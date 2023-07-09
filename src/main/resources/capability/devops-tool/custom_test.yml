@@ -22,23 +22,27 @@ low_code:
       # the following functions are declared in other configs
       body:
         # declared in prometheus.yml
-        - set-prometheus-edit_alert_rules: null
+        - get-prometheus-alert_rule: null
         # declared in k6.yml
         - test-k6-smoke_testing_all_service:
             number_of_virtual_user: ${number_of_virtual_user}
-        # declared in prometheus.yml
-        - monitor-prometheus-all_service_alert: null
+        # - monitor-prometheus-service_health:
+        #     assign: alerted_service_list
         # provided by ChatOps4Msa (parse the content of JSON)
-        - toolkit-json-parse:
-            json: ${monitor-prometheus-all_service_alert}
-            jsonpath: "$.data.alerts[*].labels.alertService"
-            assign: alerted_service_list
+        - toolkit-discord-embed:
+            title: "[Reviews] is FIRING"
+            color: red
+            field_json: "{\"message\": \"The Reviews service terminated unexpectedly.\"}"
+        - get-github-service_past_week_team_activity:
+            service_name: reviews
+        - get-github-contribution_of_team_member:
+            service_name: reviews
         # provided by ChatOps4Msa (process the elements in a list in batch)
-        - toolkit-list-foreach:
-            list: ${alerted_service_list}
-            # iterated elements
-            element_name: service
-            todo:
-              # declared in github.yml
-              - get-github-service_past_week_team_activity:
-                  service_name: ${service}
+        # - toolkit-list-foreach:
+        #     list: ${alerted_service_list}
+        #     # iterated elements
+        #     element_name: service
+        #     todo:
+        #       # declared in github.yml
+        #       - get-github-service_past_week_team_activity:
+        #           service_name: ${service}

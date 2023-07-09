@@ -129,6 +129,8 @@ public class ChatOpsQueryLanguageRegister {
         jda.retrieveCommands().queue(commands -> {
             System.out.println();
 
+//            int commandNumber = configLoader.getAllNonPrivateDeclaredFunctionMap().size();
+//            if (commands.size() < commandNumber) {
             if (commands.isEmpty()) {
                 jdaService.sendChatOpsChannelWarningMessage(warningMessage);
                 System.out.println(warningMessage);

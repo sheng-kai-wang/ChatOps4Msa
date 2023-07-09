@@ -11,7 +11,9 @@ info:
 
 low_code:
   property:
-    grafana_prometheus_k6_stress_testing_url: ........
+    grafana_url: ${secret.grafana_url}
+    k6_logo_url: https://media.discordapp.net/attachments/1127409934695419915/1127439470317285406/K6-logo.svg.png?width=1305&height=1262
+    k6_test_script_path: ${secret.k6_test_script_path}
     grafana_prometheus_k6_smoke_testing_url: ........
 
   operation:
@@ -25,13 +27,31 @@ low_code:
           - Supervisor
           - Team_Member
       body:
-        - toolkit-command-bash:
-            command: docker run --rm -i grafana/k6 run <stressTesting-${service_name}.js -e TEST_URL=https://test-api.k6.io
-        - toolkit-discord-embed_thumbnail:
-            title: The stress testing of ${service_name}
-            color: yellow
-            field_json: "{'grafana link': '${grafana_prometheus_k6_stress_testing_url}'}"
-            thumbnail: .....
+        - toolkit-info-get:
+            system: bookinfo
+            service: ${service_name}
+            info: name
+            assign: service_list
+        - toolkit-list-foreach:
+            list: ${service_list}
+            element_name: service
+            todo:
+              - toolkit-info-get:
+                  system: bookinfo
+                  service: ${service}
+                  info: url
+                  assign: service_url
+              - toolkit-list-to_string:
+                  list: ${service_url}
+                  assign: service_url
+              - toolkit-command-bash:
+                  command: docker run --rm -i grafana/k6 run - -e TEST_URL=${service_url}
+                  input_stream: ${k6_test_script_path}/stressTest.js
+              - toolkit-discord-embed_thumbnail:
+                  title: The stress testing of ${service}
+                  color: green
+                  field_json: "{\"grafana link\": \"${grafana_url}\"}"
+                  thumbnail: ${k6_logo_url}
     
     - name: test-k6-smoke_testing_all_service
       parameter:
@@ -44,26 +64,28 @@ low_code:
           - Team_Member
       body:
         - toolkit-string-pattern:
-            string: number_of_virtual_user
-            regex: ^(?!(?:[1-5])$).*
-            assign: is_out_of_range
+            string: ${number_of_virtual_user}
+            regex: ^[1-5]$
+            assign: in_range
         - toolkit-flow-if:
-            condition: ${is_out_of_range}
-            true:
+            condition: ${in_range}
+            false:
               - toolkit-discord-warning:
-                  text: "[WARNING] sorry, the number of virtual user must be between 1 and 5."
+                  text: "[WARNING] sorry, the number of activities must be between 1 and 5."
         - toolkit-info-get:
             system: bookinfo
             service: all_service
-            info: name
+            info: url
+            assign: url_list
         - toolkit-list-async:
-            list: ${toolkit-info-get}
-            element_name: service_name
+            list: ${url_list}
+            element_name: url
             todo:
               - toolkit-command-bash:
-                  command: docker run --rm -i grafana/k6 run --vus ${number_of_virtual_user} --duration 30s - <smokeTesting-${service_name}.js
+                  command: docker run --rm -i grafana/k6 run --vus ${number_of_virtual_user} - -e TEST_URL=${url}
+                  input_stream: ${k6_test_script_path}/smokeTest.js
         - toolkit-discord-embed_thumbnail:
             title: The smoke testing of all service
-            color: yellow
-            field_json: "{'grafana link': '${grafana_prometheus_k6_smoke_testing_url}'}"
-            thumbnail: .....
+            color: green
+            field_json: "{\"grafana link\": \"${grafana_url}\"}"
+            thumbnail: ${k6_logo_url}

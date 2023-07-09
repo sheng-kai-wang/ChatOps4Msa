@@ -65,13 +65,13 @@ public class DiscordSlashCommandListener extends ListenerAdapter {
 
         } catch (CapabilityRoleException e) {
             e.printStackTrace();
-            String warningMessage = "[WARNING] " + e.getMessage();
+            String warningMessage = "[WARNING] " + e.getLocalizedMessage();
             System.out.println(warningMessage);
             jdaService.sendChatOpsChannelWarningMessage(warningMessage);
 
         } catch (ToolkitFunctionException e) {
             e.printStackTrace();
-            String errorMessage = "[ERROR] " + e.getMessage();
+            String errorMessage = "[ERROR] " + e.getLocalizedMessage();
             System.out.println(errorMessage);
             jdaService.sendChatOpsChannelErrorMessage(errorMessage);
 
