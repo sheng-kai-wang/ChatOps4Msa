@@ -215,7 +215,7 @@ low_code:
                         color: green
                         field_json: ${json}
 
-    - name: get-github-service_latest_commit_report
+    - name: get-github-service_code_scanning
       parameter:
         service_name: service name
       description: |

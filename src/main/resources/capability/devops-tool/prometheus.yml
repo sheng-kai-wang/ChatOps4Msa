@@ -59,10 +59,8 @@ low_code:
       body:
         - toolkit-discord-text:
             text: View the alert rules through the Prometheus UI.
-        - toolkit-discord-embed:
-            title: Prometheus Alert Rules
-            color: default
-            field_json: "{\"Link\":\"${prometheus_host_url}/rules\"}"
+        - toolkit-discord-text:
+            text: ${prometheus_host_url}/rules
 
     - name: monitor-prometheus-service_health
       parameter: null

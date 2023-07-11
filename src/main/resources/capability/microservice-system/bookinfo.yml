@@ -38,7 +38,7 @@ capability:
   - get-example-echo_message
   - get-example-math_calculate
   - get-github-service_recent_activity
-  - get-github-service_latest_commit_report
+  - get-github-service_code_scanning # get-github-service_latest_commit_report
   - get-github-service_past_week_team_activity
   - get-github-contribution_of_team_member
   - get-github-issue_progress_timeline
