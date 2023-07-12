@@ -1,4 +1,4 @@
-package ntou.soselab.chatops4msa.Service.CapabilityOrchestratorService;
+package ntou.soselab.chatops4msa.Service.CapabilityOrchestrator;
 
 import ntou.soselab.chatops4msa.Entity.CapabilityConfig.DevOpsTool.LowCode.AccessPermission;
 import ntou.soselab.chatops4msa.Entity.CapabilityConfig.DevOpsTool.LowCode.DeclaredFunction;

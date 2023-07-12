@@ -7,23 +7,24 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import ntou.soselab.chatops4msa.Exception.CapabilityRoleException;
 import ntou.soselab.chatops4msa.Exception.ToolkitFunctionException;
-import ntou.soselab.chatops4msa.Service.CapabilityOrchestratorService.CapabilityOrchestrator;
+import ntou.soselab.chatops4msa.Service.CapabilityOrchestrator.CapabilityOrchestrator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
-public class DiscordSlashCommandListener extends ListenerAdapter {
+public class SlashCommandListener extends ListenerAdapter {
 
     private final CapabilityOrchestrator orchestrator;
     private final JDAService jdaService;
 
+    @Lazy
     @Autowired
-    public DiscordSlashCommandListener(CapabilityOrchestrator orchestrator, JDAService jdaService) {
+    public SlashCommandListener(CapabilityOrchestrator orchestrator, JDAService jdaService) {
         this.orchestrator = orchestrator;
         this.jdaService = jdaService;
-        jdaService.getJDA().addEventListener(this);
     }
 
     @Override

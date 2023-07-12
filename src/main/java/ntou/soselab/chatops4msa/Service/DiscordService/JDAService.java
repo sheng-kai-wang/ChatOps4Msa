@@ -16,16 +16,16 @@ import org.springframework.stereotype.Service;
 public class JDAService {
 
     private final JDA jda;
-    private final String guildId;
-    private final String chatOpsChannelId;
+    private final String GUILD_ID;
+    private final String CHATOPS_CHANNEL_ID;
     private TextChannel chatOpsChannel;
 
     @Autowired
     public JDAService(Environment env,
-                      DiscordGeneralListener generalListener,
-//                      DiscordSlashCommandListener slashCommandListener,
-                      DiscordMessageListener messageListener,
-                      DiscordButtonListener buttonListener) {
+                      GeneralListener generalListener,
+                      SlashCommandListener slashCommandListener,
+                      MessageListener messageListener,
+                      ButtonListener buttonListener) {
 
         final String APP_TOKEN = env.getProperty("discord.application.token");
         try {
@@ -33,7 +33,7 @@ public class JDAService {
                     .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                     .enableIntents(GatewayIntent.GUILD_MEMBERS)
                     .addEventListeners(generalListener)
-//                    .addEventListeners(slashCommandListener)
+                    .addEventListeners(slashCommandListener)
                     .addEventListeners(messageListener)
                     .addEventListeners(buttonListener)
                     .build()
@@ -43,8 +43,8 @@ public class JDAService {
             throw new RuntimeException(e);
         }
 
-        this.guildId = env.getProperty("discord.guild.id");
-        this.chatOpsChannelId = env.getProperty("discord.channel.chatops.id");
+        this.GUILD_ID = env.getProperty("discord.guild.id");
+        this.CHATOPS_CHANNEL_ID = env.getProperty("discord.channel.chatops.id");
 
         System.out.println();
         System.out.println("[DEBUG] JDA START!");
@@ -54,13 +54,13 @@ public class JDAService {
     @PostConstruct
     public void loadChatOpsChannel() {
         try {
-            Guild guild = jda.getGuildById(guildId);
+            Guild guild = jda.getGuildById(GUILD_ID);
             if (guild == null) {
                 System.out.println("[ERROR] the guild ID is incorrect");
                 throw new DiscordIdException("the guild ID is incorrect");
             }
 
-            TextChannel channel = guild.getTextChannelById(chatOpsChannelId);
+            TextChannel channel = guild.getTextChannelById(CHATOPS_CHANNEL_ID);
             if (channel == null) {
                 System.out.println("[ERROR] the chatops channel ID is incorrect");
                 throw new DiscordIdException("the chatops channel ID is incorrect");

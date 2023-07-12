@@ -20,7 +20,7 @@ public class InfoToolkit extends ToolkitFunction {
     }
 
     public String toolkitInfoGet(String system, String service, String info) throws ToolkitFunctionException {
-        MicroserviceSystem microserviceSystem = configLoader.microserviceSystemMap.get(system);
+        MicroserviceSystem microserviceSystem = configLoader.getMicroserviceSystemObj(system);
         List<String> list = microserviceSystem.getProperty(service, info);
         String json;
         try {

@@ -1,6 +1,7 @@
-package ntou.soselab.chatops4msa.Entity.CapabilityConfig;
+package ntou.soselab.chatops4msa.Entity.CapabilityConfig.Secret;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import ntou.soselab.chatops4msa.Entity.CapabilityConfig.Configs;
 
 import java.util.Map;
 

@@ -53,7 +53,7 @@ public class ChatOpsQueryLanguageRegister {
             CommandCreateAction commandCreateAction = jda.upsertCommand(topCommandName, topCommandName);
             for (Map.Entry<String, List<SubcommandData>> midEntry : topEntry.getValue().entrySet()) {
                 String subCommandGroupName = midEntry.getKey();
-                String toolDescription = configLoader.devOpsToolMap.get(subCommandGroupName).getDescription();
+                String toolDescription = configLoader.getDevOpsToolObj(subCommandGroupName).getDescription();
                 SubcommandGroupData subcommandGroupData = new SubcommandGroupData(subCommandGroupName, toolDescription);
                 for (SubcommandData subcommandData : midEntry.getValue()) {
                     subcommandGroupData.addSubcommands(subcommandData);

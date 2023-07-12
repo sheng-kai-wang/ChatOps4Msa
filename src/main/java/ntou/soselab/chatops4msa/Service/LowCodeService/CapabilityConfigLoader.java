@@ -10,9 +10,9 @@ import ntou.soselab.chatops4msa.Entity.CapabilityConfig.Configs;
 import ntou.soselab.chatops4msa.Entity.CapabilityConfig.DevOpsTool.DevOpsTool;
 import ntou.soselab.chatops4msa.Entity.CapabilityConfig.DevOpsTool.LowCode.DeclaredFunction;
 import ntou.soselab.chatops4msa.Entity.CapabilityConfig.DevOpsTool.LowCode.LowCode;
-import ntou.soselab.chatops4msa.Entity.CapabilityConfig.MessageDelivery;
+import ntou.soselab.chatops4msa.Entity.CapabilityConfig.MessageDelivery.MessageDelivery;
 import ntou.soselab.chatops4msa.Entity.CapabilityConfig.MicroserviceSystem.MicroserviceSystem;
-import ntou.soselab.chatops4msa.Entity.CapabilityConfig.Secret;
+import ntou.soselab.chatops4msa.Entity.CapabilityConfig.Secret.Secret;
 import ntou.soselab.chatops4msa.Exception.IllegalCapabilityConfigException;
 import ntou.soselab.chatops4msa.Service.DiscordService.JDAService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +27,9 @@ import java.util.*;
 
 @Service
 public class CapabilityConfigLoader {
-    public final Map<String, MicroserviceSystem> microserviceSystemMap;
-    public final Map<String, Secret> secretMap;
-    public final Map<String, DevOpsTool> devOpsToolMap;
+    private final Map<String, MicroserviceSystem> microserviceSystemMap;
+    private final Map<String, Secret> secretMap;
+    private final Map<String, DevOpsTool> devOpsToolMap;
     public final Map<String, MessageDelivery> messageDeliveryMap;
 
     private final JDAService jdaService;
@@ -255,6 +255,13 @@ public class CapabilityConfigLoader {
     }
 
     /**
+     * in order to generate the ChatOps Query Language (command description)
+     */
+    public DevOpsTool getDevOpsToolObj(String toolName) {
+        return this.devOpsToolMap.get(toolName);
+    }
+
+    /**
      * in order to perform the capability
      */
     public Map<String, DeclaredFunction> getAllDeclaredFunctionMap() {
@@ -266,5 +273,12 @@ public class CapabilityConfigLoader {
             map.putAll(messageDelivery.getLowCode().getAllDeclaredFunctionMap());
         }
         return map;
+    }
+
+    /**
+     * for the toolkit-info-get
+     */
+    public MicroserviceSystem getMicroserviceSystemObj(String systemName) {
+        return this.microserviceSystemMap.get(systemName);
     }
 }

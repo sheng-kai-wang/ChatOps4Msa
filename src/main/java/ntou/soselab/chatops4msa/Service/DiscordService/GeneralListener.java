@@ -1,11 +1,10 @@
 package ntou.soselab.chatops4msa.Service.DiscordService;
 
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DiscordGeneralListener extends ListenerAdapter {
+public class GeneralListener extends ListenerAdapter {
 //    @Override
 //    public void onSlashCommandsReady(@NotNull SlashCommandsReadyEvent event) {
 
