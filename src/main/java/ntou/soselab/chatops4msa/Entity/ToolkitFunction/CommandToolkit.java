@@ -1,6 +1,5 @@
 package ntou.soselab.chatops4msa.Entity.ToolkitFunction;
 
-import ntou.soselab.chatops4msa.Exception.ToolkitFunctionException;
 import ntou.soselab.chatops4msa.Service.DiscordService.JDAService;
 import org.springframework.stereotype.Component;
 
@@ -30,19 +29,26 @@ public class CommandToolkit extends ToolkitFunction {
                 // testing started
                 jdaService.sendChatOpsChannelMessage("=============== COMMAND START ===============\n");
 
+                StringBuilder sb = new StringBuilder();
+                sb.append("```c").append("\n");
+
                 // success output
-                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 String line;
+                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 while ((line = reader.readLine()) != null) {
                     System.out.println(line);
-                    if (line.contains("..:")) jdaService.sendChatOpsChannelMessage(line);
+                    if (line.contains("..:")) sb.append(line.trim()).append("\n");
                 }
 
                 // error output
                 reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
                 while ((line = reader.readLine()) != null) {
                     System.out.println(line);
+                    if (line.contains("..:")) sb.append(line.trim()).append("\n");
                 }
+
+                sb.append("```");
+                jdaService.sendChatOpsChannelMessage(sb.toString());
 
                 // testing completed
                 jdaService.sendChatOpsChannelMessage("\n=============== COMMAND END ===============");
