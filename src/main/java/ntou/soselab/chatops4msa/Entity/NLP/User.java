@@ -62,6 +62,7 @@ public class User {
                                         CapabilityGenerator capabilityGenerator,
                                         Long expiredInterval) throws JSONException, UnexpectedServiceEntityException {
 
+        System.out.println();
         System.out.println("[DEBUG] updateIntentAndEntity()");
         Iterator<String> intentAndEntityIt = matchedIntentAndEntity.keys();
         while (intentAndEntityIt.hasNext()) {
@@ -167,6 +168,7 @@ public class User {
             updatePerformableStatusOfIntent(currentIntentAndEntity);
         }
 
+        System.out.println();
         System.out.println("[DEBUG] The intent map for " + this.name + " currently: ");
         System.out.println(getIntentMapString());
         return "ok\n";
@@ -221,6 +223,7 @@ public class User {
             System.out.println("[DEBUG] NO Performable Intent");
             return performableIntentList;
         }
+        System.out.println();
         System.out.println("[DEBUG] Performable Intent:");
         for (IntentAndEntity intentAndEntity : intentAndEntityMap.values()) {
             if (intentAndEntity.canPerform()) {
@@ -250,24 +253,15 @@ public class User {
         return removedIntentList;
     }
 
-    public ArrayList<String> performAllPerformableIntent() {
-        return removeAllPerformableIntent();
-    }
-
-    public ArrayList<String> cancelAllPerformableIntent() {
-        return removeAllPerformableIntent();
-    }
-
-    private ArrayList<String> removeAllPerformableIntent() {
+    public List<IntentAndEntity> removeAllPerformableIntentAndEntity() {
         List<IntentAndEntity> performableIntentList = getPerformableIntentList();
-        ArrayList<String> cancelledIntentNameList = new ArrayList<>();
         if (performableIntentList.isEmpty()) return null;
+        // clear the temporary data
         for (IntentAndEntity intentAndEntity : performableIntentList) {
             String intentName = intentAndEntity.getIntentName();
             intentNameStack.remove(intentName);
             intentAndEntityMap.remove(intentName);
-            cancelledIntentNameList.add(intentName);
         }
-        return cancelledIntentNameList;
+        return performableIntentList;
     }
 }

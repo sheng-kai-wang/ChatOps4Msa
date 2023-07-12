@@ -8,8 +8,8 @@ public class Capability {
     private final List<String> parameterList;
 
     public Capability(String description, String name, List<String> parameterList) {
-        this.description = description;
-        this.name = name;
+        this.description = description.trim();
+        this.name = name.trim();
         this.parameterList = parameterList;
     }
 
@@ -27,6 +27,7 @@ public class Capability {
         // append the name
         sb.append(name).append(":").append("\n");
         // append the parameter
+        if (parameterList.isEmpty()) sb.append("  null").append("\n");
         for (String parameter : parameterList) {
             sb.append("  - ").append(parameter).append("\n");
         }

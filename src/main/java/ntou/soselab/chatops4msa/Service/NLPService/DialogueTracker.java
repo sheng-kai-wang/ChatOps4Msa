@@ -32,7 +32,10 @@ public class DialogueTracker {
     private final CapabilityGenerator capabilityGenerator;
 
     @Autowired
-    public DialogueTracker(Environment env, LLMService llmService, CapabilityGenerator capabilityGenerator) {
+    public DialogueTracker(Environment env,
+                           LLMService llmService,
+                           CapabilityGenerator capabilityGenerator) {
+
         this.activeUserMap = new ConcurrentHashMap<>();
         this.waitingButtonTesterList = new ArrayList<>();
         this.EXPIRED_INTERVAL = Long.valueOf(Objects.requireNonNull(env.getProperty("intent.expired_time")));
@@ -41,6 +44,8 @@ public class DialogueTracker {
     }
 
     public MessageCreateData sendMessage(String userId, String name, String message) {
+
+        // TODO: check the role of user before button event
 
         // get the user data
         if (!activeUserMap.containsKey(userId)) activeUserMap.put(userId, new User(userId, name));
@@ -108,6 +113,7 @@ public class DialogueTracker {
 
         mb.addContent("Here is the capability you are about to perform.\n");
         mb.addContent("Please use the BUTTON to indicate whether you want to proceed.\n");
+        System.out.println();
         System.out.println("[DEBUG] generate perform check to " + user.getName());
         for (IntentAndEntity intentAndEntity : performableIntentAndEntityList) {
             String intentName = intentAndEntity.getIntentName();
@@ -136,12 +142,8 @@ public class DialogueTracker {
         waitingButtonTesterList.remove(testerId);
     }
 
-    public ArrayList<String> performAllPerformableIntent(String testerId) {
-        return activeUserMap.get(testerId).performAllPerformableIntent();
-    }
-
-    public ArrayList<String> cancelAllPerformableIntent(String testerId) {
-        return activeUserMap.get(testerId).cancelAllPerformableIntent();
+    public List<IntentAndEntity> removeAllPerformableIntentAndEntity(String testerId) {
+        return activeUserMap.get(testerId).removeAllPerformableIntentAndEntity();
     }
 
     private void removeExpiredIntent(User user) {

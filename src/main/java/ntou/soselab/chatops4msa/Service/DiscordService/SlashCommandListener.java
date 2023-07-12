@@ -63,6 +63,7 @@ public class SlashCommandListener extends ListenerAdapter {
         // perform the capability
         try {
             orchestrator.performTheCapability(declaredFunctionName, optionMap, roleNameList);
+            event.reply("got it\n").queue();
 
         } catch (CapabilityRoleException e) {
             e.printStackTrace();
@@ -76,11 +77,7 @@ public class SlashCommandListener extends ListenerAdapter {
             System.out.println(errorMessage);
             jdaService.sendChatOpsChannelErrorMessage(errorMessage);
 
-        } finally {
-            // reply
-            event.reply("got it\n").queue();
         }
-
 
         System.out.println("<<< end of current slash command event");
         System.out.println();

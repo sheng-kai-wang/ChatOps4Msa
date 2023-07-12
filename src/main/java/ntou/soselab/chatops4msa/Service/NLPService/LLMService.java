@@ -45,6 +45,7 @@ public class LLMService {
         String intentClassificationAndEntityExtractionFile = loadSystemPrompt(env.getProperty("prompts.intent_classification_and_entity_extraction.file"));
         String capabilityListString = capabilityGenerator.getCapabilityListString();
         this.INTENT_CLASSIFICATION_AND_ENTITY_EXTRACTION_FILE = intentClassificationAndEntityExtractionFile.replace("<CAPABILITY_LIST>", capabilityListString);
+        System.err.println(INTENT_CLASSIFICATION_AND_ENTITY_EXTRACTION_FILE);
         this.QUERYING_MISSING_PARAMETERS_FILE = loadSystemPrompt(env.getProperty("prompts.querying_missing_parameters.file"));
 
         this.capabilityGenerator = capabilityGenerator;
@@ -52,6 +53,7 @@ public class LLMService {
     }
 
     public boolean isPromptInjection(String userPrompt) {
+        System.out.println();
         System.out.println("[DEBUG] trigger isPromptInjection()");
         System.out.println("[User Prompt] " + userPrompt);
 
@@ -63,6 +65,7 @@ public class LLMService {
     }
 
     public boolean isEndOfTopic(String userPrompt) {
+        System.out.println();
         System.out.println("[DEBUG] trigger isEndOfTopic()");
         System.out.println("[User Prompt] " + userPrompt);
 
@@ -80,6 +83,7 @@ public class LLMService {
      * @throws JsonParseException      After LLM -> json string to JSONObject exception
      */
     public JSONObject classifyIntentAndExtractEntity(String previousIntentAndEntities, String userPrompt) throws JsonProcessingException, JsonParseException {
+        System.out.println();
         System.out.println("[DEBUG] trigger classifyIntentAndExtractEntity()");
         System.out.println("[User Prompt] " + userPrompt);
 
@@ -111,6 +115,7 @@ public class LLMService {
      * @throws JSONException Before LLM -> yaml to JSONObject exception
      */
     public String queryMissingParameter(String intentName, Map<String, String> providedEntities) throws JSONException {
+        System.out.println();
         System.out.println("[DEBUG] trigger queryMissingParameter()");
 
         String systemPrompt = QUERYING_MISSING_PARAMETERS_FILE.replace("<INTENT_NAME>", intentName);
@@ -200,8 +205,6 @@ public class LLMService {
         }
 
         HttpEntity<String> requestEntity = new HttpEntity<>(requestBody.toString(), headers);
-
-        System.err.println("requestEntity: " + requestEntity);
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(OPENAI_API_URL, HttpMethod.POST, requestEntity, String.class);
         String completionString;
