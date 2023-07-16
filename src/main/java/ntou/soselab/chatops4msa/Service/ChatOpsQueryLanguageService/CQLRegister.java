@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class ChatOpsQueryLanguageRegister {
+public class CQLRegister {
     private final JDA jda;
     private final CapabilityConfigLoader configLoader;
 
     @Autowired
-    public ChatOpsQueryLanguageRegister(JDAService jdaService, CapabilityConfigLoader configLoader) {
+    public CQLRegister(JDAService jdaService, CapabilityConfigLoader configLoader) {
         this.jda = jdaService.getJDA();
         this.configLoader = configLoader;
 
@@ -86,6 +86,7 @@ public class ChatOpsQueryLanguageRegister {
                 if ("service_name".equals(entry.getKey())) subcommandData.addOptions(generateServiceOption());
                 else subcommandData.addOption(OptionType.STRING, entry.getKey(), entry.getValue(), true);
             }
+            subcommandData.addOptions(generateSubscribeOption());
 
             subCommandList.add(subcommandData);
             subCommandGroupMap.put(subCommandGroupName, subCommandList);
@@ -114,6 +115,13 @@ public class ChatOpsQueryLanguageRegister {
         return serviceOption.addChoice("all_service", "all_service");
     }
 
+    private OptionData generateSubscribeOption() {
+        OptionData subscribeOption = new OptionData(OptionType.STRING, "subscribe", "cron expression", false);
+        subscribeOption.addChoice("e.g. Execute regularly every day at 9 AM. [0 9 * * *]", "0 9 * * *");
+        subscribeOption.addChoice("e.g. Execute regularly every Monday at 9 AM. [0 9 * * 1]", "0 9 * * 1");
+        return subscribeOption;
+    }
+
     private void checkCommandsStatusAndRestart(JDAService jdaService) {
 
         try {
@@ -129,6 +137,7 @@ public class ChatOpsQueryLanguageRegister {
         jda.retrieveCommands().queue(commands -> {
             System.out.println();
 
+            // prevent being BANNED by Discord due to excessive frequent calls
 //            int commandNumber = configLoader.getAllNonPrivateDeclaredFunctionMap().size();
 //            if (commands.size() < commandNumber) {
             if (commands.isEmpty()) {

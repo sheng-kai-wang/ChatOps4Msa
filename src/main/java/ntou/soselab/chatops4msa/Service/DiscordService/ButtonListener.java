@@ -1,10 +1,10 @@
 package ntou.soselab.chatops4msa.Service.DiscordService;
 
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import ntou.soselab.chatops4msa.Entity.NLP.IntentAndEntity;
 import ntou.soselab.chatops4msa.Exception.CapabilityRoleException;
 import ntou.soselab.chatops4msa.Exception.ToolkitFunctionException;
@@ -49,7 +49,11 @@ public class ButtonListener extends ListenerAdapter {
         String testerName = tester.getName();
         String buttonId = event.getButton().getId();
         System.out.println("[DEBUG] " + testerName + " click " + buttonId);
-        event.editButton(event.getButton().asDisabled()).queue();
+
+        // disable the button
+        List<MessageEmbed> originalEmbedList = event.getMessage().getEmbeds();
+        Button disabledButton = event.getComponent().asDisabled();
+        event.getMessage().editMessageEmbeds(originalEmbedList).setActionRow(disabledButton).queue();
 
         // get the user roles
         List<String> roleNameList = new ArrayList<>();
@@ -87,16 +91,13 @@ public class ButtonListener extends ListenerAdapter {
             String errorMessage = "[ERROR] " + e.getLocalizedMessage();
             System.out.println(errorMessage);
             jdaService.sendChatOpsChannelErrorMessage(errorMessage);
-
         }
 
         // generate the question for next capability (top of the stack)
         if (dialogueTracker.isWaitingTester(testerId)) {
             dialogueTracker.removeWaitingTesterList(testerId);
             String question = dialogueTracker.generateQuestionString(testerId);
-            event.getHook()
-                    .sendMessage("got it\n" + buttonId + " `" + intentNameList + "`\n\n" + question)
-                    .queue();
+            event.reply("got it\n" + buttonId + " `" + intentNameList + "`\n\n" + question).queue();
             System.out.println("[DEBUG] generate question to " + testerName);
         }
 

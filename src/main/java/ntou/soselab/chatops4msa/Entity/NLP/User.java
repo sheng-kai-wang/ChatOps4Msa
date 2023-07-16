@@ -220,7 +220,7 @@ public class User {
     public List<IntentAndEntity> getPerformableIntentList() {
         ArrayList<IntentAndEntity> performableIntentList = new ArrayList<>();
         if (!isWaitingForPerform()) {
-            System.out.println("[DEBUG] NO Performable Intent");
+            System.out.println("[WARNING] NO Performable Intent");
             return performableIntentList;
         }
         System.out.println();
