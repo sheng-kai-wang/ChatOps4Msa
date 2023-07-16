@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import ntou.soselab.chatops4msa.Exception.CapabilityRoleException;
 import ntou.soselab.chatops4msa.Exception.ToolkitFunctionException;
 import ntou.soselab.chatops4msa.Service.CapabilityOrchestrator.CapabilityOrchestrator;
+import ntou.soselab.chatops4msa.Service.ChatOpsQueryLanguageService.CQLSubscriber;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -16,14 +17,18 @@ import java.util.*;
 
 @Service
 public class SlashCommandListener extends ListenerAdapter {
-
     private final CapabilityOrchestrator orchestrator;
+    private final CQLSubscriber cqlSubscriber;
     private final JDAService jdaService;
 
     @Lazy
     @Autowired
-    public SlashCommandListener(CapabilityOrchestrator orchestrator, JDAService jdaService) {
+    public SlashCommandListener(CapabilityOrchestrator orchestrator,
+                                CQLSubscriber cqlSubscriber,
+                                JDAService jdaService) {
+
         this.orchestrator = orchestrator;
+        this.cqlSubscriber = cqlSubscriber;
         this.jdaService = jdaService;
     }
 
@@ -48,7 +53,8 @@ public class SlashCommandListener extends ListenerAdapter {
         System.out.println("[Options] " + optionMap);
 
         // print user name
-        System.out.println("[User Name] " + event.getUser().getName());
+        String username = event.getUser().getName();
+        System.out.println("[User Name] " + username);
 
         // print user roles
         List<String> roleNameList = new ArrayList<>();
@@ -62,7 +68,12 @@ public class SlashCommandListener extends ListenerAdapter {
 
         // perform the capability
         try {
-            orchestrator.performTheCapability(declaredFunctionName, optionMap, roleNameList);
+            if (optionMap.containsKey("subscribe")) {
+                String cron = optionMap.get("subscribe");
+                cqlSubscriber.subscribeTheCapability(username, roleNameList, declaredFunctionName, optionMap, cron);
+            } else {
+                orchestrator.performTheCapability(declaredFunctionName, optionMap, roleNameList);
+            }
             event.reply("got it\n").queue();
 
         } catch (CapabilityRoleException e) {

@@ -115,11 +115,13 @@ public class CQLRegister {
         return serviceOption.addChoice("all_service", "all_service");
     }
 
+    /**
+     * e.g. Execute regularly every day at 9 AM.    [0 0 9 * * ?]
+     * e.g. Execute regularly every Monday at 9 AM. [0 0 9 ? * MON]
+     * e.g. Execute regularly every minute.         [0 * * * * ?]
+     */
     private OptionData generateSubscribeOption() {
-        OptionData subscribeOption = new OptionData(OptionType.STRING, "subscribe", "cron expression", false);
-        subscribeOption.addChoice("e.g. Execute regularly every day at 9 AM. [0 9 * * *]", "0 9 * * *");
-        subscribeOption.addChoice("e.g. Execute regularly every Monday at 9 AM. [0 9 * * 1]", "0 9 * * 1");
-        return subscribeOption;
+        return new OptionData(OptionType.STRING, "subscribe", "cron expression (e.g. every day at 9 AM. [0 0 9 * * ?])", false);
     }
 
     private void checkCommandsStatusAndRestart(JDAService jdaService) {
@@ -137,7 +139,7 @@ public class CQLRegister {
         jda.retrieveCommands().queue(commands -> {
             System.out.println();
 
-            // prevent being BANNED by Discord due to excessive frequent calls
+            // add this comment to prevent being BANNED by Discord due to excessive frequent calls
 //            int commandNumber = configLoader.getAllNonPrivateDeclaredFunctionMap().size();
 //            if (commands.size() < commandNumber) {
             if (commands.isEmpty()) {
