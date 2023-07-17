@@ -14,25 +14,25 @@ service:
     url: http://192.168.100.45:9080
     repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo-Productpage
     description: This is the product page microservice.
-    scan_run_id: 5485657111
+    scan_run_id: 5577584037
 
   - name: reviews
     url: http://192.168.100.45:9083
     repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo-Reviews
     description: This is the reviews microservice.
-    scan_run_id: 5485661053
+    scan_run_id: 5486548725
       
   - name: details
     url: http://192.168.100.45:9081
     repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo-Details
     description: This is the details microservice.
-    scan_run_id: 5485654427
+    scan_run_id: 5577572101
 
   - name: ratings
     url: http://192.168.100.45:9082
     repository: https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo-Ratings
     description: This is the ratings microservice.
-    scan_run_id: 5485659100
+    scan_run_id: 5577552248
 
 capability:
   - get-example-echo_message

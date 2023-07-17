@@ -9,17 +9,12 @@ info:
 
 low_code:
   on_message:
-    - name: receive-rabbitmq-on_prometheus_alert
+    - name: receive-rabbitmq-service_code_scanning
       parameter:
         event: null
       description: |
-        Trigger when receiving alerts from Prometheus.
+        Trigger when code scanning is ok.
       access: private
       body:
-        - toolkit-json-parse:
-            json: ${event}
-            jsonpath: .....
-        - toolkit-discord-embed:
-            title: Prometheus Alert
-            color: red
-            field_json: ${toolkit-json-parse}
+        - toolkit-discord-text:
+            text: ${event}
