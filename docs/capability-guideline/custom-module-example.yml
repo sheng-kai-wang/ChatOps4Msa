@@ -1,0 +1,33 @@
+operation:
+  # this function combines the functions of prometheus, k6, and GitHub.
+  - name: test-custom_test-smoke_test_all_service_and_repository_report
+    parameter:
+      number_of_virtual_user: 1 <= n <= 5
+    description: smoke tests and get repository report.
+    # only supervisor can execute
+    access:
+      protected:
+        - Supervisor
+    # the following functions are declared in other configs
+    body:
+      # declared in prometheus.yml
+      - set-prometheus-edit_alert_rules: null
+      # declared in k6.yml
+      - test-k6-smoke_testing_all_service:
+          number_of_virtual_user: ${number_of_virtual_user}
+      # declared in prometheus.yml
+      - monitor-prometheus-all_service_alert: null
+      # toolkit-function (parse the content of JSON)
+      - toolkit-json-parse:
+          json: ${monitor-prometheus-all_service_alert}
+          jsonpath: "$.data.alerts[*].labels.alertService"
+          assign: alerted_service_list
+      # toolkit-function (process the elements in a list in batch)
+      - toolkit-list-foreach:
+          array: ${alerted_service_list}
+          # iterated elements
+          element_name: service_name
+          todo:
+            # declared in github.yml
+            - get-github-service_past_week_team_activity:
+                service_name: ${service_name}

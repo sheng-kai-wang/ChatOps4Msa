@@ -19,7 +19,7 @@ low_code:
             json: ${event}
             jsonpath: "$.data.alerts[*].labels.alertname"
         # send an embed component of Discord to the user
-        - toolkit-discord-embed_thumbnail:
+        - toolkit-discord-embed:
             title: Prometheus Alert
             color: red
             field_json: ${toolkit-json-parse}
