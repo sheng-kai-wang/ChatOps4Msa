@@ -37,6 +37,8 @@ public class SlashCommandListener extends ListenerAdapter {
 
         System.out.println(">>> trigger slash command event");
 
+        event.reply("got it\n").queue();
+
         // print time
         System.out.println("[Time] " + new Date());
 
@@ -44,6 +46,22 @@ public class SlashCommandListener extends ListenerAdapter {
         String commandName = event.getFullCommandName();
         String declaredFunctionName = commandNameToDeclaredFunctionName(commandName);
         System.out.println("[Command] /" + declaredFunctionName);
+
+        // perform "check_all_subscription"
+        if (commandName.equals("check_all_subscription")) {
+            cqlSubscriber.checkAllSubscription();
+            System.out.println("<<< end of current slash command event");
+            System.out.println();
+            return;
+        }
+
+        // perform "unsubscribe_all_capability"
+        if (commandName.equals("unsubscribe_all_capability")) {
+            cqlSubscriber.unsubscribeAllCapability();
+            System.out.println("<<< end of current slash command event");
+            System.out.println();
+            return;
+        }
 
         // print options
         Map<String, String> optionMap = new HashMap<>();
@@ -74,7 +92,6 @@ public class SlashCommandListener extends ListenerAdapter {
             } else {
                 orchestrator.performTheCapability(declaredFunctionName, optionMap, roleNameList);
             }
-            event.reply("got it\n").queue();
 
         } catch (CapabilityRoleException e) {
             e.printStackTrace();

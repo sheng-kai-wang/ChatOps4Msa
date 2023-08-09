@@ -28,9 +28,9 @@ public class CQLRegister {
         this.jda = jdaService.getJDA();
         this.configLoader = configLoader;
 
-//        removeOriginalCommands();
-//        upsertNewCommands();
-//        checkCommandsStatusAndRestart(jdaService);
+        removeOriginalCommands();
+        upsertNewCommands();
+        checkCommandsStatusAndRestart(jdaService);
     }
 
     private void removeOriginalCommands() {
@@ -62,6 +62,9 @@ public class CQLRegister {
             }
             commandCreateAction.queue();
         }
+
+        jda.upsertCommand("check_all_subscription", "check all the subscriptions").queue();
+        jda.upsertCommand("unsubscribe_all_capability", "unsubscribe all the capabilities").queue();
     }
 
     /**
@@ -155,7 +158,7 @@ public class CQLRegister {
             System.out.println("[DEBUG] " + successMessage);
             System.out.println();
 
-            System.out.println("[DEBUG] all slash command:");
+            System.out.println("[DEBUG] all the capabilities:");
             for (Command command : commands) {
                 for (Command.SubcommandGroup subcommandGroup : command.getSubcommandGroups()) {
                     for (Command.Subcommand subCommand : subcommandGroup.getSubcommands()) {

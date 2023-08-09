@@ -9,6 +9,7 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,8 @@ import java.util.Map;
 public class CQLSubscriber implements Job {
     private CapabilityOrchestrator capabilityOrchestrator;
     private JDAService jdaService;
+    private Scheduler scheduler;
+    private List<String> subscribeList = new ArrayList<>();
 
     @Autowired
     public CQLSubscriber(CapabilityOrchestrator capabilityOrchestrator, JDAService jdaService) {
@@ -81,8 +84,11 @@ public class CQLSubscriber implements Job {
                 "by: " + username;
         jdaService.sendChatOpsChannelInfoMessage(info);
 
+        // record the subscription
+        subscribeList.add(info);
+
         try {
-            Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
+            this.scheduler = StdSchedulerFactory.getDefaultScheduler();
 
             // create a job
             JobDetail job = JobBuilder.newJob(this.getClass())
@@ -108,6 +114,25 @@ public class CQLSubscriber implements Job {
             scheduler.scheduleJob(job, trigger);
             scheduler.start();
 
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void checkAllSubscription() {
+        if (subscribeList.isEmpty()) {
+            jdaService.sendChatOpsChannelWarningMessage("[WARNING] There Are Currently No Subscriptions");
+        } else {
+            for (String subscribeInfo : subscribeList) {
+                jdaService.sendChatOpsChannelInfoMessage(subscribeInfo);
+            }
+        }
+    }
+
+    public void unsubscribeAllCapability() {
+        try {
+            scheduler.clear();
+            subscribeList.clear();
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
