@@ -1,5 +1,6 @@
 package ntou.soselab.chatops4msa.Service.DiscordService;
 
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -14,6 +15,7 @@ import java.util.Date;
 
 @Service
 public class MessageListener extends ListenerAdapter {
+    private final String BOT_ID;
     private final String GUILD_ID;
     private final String CHATOPS_CHANNEL_ID;
     private final DialogueTracker dialogueTracker;
@@ -21,6 +23,7 @@ public class MessageListener extends ListenerAdapter {
     @Lazy
     @Autowired
     public MessageListener(Environment env, DialogueTracker dialogueTracker) {
+        this.BOT_ID = env.getProperty("discord.application.id");
         this.GUILD_ID = env.getProperty("discord.guild.id");
         this.CHATOPS_CHANNEL_ID = env.getProperty("discord.channel.chatops.id");
         this.dialogueTracker = dialogueTracker;
@@ -41,6 +44,13 @@ public class MessageListener extends ListenerAdapter {
             String userId = event.getAuthor().getId();
             String userName = event.getAuthor().getName();
             String userInput = event.getMessage().getContentRaw();
+
+            // remove the mention string (e.g. @ChatOps4Msa-Bot)
+            for (Member member : event.getMessage().getMentions().getMembers()) {
+                String mentionString = member.getAsMention();
+                userInput = userInput.replace(mentionString, "");
+            }
+            userInput = userInput.trim();
 
             System.out.println("[DEBUG] Receive Message");
             System.out.println("[User Name] " + userName);
@@ -65,12 +75,17 @@ public class MessageListener extends ListenerAdapter {
     }
 
     /**
-     * only for the chatops channel
+     * only for the chatops channel (must mention the bot)
      */
     private boolean shouldReply(MessageReceivedEvent event) {
         if (event.getAuthor().isBot()) return false;
         if (!event.isFromGuild()) return false;
         if (!event.getGuild().getId().equals(GUILD_ID)) return false;
-        return event.getChannel().getId().equals(CHATOPS_CHANNEL_ID);
+        if (!event.getChannel().getId().equals(CHATOPS_CHANNEL_ID)) return false;
+        // Has any user mention the bot?
+        for (Member member : event.getMessage().getMentions().getMembers()) {
+            if (member.getId().equals(BOT_ID)) return true;
+        }
+        return false;
     }
 }

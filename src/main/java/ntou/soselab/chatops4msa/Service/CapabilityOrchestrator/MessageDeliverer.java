@@ -60,7 +60,7 @@ public class MessageDeliverer {
             // check the result
             int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_NO_CONTENT || responseCode == HttpURLConnection.HTTP_CREATED) {
-                System.out.println("[DEBUG] Successfully created a Message Queue.");
+                System.out.println("[DEBUG] Successfully Create a Message Queue");
             } else {
                 System.out.println("[ERROR] error code (" + responseCode + ")");
             }
