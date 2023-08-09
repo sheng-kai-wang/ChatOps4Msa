@@ -109,6 +109,15 @@ public class LowCode {
         return map;
     }
 
+    public List<String> getAllConstructorNameList() {
+        List<String> list = new ArrayList<>();
+        if (constructorMap == null || constructorMap.isEmpty()) return list;
+        for (DeclaredFunction function : constructorMap.values()) {
+            list.add(function.getName());
+        }
+        return list;
+    }
+
     public String verify() {
         return errorMessageSb.toString();
     }

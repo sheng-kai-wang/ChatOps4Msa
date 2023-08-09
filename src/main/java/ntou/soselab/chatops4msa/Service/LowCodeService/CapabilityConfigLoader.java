@@ -52,7 +52,7 @@ public class CapabilityConfigLoader {
     }
 
     @PostConstruct
-    public void variableRetrieveAndVerify() {
+    private void variableRetrieveAndVerify() {
         System.out.println("[DEBUG] start to verify the variable retrieval and retrieve the property variable of low code");
         System.out.println();
 
@@ -71,7 +71,7 @@ public class CapabilityConfigLoader {
      * verify the capability list in microservice-system
      */
     @PostConstruct
-    public void microserviceSystemCapabilityListVerify() {
+    private void microserviceSystemCapabilityListVerify() {
         System.out.println();
         System.out.println("[DEBUG] start to verify the capability list in microservice-system");
         System.out.println();
@@ -102,7 +102,7 @@ public class CapabilityConfigLoader {
     }
 
     @PostConstruct
-    public void sendVerifyMessage() {
+    private void sendVerifyMessage() {
         try {
             checkVerifyMessage();
         } catch (IllegalCapabilityConfigException e) {
@@ -282,5 +282,19 @@ public class CapabilityConfigLoader {
      */
     public MicroserviceSystem getMicroserviceSystemObj(String systemName) {
         return this.microserviceSystemMap.get(systemName);
+    }
+
+    /**
+     * for performing the constructor
+     */
+    public List<String> getAllConstructorNameList() {
+        List<String> allConstructorNameList = new ArrayList<>();
+        for (DevOpsTool devOpsTool : devOpsToolMap.values()) {
+            allConstructorNameList.addAll(devOpsTool.getLowCode().getAllConstructorNameList());
+        }
+        for (MessageDelivery messageDelivery : messageDeliveryMap.values()) {
+            allConstructorNameList.addAll(messageDelivery.getLowCode().getAllConstructorNameList());
+        }
+        return allConstructorNameList;
     }
 }

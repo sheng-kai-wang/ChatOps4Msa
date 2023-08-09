@@ -52,7 +52,7 @@ public class JDAService {
     }
 
     @PostConstruct
-    public void loadChatOpsChannel() {
+    private void loadChatOpsChannel() {
         try {
             Guild guild = jda.getGuildById(GUILD_ID);
             if (guild == null) {

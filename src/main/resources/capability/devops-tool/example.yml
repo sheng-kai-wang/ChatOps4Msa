@@ -1,10 +1,19 @@
 info:
   version: 1.0.0
   title: example
-  description: |
-    Just a example for ChatOps Query Language
+  description: Just an example for the capability.
 
 low_code:
+  constructor:
+    - name: get-example-current_time
+      parameter: null
+      description: Time reporting upon startup.
+      access: private
+      body:
+        - toolkit-time-today: null
+        - toolkit-discord-blocks:
+            text: Today is ${toolkit-time-today}
+
   operation:
     - name: get-example-echo_message
       parameter:

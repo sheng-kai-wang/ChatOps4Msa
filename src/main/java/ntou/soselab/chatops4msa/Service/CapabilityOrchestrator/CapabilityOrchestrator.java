@@ -72,8 +72,6 @@ public class CapabilityOrchestrator {
      * receive from RabbitMQ (message-delivery)
      */
     public void performTheCapability(String functionName, Map<String, String> argumentMap) throws ToolkitFunctionException {
-        System.err.println("argumentMap: " + argumentMap);
-
         // get function data
         DeclaredFunction functionData = capabilityMap.get(functionName);
         // invoke
@@ -270,7 +268,7 @@ public class CapabilityOrchestrator {
      * kebab case to camel case
      *
      * @param functionName like  toolkit-time-one_week_ago
-     * @return like              toolkitTimeOneWeekAgo
+     * @return like              toolkitDateOneWeekAgo
      */
     private String extractToolkitFunctionName(String functionName) {
         String[] words = functionName.split("[-_]");

@@ -40,7 +40,7 @@ public class MessageDeliverer {
     }
 
     @PostConstruct
-    public void createMessageQueue() {
+    private void createMessageQueue() {
 
         // Encode credentials in Base64
         String credentials = java.util.Base64
@@ -49,11 +49,11 @@ public class MessageDeliverer {
 
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(createQueueApi).openConnection();
-            // Set headers
+            // set headers
             connection.setRequestMethod("PUT");
             connection.setRequestProperty("Authorization", "Basic " + credentials);
             connection.setRequestProperty("Content-Type", "application/json");
-            // Set request body (queue configuration)
+            // set request body (queue configuration)
             String queueConfig = "{\"durable\": true, \"auto_delete\": false, \"arguments\": {}}";
             connection.setDoOutput(true);
             connection.getOutputStream().write(queueConfig.getBytes(StandardCharsets.UTF_8));

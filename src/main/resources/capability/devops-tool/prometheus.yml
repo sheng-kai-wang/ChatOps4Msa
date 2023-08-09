@@ -20,27 +20,6 @@ low_code:
     grafana_authorization_bearer: ${secret.grafana_authorization_bearer}
     grafana_create_datasource_path: /api/datasources
     grafana_monitor_datasource_path: /api/datasources/name
-  
-  # constructor:
-    # - name: set-prometheus-all_service
-    #   parameter: null
-    #   description: |
-    #     Automatically execute on startup and register all services to Prometheus.
-    #   access: private
-    #   body:
-    #     - toolkit-command-bash:
-    #         command: prometheus --config.file=/etc/prometheus/prometheus-file-sd.yml --storage.tsdb.path=/data/prometheus
-
-    # - name: set-prometheus-link_grafana
-    #   parameter: null
-    #   description: |
-    #     Add Prometheus data source to Grafana through API.
-    #   access: private
-    #   body:
-    #     - toolkit-restapi-post:
-    #         url: ${grafana_host_ip}:${grafana_host_port}${grafana_create_datasource_path}
-    #         body: "{'name': '${system_name}', 'type': 'prometheus', 'url': '${prometheus_host_ip}:${prometheus_host_port}', 'access': 'proxy','basicAuth': false}"
-    #         authorization: ${grafana_authorization_bearer}
 
   operation:
     - name: get-prometheus-alert_rule

@@ -32,18 +32,26 @@
 ```
 
 
-### get the time from one week ago
-##### the result is formatted as `Sat Jun 10 13:59:34 CST 2023`
+### get the date from one week ago
+##### the result is formatted as `2023-08-03`
 
 ```yml
 toolkit-time-one_week_ago: null
 ```
 
-### get the time from one week ago
-##### the result is formatted as `Sat Jun 10 13:59:34 CST 2023`
+### get today's date
+##### the result is formatted as `2023-08-10`
 
 ```yml
-toolkit-time-now: null
+toolkit-time-today: null
+```
+
+### convert to Taiwan time
+##### the result is formatted like `yyyy-MM-dd hh:mm`
+
+```yml
+toolkit-time-convert_to_taiwan:
+  time: <<e.g. 2023-07-20 10:10>>
 ```
 
 ### execute mathematical calculations using mathematical expressions

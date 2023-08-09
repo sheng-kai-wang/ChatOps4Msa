@@ -279,7 +279,7 @@ low_code:
                   url: https://api.github.com/repos/<<username>>/<<repo>>/commits?since=<<start>>&until=<<end>>
                   assign: url
               - toolkit-time-one_week_ago: null
-              - toolkit-time-now: null
+              - toolkit-time-today: null
               - toolkit-string-replace:
                   string: ${url}
                   original: <<start>>
@@ -288,7 +288,7 @@ low_code:
               - toolkit-string-replace:
                   string: ${url}
                   original: <<end>>
-                  replace: ${toolkit-time-now}
+                  replace: ${toolkit-time-today}
                   assign: url
               - toolkit-restapi-get:
                   url: ${url}
