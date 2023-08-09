@@ -35,6 +35,9 @@ public class CapabilityOrchestrator {
         this.TOOLKIT_CLASSPATH = env.getProperty("toolkit.classpath.prefix");
     }
 
+    /**
+     * trigger by user
+     */
     public void performTheCapability(String functionName,
                                      Map<String, String> argumentMap,
                                      List<String> roleNameList) throws CapabilityRoleException, ToolkitFunctionException {
@@ -63,6 +66,18 @@ public class CapabilityOrchestrator {
             if (protectedAccess.contains(roleName)) return true;
         }
         return false;
+    }
+
+    /**
+     * receive from RabbitMQ (message-delivery)
+     */
+    public void performTheCapability(String functionName, Map<String, String> argumentMap) throws ToolkitFunctionException {
+        System.err.println("argumentMap: " + argumentMap);
+
+        // get function data
+        DeclaredFunction functionData = capabilityMap.get(functionName);
+        // invoke
+        invokeCustomFunction(functionData, argumentMap);
     }
 
     public String invokeSpecialParameter(List<InvokedFunction> functionList,

@@ -1,6 +1,3 @@
-# 被動接收訊息
-
-
 info:
   version: 1.0.0
   title: Message Delivery
@@ -9,12 +6,14 @@ info:
 
 low_code:
   on_message:
-    - name: receive-rabbitmq-service_code_scanning
+    - name: receive-github-code_scanning
       parameter:
         event: null
-      description: |
-        Trigger when code scanning is ok.
+      description: Trigger when code scanning is ok.
       access: private
       body:
-        - toolkit-discord-text:
-            text: ${event}
+        - toolkit-discord-embed_thumbnail:
+            title: Code Scanning
+            color: default
+            field_json: ${event}
+            thumbnail: https://avatars.githubusercontent.com/u/44036562?s=280&v=4

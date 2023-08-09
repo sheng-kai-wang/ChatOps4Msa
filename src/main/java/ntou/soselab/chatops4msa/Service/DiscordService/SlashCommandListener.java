@@ -87,7 +87,6 @@ public class SlashCommandListener extends ListenerAdapter {
             String errorMessage = "[ERROR] " + e.getLocalizedMessage();
             System.out.println(errorMessage);
             jdaService.sendChatOpsChannelErrorMessage(errorMessage);
-
         }
 
         System.out.println("<<< end of current slash command event");

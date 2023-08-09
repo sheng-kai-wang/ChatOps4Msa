@@ -72,6 +72,7 @@ public class CapabilityConfigLoader {
      */
     @PostConstruct
     public void microserviceSystemCapabilityListVerify() {
+        System.out.println();
         System.out.println("[DEBUG] start to verify the capability list in microservice-system");
         System.out.println();
 
@@ -115,6 +116,7 @@ public class CapabilityConfigLoader {
     }
 
     private <T extends Configs> Map<String, T> loadConfig(String configType, Class<T> configClass, String classpath) {
+        System.out.println();
         System.out.println("[DEBUG] start to load " + configType + " configs");
 
         HashMap<String, T> configObjMap = new HashMap<>();
@@ -141,7 +143,7 @@ public class CapabilityConfigLoader {
 
 //                System.out.println("[DEBUG] the content of " + fileName + ": ");
 //                System.out.println(gson.toJson(configObj));
-                System.out.println();
+//                System.out.println();
 
                 String errorMessage = configObj.verify();
                 if (!errorMessage.isEmpty()) {

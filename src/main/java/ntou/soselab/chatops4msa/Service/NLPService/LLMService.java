@@ -45,7 +45,7 @@ public class LLMService {
         String intentClassificationAndEntityExtractionFile = loadSystemPrompt(env.getProperty("prompts.intent_classification_and_entity_extraction.file"));
         String capabilityListString = capabilityGenerator.getCapabilityListString();
         this.INTENT_CLASSIFICATION_AND_ENTITY_EXTRACTION_FILE = intentClassificationAndEntityExtractionFile.replace("<CAPABILITY_LIST>", capabilityListString);
-        System.err.println(INTENT_CLASSIFICATION_AND_ENTITY_EXTRACTION_FILE);
+//        System.err.println(INTENT_CLASSIFICATION_AND_ENTITY_EXTRACTION_FILE);
         this.QUERYING_MISSING_PARAMETERS_FILE = loadSystemPrompt(env.getProperty("prompts.querying_missing_parameters.file"));
 
         this.capabilityGenerator = capabilityGenerator;

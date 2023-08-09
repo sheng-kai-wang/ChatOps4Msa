@@ -1,8 +1,3 @@
-# 直接跑在本地，沒有使用 docker
-# 初始化指令 (constructor)、rest api 指令、bash 指令
-# promQL
-
-
 info:
   version: 1.0.0
   title: Prometheus
