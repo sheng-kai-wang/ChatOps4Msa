@@ -1,0 +1,148 @@
+version: "3.8"
+
+services:
+  reviews:
+    container_name: chatops4msa
+    build:
+      context: .
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 8080:8080
+
+  prometheus:
+    container_name: chatops4msa-prometheus
+    image: prom/prometheus:v2.30.0
+    volumes:
+      - ./prometheus/config:/etc/prometheus
+      - ./prometheus/data:/prometheus
+    environment:
+      - TZ="Asia/Taipei"
+    ports:
+      - 9090:9090
+
+  node-exporter:
+    container_name: chatops4msa-prometheus-node-exporter
+    image: prom/node-exporter:v1.2.2
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    environment:
+      - TZ="Asia/Taipei"
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+      - '--no-collector.arp'
+      - '--no-collector.netstat'
+      - '--no-collector.netdev'
+      - '--no-collector.softnet'
+
+  alertmanager:
+    container_name: chatops4msa-prometheus-alertmanager
+    image: prom/alertmanager:v0.23.0
+    restart: unless-stopped
+    volumes:
+      - ./prometheus/alertmanager:/etc/alertmanager
+    environment:
+      - TZ="Asia/Taipei"
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+  
+  grafana:
+    container_name: chatops4msa-grafana
+    image: grafana/grafana:8.1.5
+    restart: unless-stopped
+    volumes:
+      - ./grafana/data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=soselab
+      - GF_USERS_ALLOW_SIGN_UP=false
+    ports:
+      - 3000:3000
+
+  cadvisor:
+    container_name: chatops4msa-prometheus-google-cadvisor
+    image: gcr.io/cadvisor/cadvisor:v0.47.2
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 8081:8080
+    privileged: true
+    devices:
+      - /dev/kmsg
+
+  rabbitmq:
+    image: rabbitmq:3.8-management
+    container_name: chatops4msa-rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=soselab
+    volumes:
+      - ./rabbitmq/data:/var/lib/rabbitmq
+      - /etc/localtime:/etc/localtime:ro
+
+# Bookinfo microservices system ==========================================================
+
+  productpage:
+    container_name: chatops4msa-bookinfo-productpage
+    build:
+      context: ../ChatOps4Msa-Sample-Bookinfo-Productpage/src/productpage
+      args:
+        - flood_factor=100
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - '9080:9080'
+
+  details:
+    container_name: chatops4msa-bookinfo-details
+    build:
+      context: ../ChatOps4Msa-Sample-Bookinfo-Details/src/details
+      args:
+        - service_version=v2
+        - enable_external_book_service=true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - '9081:9080'
+
+  ratings:
+    container_name: chatops4msa-bookinfo-ratings
+    build:
+      context: ../ChatOps4Msa-Sample-Bookinfo-Ratings/src/ratings
+      args:
+        - service_version=v2
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - '9082:9080'
+
+  reviews:
+    container_name: chatops4msa-bookinfo-reviews
+    build:
+      context: ../ChatOps4Msa-Sample-Bookinfo-Reviews/src/reviews
+      args:
+        - service_version=v3
+        - enable_ratings=true
+        - star_color=red
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - '9083:9080'
