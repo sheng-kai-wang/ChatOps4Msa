@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  reviews:
+  chatops4msa:
     container_name: chatops4msa
     build:
       context: .
