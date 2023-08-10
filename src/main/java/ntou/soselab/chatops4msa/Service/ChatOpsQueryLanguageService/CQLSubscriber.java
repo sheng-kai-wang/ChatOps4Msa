@@ -78,15 +78,6 @@ public class CQLSubscriber implements Job {
                                        Map<String, String> argumentMap,
                                        String cron) {
 
-        String info = "cron: " + cron + "\n" +
-                "command: " + functionName + "\n" +
-                "argument: " + argumentMap + "\n" +
-                "by: " + username;
-        jdaService.sendChatOpsChannelInfoMessage(info);
-
-        // record the subscription
-        subscribeList.add(info);
-
         try {
             this.scheduler = StdSchedulerFactory.getDefaultScheduler();
 
@@ -114,8 +105,19 @@ public class CQLSubscriber implements Job {
             scheduler.scheduleJob(job, trigger);
             scheduler.start();
 
-        } catch (SchedulerException e) {
+            // echo the info
+            String info = "cron: " + cron + "\n" +
+                    "command: " + functionName + "\n" +
+                    "argument: " + argumentMap + "\n" +
+                    "by: " + username;
+            jdaService.sendChatOpsChannelInfoMessage(info);
+
+            // record the subscription
+            subscribeList.add(info);
+
+        } catch (Exception e) {
             e.printStackTrace();
+            jdaService.sendChatOpsChannelErrorMessage("[ERROR] " + e.getLocalizedMessage());
         }
     }
 
@@ -130,6 +132,10 @@ public class CQLSubscriber implements Job {
     }
 
     public void unsubscribeAllCapability() {
+        if (subscribeList.isEmpty()) {
+            jdaService.sendChatOpsChannelWarningMessage("[WARNING] There Are Currently No Subscriptions");
+            return;
+        }
         try {
             scheduler.clear();
             subscribeList.clear();

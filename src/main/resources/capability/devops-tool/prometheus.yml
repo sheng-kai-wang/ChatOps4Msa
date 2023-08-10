@@ -7,7 +7,7 @@ info:
 low_code:
   property:
     prometheus_host_url: ${secret.prometheus_host_url}
-    grafana_url: ${secret.grafana_host_url}/d/S8bXKq9Vz/docker-monitoring?orgId=1&from=now-15m&to=now&refresh=5s
+    grafana_url: ${secret.grafana_url}
 
   operation:
     - name: get-prometheus-alert_rule
