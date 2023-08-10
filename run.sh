@@ -25,6 +25,9 @@ sudo chown -R 472:root grafana/data
 docker compose up -d
 
 # restart ChatOps4Msa to create a message queue on RabbitMQ
+docker stop chatops4msa
+echo "Wait for RabbitMQ to start for 15 seconds..."
+sleep 15
 docker restart chatops4msa
 
 # print all containers
