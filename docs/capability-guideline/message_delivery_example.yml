@@ -1,8 +1,7 @@
 info:
   version: 1.0.0
   title: Message Delivery
-  description: |
-    Using RabbitMQ to receive message
+  description: Using RabbitMQ to receive message
 
 low_code:
   on_message:

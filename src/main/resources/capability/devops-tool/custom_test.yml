@@ -1,13 +1,9 @@
 info:
   version: 1.0.0
   title: custom_test
-  description: |
-    Integration of k6, Prometheus, and GitHub for comprehensive capability.
+  description: Integration of k6, Prometheus, and GitHub for comprehensive capability.
 
 low_code:
-  property:
-    system_name: bookinfo
-
   operation:
     # this function combines the functions of prometheus, k6, and GitHub.
     - name: test-custom_test-smoke_and_repo_all_service
@@ -26,8 +22,6 @@ low_code:
         # declared in k6.yml
         - test-k6-smoke_testing_all_service:
             number_of_virtual_user: ${number_of_virtual_user}
-        # - monitor-prometheus-service_health:
-        #     assign: alerted_service_list
         # provided by ChatOps4Msa (parse the content of JSON)
         - toolkit-discord-embed:
             title: "[Reviews] is FIRING"
@@ -37,12 +31,3 @@ low_code:
             service_name: reviews
         - get-github-contribution_of_team_member:
             service_name: reviews
-        # provided by ChatOps4Msa (process the elements in a list in batch)
-        # - toolkit-list-foreach:
-        #     list: ${alerted_service_list}
-        #     # iterated elements
-        #     element_name: service
-        #     todo:
-        #       # declared in github.yml
-        #       - get-github-service_past_week_team_activity:
-        #           service_name: ${service}

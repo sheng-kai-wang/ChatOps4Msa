@@ -22,7 +22,6 @@ public class JDAService {
 
     @Autowired
     public JDAService(Environment env,
-                      GeneralListener generalListener,
                       SlashCommandListener slashCommandListener,
                       MessageListener messageListener,
                       ButtonListener buttonListener) {
@@ -32,7 +31,6 @@ public class JDAService {
             this.jda = JDABuilder.createDefault(APP_TOKEN)
                     .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                     .enableIntents(GatewayIntent.GUILD_MEMBERS)
-                    .addEventListeners(generalListener)
                     .addEventListeners(slashCommandListener)
                     .addEventListeners(messageListener)
                     .addEventListeners(buttonListener)

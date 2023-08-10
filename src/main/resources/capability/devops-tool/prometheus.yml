@@ -4,22 +4,10 @@ info:
   description: |
     It's an open-source monitoring and alerting system.
 
-
 low_code:
   property:
-    system_name: bookinfo
     prometheus_host_url: ${secret.prometheus_host_url}
-    prometheus_host_ip: ${secret.prometheus_host_ip}
-    prometheus_host_port: ${secret.prometheus_host_port}
-    prometheus_monitor_health_path: /api/v1/query
-    prometheus_edit_alert_rules_path: /alerting/rules
-    prometheus_get_alert_status_path: /api/v1/alerts
-    grafana_url: ${secret.grafana_url}
-    grafana_host_ip: ${secret.grafana_host_ip}
-    grafana_host_port: ${secret.grafana_host_port}
-    grafana_authorization_bearer: ${secret.grafana_authorization_bearer}
-    grafana_create_datasource_path: /api/datasources
-    grafana_monitor_datasource_path: /api/datasources/name
+    grafana_url: ${secret.grafana_host_url}/d/S8bXKq9Vz/docker-monitoring?orgId=1&from=now-15m&to=now&refresh=5s
 
   operation:
     - name: get-prometheus-alert_rule

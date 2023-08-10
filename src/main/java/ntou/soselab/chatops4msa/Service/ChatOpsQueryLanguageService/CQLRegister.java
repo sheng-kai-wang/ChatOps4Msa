@@ -45,7 +45,7 @@ public class CQLRegister {
 
     /**
      * command format:  /<<topCommand>> <<subCommandGroup>> <<subCommand>>
-     * like             /create github issue
+     * like             /set github issue
      */
     private void upsertNewCommands() {
         System.out.println("[DEBUG] upsert new commands...");

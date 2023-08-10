@@ -22,7 +22,6 @@ public class TimeToolkit extends ToolkitFunction {
 
     /**
      * @return format "yyyy-MM-dd"
-     * @return format "yyyy-MM-dd"
      */
     public String toolkitTimeOneWeekAgo() {
         LocalDate today = LocalDate.now();

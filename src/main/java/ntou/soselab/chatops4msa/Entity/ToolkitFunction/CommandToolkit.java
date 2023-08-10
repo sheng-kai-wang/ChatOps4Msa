@@ -26,7 +26,7 @@ public class CommandToolkit extends ToolkitFunction {
                 processBuilder.redirectInput(new File(input_stream));
                 Process process = processBuilder.start();
 
-                // testing started
+                // command started
                 jdaService.sendChatOpsChannelMessage("=============== COMMAND START ===============\n");
 
                 StringBuilder sb = new StringBuilder();
@@ -50,7 +50,7 @@ public class CommandToolkit extends ToolkitFunction {
                 sb.append("```");
                 jdaService.sendChatOpsChannelMessage(sb.toString());
 
-                // testing completed
+                // command completed
                 jdaService.sendChatOpsChannelMessage("\n=============== COMMAND END ===============");
 
             } catch (IOException e) {

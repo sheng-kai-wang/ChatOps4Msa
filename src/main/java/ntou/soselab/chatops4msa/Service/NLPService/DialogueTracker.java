@@ -45,8 +45,6 @@ public class DialogueTracker {
 
     public MessageCreateData sendMessage(String userId, String name, String message) {
 
-        // TODO: check the role of user before button event
-
         // get the user data
         if (!activeUserMap.containsKey(userId)) activeUserMap.put(userId, new User(userId, name));
         User currentUser = activeUserMap.get(userId);

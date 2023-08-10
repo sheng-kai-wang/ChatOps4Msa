@@ -33,16 +33,16 @@ capability:
   - get-example-echo_message
   - get-example-math_calculate
   - get-github-service_recent_activity
-  - get-github-service_code_scanning # get-github-service_latest_commit_report
+  - get-github-service_code_scanning
   - get-github-service_past_week_team_activity
   - get-github-contribution_of_team_member
   - get-github-issue_progress_timeline
-  - set-github-issue # create-github-issue
-  - get-prometheus-alert_rule # set-prometheus-edit_alert_rules
-  - monitor-prometheus-service_health # monitor-prometheus-health
-  - monitor-prometheus-grafana_overview # monitor-prometheus-overview
-  - monitor-prometheus-promql_overview # monitor-prometheus-all_service_alert
-  - monitor-prometheus-all_service_yesterday_status # monitor-prometheus-all_service_yesterday_report
+  - set-github-issue
+  - get-prometheus-alert_rule
+  - monitor-prometheus-service_health
+  - monitor-prometheus-grafana_overview
+  - monitor-prometheus-promql_overview
+  - monitor-prometheus-all_service_yesterday_status
   - monitor-prometheus-service_dependency
   - test-k6-stress_testing
   - test-k6-smoke_testing_all_service

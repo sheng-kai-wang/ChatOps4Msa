@@ -1,8 +1,7 @@
 info:
   version: <<version_number>>
   title: <<tool_name>>
-  description: |
-    <<tool_description>>
+  description: <<tool_description>>
 
 low_code:
   property:
@@ -15,8 +14,7 @@ low_code:
       parameter:
         <<parameter_name_1>>: <<parameter_description_1>>
       # it will be displayed in the interface of Discord
-      description: |
-        <<function_description>>
+      description: <<function_description>>
       access: <<private_or_protected_or_public>>
       # this declared function is composed of the following functions in body
       # when the declared function executed,

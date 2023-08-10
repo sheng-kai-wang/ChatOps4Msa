@@ -3,7 +3,6 @@ package ntou.soselab.chatops4msa.Entity.CapabilityConfig;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Info {
-
     @JsonProperty("version")
     private String version;
     @JsonProperty("title")

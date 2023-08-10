@@ -1,170 +1,19 @@
 info:
   version: 1.0.0
   title: GitHub
-  description: |
-    Using GraphQL to access GitHub's services to assist with DevOps.
-
+  description: Using GraphQL to access GitHub's services to assist with DevOps.
 
 low_code:
   property:
-    system_name: bookinfo
     github_restapi_url: https://api.github.com
     github_access_token: ${secret.github_access_token}
-    github_graphql_url: https://api.github.com/graphql
-    github_authorization_bearer: ${secret.github_authorization_bearer}
-    get_github_service_recent_activity_graphql: |
-      {
-        repository(owner: $owner, name: $name) {
-          defaultBranchRef {
-            name
-          }
-          ref(qualifiedName: "refs/heads/master") {
-            target {
-              ... on Commit {
-                history(first: $first) {
-                  nodes {
-                    oid
-                    messageHeadline
-                    messageBody
-                    author {
-                      name
-                      email
-                      date
-                    }
-                    committedDate
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    get_github_service_latest_commit_report_graphql: |
-      {
-        repository(owner: $owner, name: $name) {
-          defaultBranchRef {
-            name
-          }
-          ref(qualifiedName: "refs/heads/master") {
-            target {
-              ... on Commit {
-                history(first: 1) {
-                  nodes {
-                    id
-                    oid
-                    messageHeadline
-                    checkSuites(last: 1) {
-                      nodes {
-                        id
-                        status
-                        conclusion
-                        checkRuns(last: 1) {
-                          nodes {
-                            id
-                            status
-                            conclusion
-                            detailsUrl
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    get_github_service_team_activity_past_week_graphql: |
-      {
-        repository(owner: $owner, name: $name) {
-          createdAt
-          stargazerCount
-          watchers {
-            totalCount
-          }
-          defaultBranchRef {
-            name
-          }
-          ref(qualifiedName: "refs/heads/master") {
-            target {
-              ... on Commit {
-                history(since: $weekAgo) {
-                  totalCount
-                  edges {
-                    node {
-                      author {
-                        user {
-                          login
-                        }
-                      }
-                      committedDate
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    get_github_all_service_dependency_risk_past_week_graphql: |
-      {
-        repository(owner: $owner, name: $name) {
-          vulnerabilityAlerts(last: 100) {
-            nodes {
-              createdAt
-              securityVulnerability {
-                package {
-                  name
-                }
-                advisory {
-                  description
-                  severity
-                  references {
-                    url
-                  }
-                }
-                updatedAt
-              }
-            }
-          }
-        }
-      }
-    get-github-contribution_of_team_member_path: /graphs/contributors
-    get_github_issue_graphql: |
-      query {
-        repository(owner: $owner, name: $name) {
-          issues(first: $first) {
-            nodes {
-              title
-              createdAt
-              updatedAt
-              closedAt
-              state
-            }
-          }
-        }
-      }
-
-
-    create_github_issue_graphql: |
-      {
-        createIssue(input: {repositoryName: $name, repositoryOwner: $owner, title: $title, body: $body}) {
-          issue {
-            title
-            body
-            url
-          }
-        }
-      }
 
   operation:
     - name: get-github-service_recent_activity
       parameter:
         service_name: service name
         number_of_activity: 1 <= n <= 5
-      description: |
-        Retrieve recent activities of a service's repo.
+      description: Retrieve recent activities of a service's repo.
       access: public
       body:
         - toolkit-string-pattern:
@@ -335,41 +184,6 @@ low_code:
                   field_json: "{\"link\": \"${url}\"}"
                   thumbnail: https://avatars.githubusercontent.com/u/76858274?v=4
 
-    # - name: get-github-all_service_dependency_risk_past_week
-    #   parameter: null
-    #   description: |
-    #     Get the dependency risks of all services' repositories in the past week.
-    #   access:
-    #     protected:
-    #       - Supervisor
-    #       - Team_Member
-    #   body:
-    #     - toolkit-info-get:
-    #         system: bookinfo
-    #         service: all_service
-    #         info: name
-    #     - toolkit-list-foreach:
-    #         list: ${toolkit-info-get}
-    #         element_name: service
-    #         todo:
-    #           - get-github-service_dependency_risk_past_week:
-    #               service_name: ${service}
-
-#    - name: subscribe-github-all_service_dependency_risk_past_week
-#      parameter:
-#        cron: e.g. 0 9 * * 5
-#      description: |
-#        Subscribe to the dependency risk of all service's repo in the past week and execute it every Friday.
-#      access:
-#        protected:
-#          - Supervisor
-#          - Team_Member
-#      body:
-#        - toolkit-flow-subscribe:
-#            operation: get-github-all_service_dependency_risk_past_week
-#            operation_parameter_json: null
-#            cron: ${cron}
-
     - name: get-github-issue_progress_timeline
       parameter:
         service_name: service name
@@ -535,30 +349,3 @@ low_code:
             replace: ${repository}
         - toolkit-flow-return:
             return: ${toolkit-string-replace}
-
-    - name: get-github-service_dependency_risk_past_week
-      parameter: 
-        service_name: null
-      description: |
-        Get the dependency risks of the services' repositories in the past week.
-      access: private
-      body:
-        - set-repo-info_of_service_into_url:
-            service_name: ${service_name}
-            graphql: ${get_github_all_service_dependency_risk_past_week_graphql}
-        - toolkit-time-one_week_ago: null
-        - toolkit-string-replace:
-            string: ${set-repo-info_of_service_into_url}
-            original: \\$weekAgo
-            replace: ${toolkit-time-one_week_ago}
-        - toolkit-graphql-query:
-            url: ${github_graphql_url}
-            graphql: ${toolkit-string-replace}
-            authorization: ${github_authorization_bearer}
-        - toolkit-json-parse:
-            json: ${toolkit-graphql-query}
-            jsonpath: .......
-        - toolkit-discord-embed:
-            title: The activity status of each team member within the past week of ${service_name}
-            color: yellow
-            field_json: ${toolkit-json-parse}

@@ -1,15 +1,13 @@
 info:
   version: 1.0.0
   title: k6
-  description: |
-    k6 is an open-source load testing tool.
+  description: k6 is an open-source load testing tool.
 
 low_code:
   property:
-    grafana_url: ${secret.grafana_url}
+    grafana_url: ${secret.grafana_host_url}
     k6_logo_url: https://media.discordapp.net/attachments/1127409934695419915/1127439470317285406/K6-logo.svg.png?width=1305&height=1262
     k6_test_script_path: ${secret.k6_test_script_path}
-    grafana_prometheus_k6_smoke_testing_url: ........
 
   operation:
     - name: test-k6-stress_testing

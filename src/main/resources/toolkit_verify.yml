@@ -36,20 +36,12 @@ toolkit-json-parse:
 toolkit-json-parse_github_commit:
   - json
   - first
-# useless
-toolkit-json-parse_github_issue:
-  - json
-  - first
 toolkit-info-get:
   - system
   - service
   - info
 toolkit-flow-if:
   - condition
-# toolkit-flow-subscribe:
-#   - function
-#   - function_parameter_json
-#   - cron
 toolkit-restapi-get:
   - url
 toolkit-restapi-post:

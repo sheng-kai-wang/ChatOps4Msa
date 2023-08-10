@@ -1,10 +1,10 @@
-# toolkit-list
+# Toolkit List
 
 > Here are the currently available toolkit-functions
 
-1. All input values and return values are string type.
+1. All input values and return values are string type in Java.
 2. Except for `toolkit-flow-return`, all functions (including custom-functions) can use the "assign" parameter to store the return value in a local variable.
-3. ${custom_variable_name} can get the value of the local variable named custom_variable_name.
+3. ${custom_variable_name} can get the value of the local variable named "custom_variable_name".
 
 ### invoke format
 
@@ -32,18 +32,18 @@
 ```
 
 
-### get the date from one week ago
-##### the result is formatted as `2023-08-03`
-
-```yml
-toolkit-time-one_week_ago: null
-```
-
 ### get today's date
 ##### the result is formatted as `2023-08-10`
 
 ```yml
 toolkit-time-today: null
+```
+
+### get the date one week ago
+##### the result is formatted as `2023-08-03`
+
+```yml
+toolkit-time-one_week_ago: null
 ```
 
 ### convert to Taiwan time
@@ -125,8 +125,6 @@ toolkit-list-foreach:
         service_name: ${service_name}
 ```
 
-<!-- todo: for loop by index (get the element from multiple list) -->
-
 ### asynchronously process all elements in a list
 ##### you can use ${i} to get the index of the element
 ##### using Docker technology, concurrently execute the same operation on multiple services
@@ -166,18 +164,11 @@ toolkit-json-parse:
 ```yml
 toolkit-json-parse_github_commit:
   json: <<the JSON to be parsed>>
-```
-
-### parse the content of JSON for GitHub issues
-##### the result is a list
-
-```yml
-toolkit-json-parse_github_issue:
-  json: <<the JSON to be parsed>>
+  first: <<the quantity to be parsed>>
 ```
 
 ### get information from the microservice-system configs
-##### the result is `https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo.git`
+##### the result is a list like `["https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo.git"]`
 
 ```yml
 toolkit-info-get:
@@ -218,9 +209,8 @@ toolkit-flow-return:
 
 ```yml
 toolkit-flow-subscribe:
-  function: <<function name>>
-  function_parameter_json: <<a JSON-formatted list of parameters>>
-  cron: <<e.g. 0 9 * * 1 >>
+  cron: <<e.g. 0 0 9 * * ? >>
+  todo: <<function list>>
 ``` -->
 
 ### send a GET request to a specific REST API
@@ -261,13 +251,6 @@ toolkit-command-bash:
   command: docker run --rm -i grafana/k6 run - -e TEST_URL=https://test-api.k6.io
   input_stream: /path/to/script.js
 ```
-
-<!-- ### visualize JSON data using Grafana
-
-```yml
-toolkit-render-grafana:
-  json: <<JSON>>
-``` -->
 
 ### send a text message to the Discord channel
 
@@ -312,7 +295,7 @@ toolkit-discord-json:
 ```
 
 ### send the embed message to the Discord channel (no thumbnail)
-##### the color can be green, orange, red or default(gray)
+##### the color can be green, orange, red or default (gray)
 
 ```yml
 toolkit-discord-embed:
@@ -322,7 +305,7 @@ toolkit-discord-embed:
 ```
 
 ### send the embed message to the Discord channel (with thumbnail)
-##### the color can be green, orange, red or default(gray)
+##### the color can be green, orange, red or default (gray)
 
 ```yml
 toolkit-discord-embed_thumbnail:
@@ -333,12 +316,12 @@ toolkit-discord-embed_thumbnail:
 ```
 
 ### send the embed message to the Discord channel (with image)
-##### the color can be green, orange, red or default(gray)
+##### the color can be green, orange, red or default (gray)
 
 ```yml
 toolkit-discord-embed_image:
   title: <<embed title>>
   color: <<embed color>>
   field_json: <<embed content in JSON format>>
-  thumbnail: <<image url>>
+  image: <<image url>>
 ```

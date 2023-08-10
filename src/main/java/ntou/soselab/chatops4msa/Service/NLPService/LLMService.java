@@ -93,11 +93,6 @@ public class LLMService {
         }
         String systemPrompt = INTENT_CLASSIFICATION_AND_ENTITY_EXTRACTION_FILE.replace("<SERVICE_LIST>", sb.toString());
 
-//        if (!previousIntentAndEntities.isEmpty()) {
-//            userPrompt = previousIntentAndEntities + " and the preceding values of null are " + userPrompt;
-//        }
-
-//        String completion = inference(systemPrompt, userPrompt);
         String completion = inference(systemPrompt, previousIntentAndEntities, userPrompt);
 
         System.out.println("[Completion String] " + completion);

@@ -31,7 +31,7 @@ public class ListToolkit extends ToolkitFunction {
     }
 
     /**
-     * from ["content"] to content
+     * from ["content"] to "content"
      */
     public String toolkitListToString(String list) throws ToolkitFunctionException {
         List<String> listObj;
@@ -136,7 +136,6 @@ public class ListToolkit extends ToolkitFunction {
 
         // temporary storage of local variable with the same name
         String localVariableTemp = localVariableMap.get(element_name);
-
 
         for (int i = 0; i < listObj.size(); i++) {
             String element = listObj.get(i);
