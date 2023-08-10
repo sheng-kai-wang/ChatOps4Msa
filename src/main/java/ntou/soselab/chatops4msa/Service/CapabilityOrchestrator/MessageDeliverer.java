@@ -42,7 +42,14 @@ public class MessageDeliverer {
     @PostConstruct
     private void createMessageQueue() {
 
-        // Encode credentials in Base64
+        // wait for rabbitmq to start up
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        // encode credentials in Base64
         String credentials = java.util.Base64
                 .getEncoder()
                 .encodeToString((rabbitmqUsername + ":" + rabbitmqPassword).getBytes(StandardCharsets.UTF_8));
