@@ -7,6 +7,8 @@ services:
       context: .
     volumes:
       - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - rabbitmq
     ports:
       - 8080:8080
 
