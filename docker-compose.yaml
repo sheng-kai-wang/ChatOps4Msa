@@ -1,16 +1,20 @@
 version: "3.8"
 
 services:
-  chatops4msa:
-    container_name: chatops4msa
-    build:
-      context: .
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-    depends_on:
-      - rabbitmq
-    ports:
-      - 8080:8080
+  # For the Docker-in-Docker configuration (k6)
+  # chatops4msa:
+    # container_name: chatops4msa
+    # build:
+    #   context: .
+    # volumes:
+    #   - /etc/localtime:/etc/localtime:ro
+    #   - /var/run/docker.sock:/var/run/docker.sock
+    #   - /usr/bin/docker:/usr/bin/docker
+    #   - ./k6:/k6
+    # depends_on:
+    #   - rabbitmq
+    # ports:
+    #   - 8080:8080
 
   prometheus:
     container_name: chatops4msa-prometheus

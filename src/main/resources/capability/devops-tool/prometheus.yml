@@ -51,10 +51,6 @@ low_code:
                   title: The health status of all the services
                   color: red
                   field_json: "{\"status\":\"Firing\"}"
-              - toolkit-discord-json:
-                  text: ${alerts_list}
-              - toolkit-discord-return:
-                  return: ${alerts_list}
 
     # - name: judge-service-status_color
     #   parameter:
