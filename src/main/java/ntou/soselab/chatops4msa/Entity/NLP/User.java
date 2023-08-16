@@ -112,8 +112,8 @@ public class User {
                         String entityValue = null;
                         Object entityValueObj = matchedEntitiesJSON.opt(entityName);
                         // avoid the value is JSONObject
-                        if (entityValueObj instanceof String) {
-                            entityValue = matchedEntitiesJSON.getString(entityName);
+                        if (entityValueObj instanceof String || entityValueObj instanceof Integer) {
+                            entityValue = entityValueObj.toString();
                         }
                         if (!isIgnoredEntity(entityValue)) {
                             if ("service_name".equals(entityName)) {
@@ -148,8 +148,8 @@ public class User {
                     String matchedEntityValue = null;
                     Object matchedEntityValueObj = matchedEntitiesJSON.opt(matchedEntityName);
                     // avoid the value is JSONObject
-                    if (matchedEntityValueObj instanceof String) {
-                        matchedEntityValue = matchedEntitiesJSON.getString(matchedEntityName);
+                    if (matchedEntityValueObj instanceof String || matchedEntityValueObj instanceof Integer) {
+                        matchedEntityValue = matchedEntityValueObj.toString();
                     }
                     if (isIgnoredEntity(matchedEntityValue)) continue;
                     if ("service_name".equals(matchedEntityName)) {
