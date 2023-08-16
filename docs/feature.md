@@ -13,7 +13,7 @@ However, applying common ChatOps mechanisms to microservices architecture presen
 
 To address these challenges, we designed ChatOps4Msa, which aims to provide solutions. Below is the design of the core engine of ChatOps4Msa:
 
-<div><img alt="ChatOps4Msa Engine Architecture" src="./image/ChatOps4Msa-Engine-Architecture.jpg"></div>
+<div><img width="700px" alt="ChatOps4Msa Engine Architecture" src="./image/ChatOps4Msa-Engine-Architecture.jpg"></div>
 
 ## Service Composition by Low-code
 
@@ -42,20 +42,18 @@ _See [all prompt tempaltes](../src/main/resources/prompts)._
 <br />
 <br />
 
-<div><img alt="NLP" src="./image/NLP.jpg"></div>
+<div><img width="700px" alt="NLP" src="./image/NLP.jpg"></div>
 
 ## Comparison
 
 > ChatOps4Msa vs. other ChatOps Tools
 
-|                                         | Hubot                       | GitLab ChatOps                                                     | Amazon Lex                                            | ChatOps4Msa                                                                                             |   |   |   |   |   |
-|-----------------------------------------|-----------------------------|--------------------------------------------------------------------|-------------------------------------------------------|---------------------------------------------------------------------------------------------------------|---|---|---|---|---|
-| Developing New Capabilities             | CoffeeScript                | CI/CD Jobs                                                         | Lambda Functions                                      | Low-Code Configuration Files (Supports Service Composition)                                             |   |   |   |   |   |
-| Capabilities Scope                      | Unlimited                   | Limited to GitLab                                                  | Limited to AWS                                        | Unlimited                                                                                               |   |   |   |   |   |
-| Calling Different Tool Interfaces       | Requires Custom Programming | Use Scripts to Call                                                | Requires Custom Programming                           | Can Use Various Toolkits to Call REST APIs, Bash Commands, etc.                                         |   |   |   |   |   |
-| Combining Different Tool Capabilities   | Requires Custom Programming | Sequential Script Calls, but can't Directly Pass Process Variables | Requires Custom Programming                           | Can Use Toolkits for Composition, Allowing Complex Operations like Variable Passing, Flow Control, etc. |   |   |   |   |   |
-| Parallel Execution on Multiple Services | Not Supported               | Not Supported                                                      | Requires Custom Programming                           | Can Use Toolkits to Combine with Docker, Run Multiple Containers for Multiprocessing.                   |   |   |   |   |   |
-| Operation Mode                          | Command-based               | Command-based                                                      | Command, Natural Language, or Speech                  | Command or Natural Language (No need for Training Data)                                                 |   |   |   |   |   |
-| Operation with Natural Language         | Not Supported               | Not Supported                                                      | Prepare Training Data, Train Model Using AWS Platform | Directly Use Large Language Model as Pre-trained Model to Assist Natural Language Processing Workflow.  |   |   |   |   |   |
-|                                         |                             |                                                                    |                                                       |                                                                                                         |   |   |   |   |   |
-|                                         |                             |                                                                    |                                                       |                                                                                                         
+|                                         | Hubot                       | GitLab ChatOps                                                     | Amazon Lex                                            | ChatOps4Msa                                                                                             |
+| --------------------------------------- | --------------------------- | ------------------------------------------------------------------ | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Developing New Capabilities             | CoffeeScript                | CI/CD Jobs                                                         | Lambda Functions                                      | Low-Code Configuration Files (Supports Service Composition)                                             |
+| Capabilities Scope                      | Unlimited                   | Limited to GitLab                                                  | Limited to AWS                                        | Unlimited                                                                                               |
+| Calling Different Tool Interfaces       | Requires Custom Programming | Use Scripts to Call                                                | Requires Custom Programming                           | Can Use Various Toolkits to Call REST APIs, Bash Commands, etc.                                         |
+| Combining Different Tool Capabilities   | Requires Custom Programming | Sequential Script Calls, but can't Directly Pass Process Variables | Requires Custom Programming                           | Can Use Toolkits for Composition, Allowing Complex Operations like Variable Passing, Flow Control, etc. |
+| Parallel Execution on Multiple Services | Not Supported               | Not Supported                                                      | Requires Custom Programming                           | Can Use Toolkits to Combine with Docker, Run Multiple Containers for Multiprocessing.                   |
+| Operation Mode                          | Command-based               | Command-based                                                      | Command, Natural Language, or Speech                  | Command or Natural Language (No need for Training Data)                                                 |
+| Operation with Natural Language         | Not Supported               | Not Supported                                                      | Prepare Training Data, Train Model Using AWS Platform | Directly Use Large Language Model as Pre-trained Model to Assist Natural Language Processing Workflow.  |

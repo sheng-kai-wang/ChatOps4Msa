@@ -11,7 +11,7 @@ The low-code configuration files are divided into the following four types, all 
 
 And here is the architecture diagram of the low-code configuration files.
 
-![](./image/Low-Code-Architecture.jpg)
+<div><img width="700px" alt="Low Code Architecture" src="./image/Low-Code-Architecture.jpg"></div>
 
 ## microservice-system
 
