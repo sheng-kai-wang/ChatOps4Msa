@@ -8,32 +8,42 @@ Developers can customize desired functionalities using Low-code configuration fi
 
 Here is the scenario of ChatOps4Msa:
 
-<div style="text-align: center;"><img width="500px" alt="ChatOps4Msa Scenario" src="./docs/image/ChatOps4Msa-Scenario.png"></div>
+<div><img width="500px" alt="ChatOps4Msa Scenario" src="./docs/image/ChatOps4Msa-Scenario.png"></div>
 
-<br>
+<br />
+<br />
 
 Here is the operation concept of ChatOps4Msa:
 
-<div style="text-align: center;"><img width="800px" alt="ChatOps4Msa Operation Concept" src="./docs/image/ChatOps4Msa-Operation-Concept.png"></div>
+<div><img alt="ChatOps4Msa Operation Concept" src="./docs/image/ChatOps4Msa-Operation-Concept.png"></div>
 
 ## How to Use
 
-##### Natural Language
+### Natural Language
 
 In the chatops channel, use `@ChatOps4Msa-Bot` to mention ChatOps4Msa, then input your request in natural language.
 
-<div style="text-align: center;"><img width="500px" alt="Natural Language Example" src="./docs/image/Natural-Language-Example.png"></div>
+<div><img alt="Natural Language Example" src="./docs/image/Natural-Language-Example.png"></div>
 
-##### CQL (ChatOps Query Language)
+### CQL (ChatOps Query Language)
 
 In the chatops channel, directly execute commands using slash commands that start with `/`.
 
-<div style="text-align: center;"><img width="500px" alt="Slash Command Example" src="./docs/image/Slash-Command-Example.png"></div>
+<div><img width="500px" alt="Slash Command Example" src="./docs/image/Slash-Command-Example.png"></div>
+
+<br />
+<br />
 
 And here is the syntax of CQL:
-`[ACTION] [TOOL] [COMMAND] [SERVICE] [FLAGS]`
 
-<div style="text-align: left;"><img width="500px" alt="CQL Example" src="./docs/image/CQL-Example.png.png"></div>
+```
+[ACTION] [TOOL] [COMMAND] [SERVICE] [FLAGS]
+```
+
+<div><img width="500px" alt="CQL Example" src="./docs/image/CQL-Example.png.png"></div>
+
+<br />
+<br />
 
 | PARAMETER | DESCRIPTION                                                                                                                                                                                                   | REQUIRED? |
 | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
