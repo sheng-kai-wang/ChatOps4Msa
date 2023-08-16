@@ -37,7 +37,7 @@ In the chatops channel, directly execute commands using slash commands that star
 And here is the syntax of CQL:
 
 ```
-[ACTION] [TOOL] [COMMAND] [SERVICE] [FLAGS]
+/[ACTION] [TOOL] [COMMAND] [SERVICE] [FLAGS]
 ```
 
 <div><img width="600px" alt="CQL Example" src="./docs/image/CQL-Example.png.png"></div>
