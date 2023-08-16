@@ -1,0 +1,5 @@
+- `microservice-system` can refer to the [microservice_system_template.yml](./microservice_system_template.yml)
+- `devops-tool` can refer to the [devops_tool_template.yml](./devops_tool_template.yml)
+- `message-delivery` can refer to the [message_delivery_example.yml](./message_delivery_example.yml)
+- `secret` can refer to the [secret_example.yml](./secret_example.yml)
+- And [toolkit_list.md](./toolkit_list.md) contains a list of all available toolkit-functions.
