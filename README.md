@@ -23,7 +23,7 @@ Here is the operation concept of ChatOps4Msa:
 
 In the chatops channel, use `@ChatOps4Msa-Bot` to mention ChatOps4Msa, then input your request in natural language.
 
-<div><img alt="Natural Language Example" src="./docs/image/Natural-Language-Example.png"></div>
+<div><img width="800px" alt="Natural Language Example" src="./docs/image/Natural-Language-Example.png"></div>
 
 ### CQL (ChatOps Query Language)
 
