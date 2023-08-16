@@ -40,7 +40,7 @@ And here is the syntax of CQL:
 [ACTION] [TOOL] [COMMAND] [SERVICE] [FLAGS]
 ```
 
-<div><img width="500px" alt="CQL Example" src="./docs/image/CQL-Example.png.png"></div>
+<div><img width="600px" alt="CQL Example" src="./docs/image/CQL-Example.png.png"></div>
 
 <br />
 <br />
