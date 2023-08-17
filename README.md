@@ -17,7 +17,7 @@ Here is the operation concept of ChatOps4Msa:
 
 <div><img alt="ChatOps4Msa Operation Concept" src="./docs/image/ChatOps4Msa-Operation-Concept.jpg"></div>
 
-_For more details, see [feature.md](./docs/feature.md)._
+_For more details, see [feature.md](./docs/feature.md)_
 
 ## How to Use
 
@@ -95,7 +95,7 @@ You can use the slash command `/check_all_subscription` to view all subscription
 
 And you can use the slash command `/unsubscribe_all_capability` to unsubscribe from all capabilities, for example:
 
-<div><img width="600px" alt="Unsubscribe from All Capabilities Example" src="./docs/image/Unsubscribe-All-Capability-Example.png"></div>
+<div><img width="400px" alt="Unsubscribe from All Capabilities Example" src="./docs/image/Unsubscribe-All-Capability-Example.png"></div>
 
 ### Video Demo
 
