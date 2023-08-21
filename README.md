@@ -106,43 +106,47 @@ And you can use the slash command `/unsubscribe_all_capability` to unsubscribe f
 > We do check the health of the Discord Bot periodically. Nevertheless, we do not have high availability guarantee on the service. Feel free to open an issue if it becomes unavailable.
 
 [Discord Link](https://discord.gg/4AmgTdankh)
- 
+
 ### Deploy ChatOps4Msa Yourself
 
 > The default account for DevOps tools is `admin`, and the default password is `soselab`.
 
 1. create a Discord Application (Bot):
-    - Please refer to the [step_for_DCBot](https://drive.google.com/drive/folders/1FzD0hnLN3weTTEJ5zOfrXmml8RZwRaHC?usp=sharing)
-    - Assign roles to yourself: `Supervisor`, and `Team_Member`.
+
+   - Please refer to the [step_for_DCBot](https://drive.google.com/drive/folders/1FzD0hnLN3weTTEJ5zOfrXmml8RZwRaHC?usp=sharing)
+   - Assign roles to yourself: `Supervisor`, and `Team_Member`.
 
 2. Register Slash Command (CQL):
-    - `git clone https://github.com/sheng-kai-wang/ChatOps4Msa.git`
-    - Create `application.properties` and `secret.yml` files, you can refer to the provided templates: [application-template.properties](./src/main/resources/application-template.properties) and [secret_template.yml](./src/main/resources/capability/secret_template.yml).
-    - You can register directly by running it locally in an IDE like IntelliJ. Since the microservices and DevOps tools haven't been started yet, you might encounter error messages related to RabbitMQ connection issues. However, this won't impact the registration of the Slash Command.
+
+   - `git clone https://github.com/sheng-kai-wang/ChatOps4Msa.git`
+   - Create `application.properties` and `secret.yml` files, you can refer to the provided templates: [application-template.properties](./src/main/resources/application-template.properties) and [secret_template.yml](./src/main/resources/capability/secret_template.yml).
+   - You can register directly by running it locally in an IDE like IntelliJ. Since the microservices and DevOps tools haven't been started yet, you might encounter error messages related to RabbitMQ connection issues. However, this won't impact the registration of the Slash Command.
 
 3. Deploy to your server using the provided `.sh` script files:
-    - Install openjdk17, mvn (maven), docker, tmux.
-    - And just run `sh run_all.sh` to start the entire system.
-    - Frequently used commands are scripted. To exit the tmux session, use `"Ctrl" + "b", then "d"`. You can re-enter the session with `tmux attach`.
 
-4. Fork my 4 microservice repos to use the `/get-github-service_code_scanning` capability:
-    - https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo-Productpage.git
-    - https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo-Reviews.git
-    - https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo-Ratings.git
-    - https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo-Details.git
-    - After setting up the reverse proxy, configure GitHub Actions secrets for the above four repos
-        1. Go to Settings > secrets and variables > Actions > New repository sercet
-        2. Set the following secrets:
-            - RABBITMQ_HOST_URL = `<<Reverse proxy domain>>`
-            - RABBITMQ_USERNAME = `admin`
-            - RABBITMQ_PASSWORD = `soselab`
-        3. Finally, update the service information in the microservice-system configuration file 
-            - url, repository, scan_run_id, etc.
+   - Install openjdk17, mvn (maven), docker, tmux.
+   - And just run `sh run_all.sh` to start the entire system.
+   - Frequently used commands are scripted. To exit the tmux session, use `"Ctrl" + "b", then "d"`. You can re-enter the session with `tmux attach`.
+
+4. Fork the following 4 microservice repositories to utilize GitHub-related capabilities:
+
+   - https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo-Productpage.git
+   - https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo-Reviews.git
+   - https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo-Ratings.git
+   - https://github.com/sheng-kai-wang/ChatOps4Msa-Sample-Bookinfo-Details.git
+   - After setting up the reverse proxy, configure GitHub Actions secrets for the above four repos
+     1. Go to Settings > secrets and variables > Actions > New repository sercet
+     2. Set the following secrets:
+        - RABBITMQ_HOST_URL = `<<Reverse proxy domain>>`
+        - RABBITMQ_USERNAME = `admin`
+        - RABBITMQ_PASSWORD = `soselab`
+     3. Finally, update the service information in the microservice-system configuration file
+        - url, repository, scan_run_id, etc.
 
 5. Log in to Grafana and manually configure the data source (Prometheus) to enable Grafana-related capabilities:
-    - Please refer to the [step_for_Grafana](https://drive.google.com/drive/folders/1DjKMGEgaLfOCVfwehm4PZSN0AVcp0Kjh?usp=sharing)
-    - Finally, replace the Grafana URL in the secret.yml with the new one, and then restart ChatOps4Msa.
-        - Use the command `sh run_chatops4msa.sh` to do so.
+   - Please refer to the [step_for_Grafana](https://drive.google.com/drive/folders/1DjKMGEgaLfOCVfwehm4PZSN0AVcp0Kjh?usp=sharing)
+   - Finally, replace the Grafana URL in the secret.yml with the new one, and then restart ChatOps4Msa.
+     - Use the command `sh run_chatops4msa.sh` to do so.
 
 ### Develop Custom Capabilities
 
