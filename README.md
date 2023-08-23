@@ -142,7 +142,7 @@ And you can use the slash command `/unsubscribe_all_capability` to unsubscribe f
         - RABBITMQ_PASSWORD = `soselab`
      3. Finally, update the service information in the microservice-system configuration file
         - url, repository, scan_run_id, etc.
-        - You need to manually run the workflow once to obtain the `scan_run_id` from the URL, refer to the [step_for_GitHub_scan_run_id](https://drive.google.com/drive/folders/1BtvHk36w0MOgQxRdF8rxZ1wO3g3F3IcF?usp=sharing).
+        - You need to manually run the workflow once to obtain the `scan_run_id` from the URL. Refer to the [step_for_GitHub_scan_run_id](https://drive.google.com/drive/folders/1BtvHk36w0MOgQxRdF8rxZ1wO3g3F3IcF?usp=sharing).
 
 5. Log in to Grafana and manually configure the data source (Prometheus) to enable Grafana-related capabilities:
    - Please refer to the [step_for_Grafana](https://drive.google.com/drive/folders/1DjKMGEgaLfOCVfwehm4PZSN0AVcp0Kjh?usp=sharing)
