@@ -111,12 +111,12 @@ And you can use the slash command `/unsubscribe_all_capability` to unsubscribe f
 
 > The default account for DevOps tools is `admin`, and the default password is `soselab`.
 
-1. create a Discord Application (Bot):
+1. Create a Discord Application (Bot):
 
    - Please refer to the [step_for_DCBot](https://drive.google.com/drive/folders/1FzD0hnLN3weTTEJ5zOfrXmml8RZwRaHC?usp=sharing)
    - Assign roles to yourself: `Supervisor`, and `Team_Member`.
 
-2. Register Slash Command (CQL):
+2. Register Slash Commands (CQL):
 
    - `git clone https://github.com/sheng-kai-wang/ChatOps4Msa.git`
    - Create `application.properties` and `secret.yml` files, you can refer to the provided templates: [application-template.properties](./src/main/resources/application-template.properties) and [secret_template.yml](./src/main/resources/capability/secret_template.yml).
